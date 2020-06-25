@@ -1,0 +1,13 @@
+form {
+    float: left;
+    margin: 10%;
+    padding: 1em;
+    border: 1px solid black;
+}
+
+iframe {
+    float: right;
+    height: 600px;
+    width: 35%;
+    margin: 10%;
+}
