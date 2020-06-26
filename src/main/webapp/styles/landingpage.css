@@ -39,11 +39,6 @@ li {
   padding: 10px;
 }
 
-a {
-  color: #ffffff;
-  text-decoration: none;
-}
-
 .sticky {
   position: fixed;
   top: 0;

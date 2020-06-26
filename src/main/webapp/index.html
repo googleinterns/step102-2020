@@ -2,13 +2,72 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>STEP Capstone</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Starfish</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="edit-profile.css">
+    <script src="edit-profile.js"></script>
+    <link rel="stylesheet" href="styles/landingpage.css">
     <script src="script.js"></script>
   </head>
   <body>
-    <p>Hello World!</p>
-    <a href="upload-form.html">Upload Form</a>
-    <a href="note-card.html">Note Card</a>
+    <div id="nav"></div>
+    <div id="nav-over">
+      <a href="index.html"><span id="title">starfish</span></a>
+      <div id="action-items">
+        <a href="upload-form.html"><span id="post-action">PostANote</span></a>
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" id="dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="profile-pic.png" id="profile-button-img">
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" id="dropdown-menu" aria-labelledby="dropdown-button">
+            <img src="profile-pic.png" height="200px"/>
+            <p id="dropdown-name">Bob the Builder</p>
+            <p id="dropdown-points">597 points</p>
+            <a class="link" href="/profile.html">My Profile</a> 
+            <a class="link" href="#">Favorite Notes</a>
+            <a class="link" href="#">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <nav class="zone blue sticky"> -->
+    <!--   <ul class="main-nav"> -->
+    <!--     <li> -->
+    <!--       <a href="">starfish</a> -->
+    <!--     </li> -->
+    <!--     <div class="push"> -->
+    <!--       <li> -->
+    <!--         <a href="">PostANote</a> -->
+    <!--       </li> -->
+    <!--       <li> -->
+    <!--         <a href=""><img id="user-profile" src="assets/user.svg"></a> -->
+    <!--       </li> -->
+    <!--     </div> -->
+    <!--   </ul> -->
+    <!-- </nav> -->
+    <main class="blue">
+      <h1 class="title">starfish</h1>
+      <h3 class="subtitle">Share and find the best course notes. Completely free.</h3>
+      <form target="_blank">
+        <label for="topic">Find by Topic:</label><br>
+        <input type="text" name="topic"><br>
+        <div class="inline">
+          <span class="inline-form-el">
+            <label for="school">School:</label><br>
+            <input type="text" name="school"><br>
+          </span>
+          <span class="inline-form-el">
+            <label for="course">Course:</label><br>
+            <input type="text" name="course"><br>
+          </span>
+        </div>
+        <input type="submit" value="Submit" onclick="window.location.href='./searchresults.html'">
+      </form>
+      <img id="laptop" src="assets/laptop-min.png">
+    </main>
   </body>
 </html>
