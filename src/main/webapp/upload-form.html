@@ -7,8 +7,12 @@
     <script src="script.js"></script>
   </head>
   <body>
-    <div>
-      <h1>Upload Course Notes</h1>
+    <h1>Upload Course Notes</h1>
+    <div id="upload-form">
+      <div id="preview">
+        <h4>Set Thumbnail</h4>
+        <iframe src="assets/notes.pdf"></iframe>
+      </div>
       <form>
         <label for="notes-file">Select File:</label>
         <br>
@@ -20,24 +24,33 @@
         <input type="text" name="notes-title">
         <br>
         <br>
-        <label for="school">School</label>
+        <div class="inline-block">
+          <label for="school">School</label>
+          <br>
+          <input type="text" name="school">
+        </div>
+        <div class="inline-block">
+          <label for="course">Course Code or Name</label>
+          <br>
+          <input type="text" name="course">
+        </div>
         <br>
-        <input type="text" name="school">
-        <br>
-        <br>
-        <label for="course">Course Code or Name</label>
-        <br>
-        <input type="text" name="course">
-        <br>
-        <br>
-        <label for="other-tags">Other Tags</label>
-        <br>
-        <textarea name="other-tags"></textarea>
+        <div class="inline-block">
+          <label for="other-tags">Other Tags</label>
+          <br>
+          <textarea name="other-tags"></textarea>
+        </div>
+        <div class="inline-block">
+          <strong>Common Labels for this Course</strong>
+          <ul>
+            <li>Professor Oak</li>
+            <li>Visual Learner</li>
+          </ul>
+        </div>
         <br>
         <br>
         <input type="submit">
       </form>
-      <iframe src="assets/notes.pdf"></iframe>
     </div>
   </body>
 </html>

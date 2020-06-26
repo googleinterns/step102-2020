@@ -1,13 +1,27 @@
-form {
-    float: left;
-    margin: 10%;
+#upload-form {
     padding: 1em;
-    border: 1px solid black;
+    border: solid;
 }
 
-iframe {
-    float: right;
-    height: 600px;
-    width: 35%;
-    margin: 10%;
+#preview {
+    position: absolute;
+    right: 100px;
+}
+
+#preview h4 {
+    text-align: center;
+    margin: 4px;
+}
+
+#preview iframe {
+    height: 180px;
+    width: 208px;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+ul {
+    margin: 4px;
 }
