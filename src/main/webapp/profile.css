@@ -1,0 +1,233 @@
+body {
+  color: #424242;
+  font: 1rem 'Roboto';
+  margin: 0;
+}
+
+h1 {
+  color: black;
+  font-size: 2.5rem;
+  margin-top: 0;
+}
+
+h2 {
+  font-size: 1.25rem;
+  margin-bottom: 0;
+}
+
+p {
+  margin: 5px;
+}
+
+#nav {
+  background-color: #004aad;
+  height: 80px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+#nav-over {
+  align-items: center;
+  background-color: rgb(255, 255, 255, 0.3);
+  display: flex;
+  height: 80px;
+  position: relative;
+  top: 0;
+  width: 100%;
+}
+
+#title {
+  color: white;
+  font: bold 2.5rem 'Roboto';
+  margin: 5px 20px;
+}
+
+#action-items {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  margin-left: auto;
+}
+
+.dropdown {
+  height: 100%;
+}
+
+#dropdown-button {
+  height: 100%;
+}
+
+#dropdown-button:focus {
+  box-shadow:none;
+}
+
+#profile-button-img {
+  height: 100%;
+}
+
+#profile-selector:hover {
+  text-decoration: none;
+}
+
+#profile-selector:focus {
+  box-shadow: none;
+}
+
+/* #dropdown {
+  height: 100%;
+  margin: 0 20px;
+}
+
+#profile-container {
+  align-items: center;
+  display: flex;
+  height: 100%;
+}
+
+#profile-container img {
+  height: 85%;
+  position: relative;
+}
+
+#profile-container img:hover {
+  cursor: pointer;
+} */
+
+#dropdown-menu {
+  align-items: center;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  flex-direction: column;
+  height: 350px;
+  justify-content: center;
+  margin: 5px 5px 0 0px;
+  padding: 12px 16px;
+  position: absolute;
+  right: 0;
+  width: 300px;
+  z-index: 1;
+}
+
+#dropdown-menu.show {
+  display: flex;
+}
+
+#dropdown-menu img {
+  align-self: center;
+  height: 115px;
+  margin: 0 0 15px 0;
+}
+
+#dropdown-name {
+  font: bold 1.75rem 'Roboto';
+}
+
+#dropdown-points {
+  font: 1.5rem 'Roboto';
+}
+
+.link {
+  font: 1.25rem 'Roboto';
+  margin: 20px 0 -15px 0;
+}
+
+@media only screen and (min-width: 1750px) {
+  #dropdown-menu {
+    height: 450px;
+    width: 400px;
+  }
+
+  #dropdown-menu img {
+    height: 150px;
+  }
+
+  #dropdown-name {
+    font-size: 2.5rem;
+  }
+
+  #dropdown-points {
+    font-size: 2rem;
+  }
+
+  .link {
+    font-size: 1.5rem;
+  }
+}
+
+#post-action {
+  color: white;
+  font: 1.5rem 'Roboto';
+}
+
+#header {
+  background-color: #ededed;
+  display: flex;
+  padding: 50px;
+}
+
+#name {
+  font: bold 3.5rem 'Roboto';
+  margin: 0;
+}
+
+#points {
+  color: steelblue;
+  font: bold 2rem 'Roboto';
+  margin-bottom: 1rem;
+}
+
+#university {
+  font: italic 1.75rem 'Roboto';
+}
+
+#bio {
+  font-size: 1.75rem;
+}
+
+#left {
+  align-items: center;
+  display: flex;
+  min-width: 200px;
+  width: 20%;
+}
+
+#left img {
+  width: 100%;
+}
+
+#right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80%;
+  padding: 0 0 0 20px;
+}
+
+#content {
+  padding: 50px;
+}
+
+#notes-section {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.note-card {
+  align-items: center;
+  background-color: #004aad;
+  border: 1px solid black;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  margin: 15px;
+  padding: 5px;
+  width: 250px;
+}
+
+.note-card img {
+  max-width: 80%;
+  max-height: 50%;
+}

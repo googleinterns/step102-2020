@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <script src="profile.js"></script>
+    <link rel="stylesheet" href="profile.css">
+  </head>
+  <body>
+    <!-- <div id="nav"></div>
+    <div id="nav-over">
+      <span id="title">starfish</span>
+      <div id="action-items">
+        <span id="post-action">PostANote</span>
+        <div id="dropdown">
+          <div id="profile-container">
+            <img src="profile-pic.png" onclick="toggleDropdown()"/>
+          </div>
+          <div id="dropdown-menu">
+            <img src="profile-pic.png" />
+            <p id="dropdown-name">Bob the Builder</p>
+            <p id="dropdown-points">597 points</p>
+            <a class="link" href="#">My Profile</a> 
+            <a class="link" href="#">Favorite Notes</a>
+            <a class="link" href="#">Logout</a>
+          </div> 
+        </div> 
+      </div>
+    </div>-->
+    <div id="nav"></div>
+    <div id="nav-over">
+      <span id="title">starfish</span>
+      <div id="action-items">
+        <span id="post-action">PostANote</span>
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" id="dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <img src="profile-pic.png" id="profile-button-img">
+          </button>
+          <div class="dropdown-menu dropdown-menu-right" id="dropdown-menu" aria-labelledby="dropdown-button">
+            <img src="profile-pic.png" height="200px"/>
+            <p id="dropdown-name">Bob the Builder</p>
+            <p id="dropdown-points">597 points</p>
+            <a class="link" href="#">My Profile</a> 
+            <a class="link" href="#">Favorite Notes</a>
+            <a class="link" href="#">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="header">
+      <div id="left">
+        <img src="dogs.jpeg" />
+      </div>
+      <div id="right">
+        <p id="name">Bob the Builder</p>
+        <p id="points">597 points</p>
+        <p id="university">University</p>
+        <p id="bio">This is my bio!</p>
+      </div>
+      <form action="/edit-profile.html">
+        <button type="submit">Edit Profile</button>
+      </form>
+    </div>
+    <div id="content">
+      <h1>Notes</h1>
+      <div id="notes-section">
+        <div class="note-card">
+          Best Notes Ever
+          <img src="dogs.jpeg" />
+          <p>By: Bob the Builder</p>
+          <p>Tags</p>
+          <p>Likes</p>
+        </div>
+        <div class="note-card">
+          Best Notes Ever
+          <img src="dogs.jpeg" />
+          <p>By: Bob the Builder</p>
+          <p>Tags</p>
+          <p>Likes</p>
+        </div>
+        <div class="note-card">
+          Best Notes Ever
+          <img src="dogs.jpeg" />
+          <p>By: Bob the Builder</p>
+          <p>Tags</p>
+          <p>Likes</p>
+        </div>
+        <div class="note-card">
+          Best Notes Ever
+          <img src="dogs.jpeg" />
+          <p>By: Bob the Builder</p>
+          <p>Tags</p>
+          <p>Likes</p>
+        </div>
+        <div class="note-card">
+          Best Notes Ever
+          <img src="dogs.jpeg" />
+          <p>By: Bob the Builder</p>
+          <p>Tags</p>
+          <p>Likes</p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
