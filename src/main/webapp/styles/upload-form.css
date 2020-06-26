@@ -1,0 +1,27 @@
+#upload-form {
+    padding: 1em;
+    border: solid;
+}
+
+#preview {
+    position: absolute;
+    right: 100px;
+}
+
+#preview h4 {
+    text-align: center;
+    margin: 4px;
+}
+
+#preview iframe {
+    height: 180px;
+    width: 208px;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+ul {
+    margin: 4px;
+}

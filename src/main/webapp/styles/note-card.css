@@ -1,0 +1,135 @@
+#myCard {
+  border: 1px solid #dfe1e5;
+  border-radius: 3px;
+  width: 208px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+#myCard:hover {
+  border: 2px solid #afdbdf;
+}
+
+.thumbnail {
+  position: relative;
+  background-size: 208px;
+  height: 180px;
+}
+
+.metadata {
+  position: relative;
+  border-top: 1px solid #dfe1e5;
+}
+
+.title {
+  text-align: center;
+  font-weight: bold;
+  margin: 2px;
+}
+
+.info-row {
+  text-align: center;
+}
+
+.info-row p {
+  margin: 3px 0;
+}
+
+.info-row img {
+  height: 18px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  border-top: 2px solid #dfe1e5;
+  border-right: 2px solid #dfe1e5;
+}
+
+.rating-box {
+  display: inline-flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 18px;
+  border-radius: 4px;
+  border-top: 2px solid #dfe1e5;
+  border-left: 2px solid #dfe1e5;
+}
+
+.star {
+  background-color: #aaa;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+  font-size: 9pt;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+iframe {
+  height: 400px;
+  width: 500px;
+}
+
+.tags-list {
+  float: right;
+}
+
+.tag {
+  border: 1px solid black;
+  border-radius: 10px;
+  width: 7em;
+  overflow: hidden;
+  margin: 1px;
+  padding: 0 5px;
+}
+
+.tag::before {
+  content: "\00d7\ ";
+}
+
+.tag:hover {
+  background-color: beige;
+}
+
+.report {
+  background-color: rgb(240, 140, 140);
+  color: white;
+  float: right;
+}
