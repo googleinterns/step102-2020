@@ -1,0 +1,27 @@
+.black {
+  color: black;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-centered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.margin-less {
+  margin: 5px;
+}
+
+.padding-less {
+  padding: 5px;
+}
