@@ -1,0 +1,15 @@
+{
+	"name": "Starfish",
+	"version": "1.0",
+	"description": "Create and share course notes!",
+    "permissions": ["activeTab", "declarativeContent", "storage", "identity", "https://www.googleapis.com/*", "tabs"],
+	"background": {
+    "page": "background.html",
+		"persistent": false
+	},
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+	"manifest_version": 2,
+  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'"
+}
