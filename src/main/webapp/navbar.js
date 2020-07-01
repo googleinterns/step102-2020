@@ -21,6 +21,7 @@ Vue.component("navigation", {
   template: `
     <nav class="blue nav-bar">
       <a href="index.html" class="bold" id="title">starfish</a>
+      <img src="assets/starfish.png" id="logo">
       <div id="action-items">
         <a href="#" id="post-action">PostANote</a>
         <div class="dropdown">
