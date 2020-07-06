@@ -1,12 +1,12 @@
 {
-	"key": "INSERT_GENERATED_KEY",
   "name": "Starfish",
-	"version": "1.0",
-	"description": "Create and share course notes!",
-    "permissions": ["activeTab", "declarativeContent", "storage", "identity", "https://www.googleapis.com/*", "tabs", "*://*.appspot.com/*", "*://*.cloudshell.dev/*"],
-	"background": {
+  "version": "1.0",
+  "description": "Create and share course notes!!",
+  "permissions": ["activeTab", "declarativeContent", "storage", "identity",
+      "https://www.googleapis.com/*", "tabs", "*://*.appspot.com/*", "*://*.cloudshell.dev/*"],
+  "background": {
     "scripts": ["background.js"],
-		"persistent": false
+    "persistent": false
 	},
   "browser_action": {
     "default_popup": "popup.html",
@@ -16,13 +16,11 @@
     "32": "images/starfish_32.png",
     "512": "images/starfish_512.png"
   },
-	"manifest_version": 2,
+  "manifest_version": 2,
   "oauth2": {
     "client_id": "OAUTH_CLIENT_ID",
     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email", 
-      "https://www.googleapis.com/auth/drive.appdata", 
-      "https://www.googleapis.com/auth/drive.file",
+      "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/drive",
       "https://www.googleapis.com/auth/documents"
     ]
