@@ -19,7 +19,7 @@
   },
   "manifest_version": 2,
   "oauth2": {
-    "client_id": "OAUTH_CLIENT_ID",
+    "client_id": "506538592562-t2ei82rtds9adtiabnajp983h407kfqp.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/drive",
