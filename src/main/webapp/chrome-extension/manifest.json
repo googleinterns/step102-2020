@@ -1,5 +1,5 @@
 {
-  "key": `MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0THI7tV+wC1Yu
+  "key": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0THI7tV+wC1Yu
   1VLkJA3RrHMGDwqhB0eSV+wLJECMPlWmQL9nywGnw/SotZ2UC35bHAAVZL3DQEIr
   ZViEVPrQjmjYstKXJhoAcYWrq7LeFFqpbgu5R2vnXU8Etdv7MJ+lmCREe0UbCBkd
   zPC5sDs9PdasH0Ip38qhqBQCHiDoL07UkjaK4sAME1gC84v9sU5Juqzu9eJlizdU
@@ -24,7 +24,7 @@
   /5E/cdeDKk6j+eTBtZkt+FdRS04l7b8bm5U7JjH1mwKBgFSVj7t0tljQqBIFy+3d
   qQ6xfcgIuuYWJXJ5I22R1z9ZsUBhI7i0DCMJE58yiHfdP5LNb2SIAzewh4r0agkm
   HUgtMCLRW3Gs2N3/AumLUHegWqyo5xuzVGpLyJ4dxrVYGPr5f6vgOu/6gYf473j7
-  ttWpH31DuWUParHzxOhffOO8`,
+  ttWpH31DuWUParHzxOhffOO8",
   "name": "Starfish",
   "version": "1.0",
   "description": "Create and share course notes!!",
