@@ -1,16 +1,16 @@
 <template>
-  <div class="flex-row" id="search-container">
-    <div class="flex-col" id="search-box">
-      <span class="search-item">
+  <div class="flex" id="search-container">
+    <div class="flex" id="search-box">
+      <span class="flex search-item">
         <label>School: </label>
         <input type="text" v-model="school" placeholder="Cambridge University">
       </span>
-      <span class="search-item">
+      <span class="flex search-item">
         <label>Course: </label>
         <input type="text" v-model="course" placeholder="CS4410">
       </span>
     </div>
-    <div id="submit">
+    <div class="flex" id="submit">
       <button v-on:click="search">Search</button>
     </div>
   </div>
@@ -26,27 +26,19 @@ module.exports = {
   },
   methods: {
     search() {
-      // Implement search
-      console.log(this.school);
-      console.log(this.course);
+      // TODO: Implement search
     }
   }
 }
 </script>
 
 <style>
+.flex {
+  display: flex;
+}
+
 #search-container {
   font-size: 1.5rem;
-}
-
-.flex-row {
-  display: flex;
-  flex-direction: row;
-}
-
-.flex-col {
-  display: flex;
-  flex-direction: column;
 }
 
 button,
@@ -55,12 +47,12 @@ input {
 }
 
 #search-box {
+  flex-direction: column;
   min-width: 20%;
 }
 
 .search-item {
   align-items: center;
-  display: flex;
   margin: 5px 0;
 }
 
@@ -77,10 +69,6 @@ input {
 
 #search-container div {
   margin: 5px;
-}
-
-#submit {
-  display: flex;
 }
 
 #submit button{
