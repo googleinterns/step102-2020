@@ -5,13 +5,24 @@
   </head>
   <body>
     <div id="my-app">
-      <navigation></navigation>
+      <navigation :user="user"></navigation>
     </div>
     <script>
       new Vue({
         el: '#my-app',
         components: {
           'navigation': httpVueLoader('navbar.vue')
+        },
+        props: {
+          user: {
+            type: Object,
+            default: function() {
+              return {
+                name: 'Bob the Builder',
+                points: 597
+              }
+            }
+          }
         }
       });
     </script>

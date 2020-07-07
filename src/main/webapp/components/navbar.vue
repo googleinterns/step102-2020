@@ -10,8 +10,8 @@
         </button>
         <div class="dropdown-content" v-if=dropdownIsOpen v-click-outside="hideDropdown">
           <img src="../assets/user.svg" height="115px"/>
-          <p class="bold" id="dropdown-name">Bob the Builder</p>
-          <p id="dropdown-points">597 points</p>
+          <p class="bold" id="dropdown-name">{{ user.name }}</p>
+          <p id="dropdown-points">{{ user.points }} points</p>
           <a class="dropdown-link" href="#">My Profile</a> 
           <a class="dropdown-link" href="#">Favorite Notes</a>
           <a class="dropdown-link" href="#">Logout</a>
@@ -42,6 +42,7 @@ module.exports = {
       dropdownIsOpen: false
     }
   },
+  props: {user: Object},
   methods: {
     hideDropdown() {
       this.dropdownIsOpen = false;
