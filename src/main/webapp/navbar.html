@@ -1,12 +1,19 @@
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <link rel="stylesheet" href="styles/navbar.css">
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
   </head>
   <body>
-    <div id="navbar">
+    <div id="my-app">
       <navigation></navigation>
     </div>
-    <script src="navbar.js"></script>
+    <script>
+      new Vue({
+        el: '#my-app',
+        components: {
+          'navigation': httpVueLoader('navbar.vue')
+        }
+      });
+    </script>
   </body>
 </html>
