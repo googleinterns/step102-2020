@@ -8,7 +8,7 @@
         <button class="dropbtn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
         </button>
-        <div class="dropdown-content" v-if=dropdownIsOpen v-click-outside="hideDropdown">
+        <div class="dropdown-content" v-if=showDropdown v-click-outside="hideDropdown">
           <img src="../assets/user.svg" height="115px"/>
           <p class="bold" id="dropdown-name">{{ user.name }}</p>
           <p id="dropdown-points">{{ user.points }} points</p>
@@ -39,7 +39,7 @@ Vue.directive('click-outside', {
 module.exports = {
   data: function() {
     return {
-      dropdownIsOpen: false
+      showDropdown: false
     }
   },
   props: {
@@ -47,10 +47,10 @@ module.exports = {
   },
   methods: {
     hideDropdown() {
-      this.dropdownIsOpen = false;
+      this.showDropdown = false;
     },
     toggleDropdown() {
-      this.dropdownIsOpen = !this.dropdownIsOpen;
+      this.showDropdown = !this.showDropdown;
     }
   }
 }
