@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+  </head>
+  <body>
+    <div id="my-app">
+      <search></search>
+    </div>
+    <script>
+      new Vue({
+        el: '#my-app',
+        components: {
+          'search': httpVueLoader('search-bar.vue')
+        }
+      });
+    </script>
+  </body>
+</html>
