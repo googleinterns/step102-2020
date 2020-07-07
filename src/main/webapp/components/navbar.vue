@@ -1,15 +1,15 @@
 <template>
   <nav class="blue nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
-    <img src="assets/starfish.png" id="logo">
+    <img src="../assets/starfish.png" id="logo">
     <div id="action-items">
       <a href="#" id="post-action">PostANote</a>
       <div class="dropdown">
         <button class="dropbtn" @click.stop="toggleDropdown">
-          <img id="user-profile" src="assets/user.svg">
+          <img id="user-profile" src="../assets/user.svg">
         </button>
         <div class="dropdown-content" v-if=dropdownIsOpen v-click-outside="hideDropdown">
-          <img src="assets/user.svg" height="115px"/>
+          <img src="../assets/user.svg" height="115px"/>
           <p class="bold" id="dropdown-name">Bob the Builder</p>
           <p id="dropdown-points">597 points</p>
           <a class="dropdown-link" href="#">My Profile</a> 
