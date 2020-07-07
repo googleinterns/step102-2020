@@ -42,7 +42,9 @@ module.exports = {
       dropdownIsOpen: false
     }
   },
-  props: {user: Object},
+  props: {
+    user: Object
+  },
   methods: {
     hideDropdown() {
       this.dropdownIsOpen = false;
