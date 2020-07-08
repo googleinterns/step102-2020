@@ -37,7 +37,6 @@ module.exports = {
       if(!this.school && !this.course) {
         e.preventDefault();
       }
-      return true;
     }
   }
 }
