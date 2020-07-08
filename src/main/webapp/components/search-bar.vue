@@ -2,12 +2,12 @@
   <div class="flex" id="search-container">
     <div class="flex" id="search-box">
       <span class="flex search-item">
-        <label>School: </label>
-        <input type="text" v-model="school" placeholder="Cambridge University">
+        <label for="school">School:</label>
+        <input type="text" id="school" v-model.trim="schoolName" placeholder="Cambridge University">
       </span>
       <span class="flex search-item">
-        <label>Course: </label>
-        <input type="text" v-model="course" placeholder="CS4410">
+        <label for="course">Course:</label>
+        <input type="text" id="course" v-model.trim="courseCode" placeholder="CS4410">
       </span>
     </div>
     <div class="flex" id="submit">
@@ -20,8 +20,8 @@
 module.exports = {
   data: function() {
     return {
-      school: "",
-      course: ""
+      schoolName: "",
+      courseCode: ""
     }
   },
   methods: {
@@ -32,7 +32,7 @@ module.exports = {
 }
 </script>
 
-<style>
+<style scoped>
 .flex {
   display: flex;
 }
