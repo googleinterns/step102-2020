@@ -1,39 +1,20 @@
 <template>
-  <div class="flex" id="search-container">
+  <form class="flex" id="search-container" action="/test">
     <div class="flex" id="search-area">
       <div class="flex search-item">
         <label for="school">School:</label>
-        <input type="text" id="school" v-model.trim="schoolName" placeholder="Cambridge University">
+        <input type="text" id="school" name="school" placeholder="Cambridge University">
       </div>
       <div class="flex search-item">
         <label for="course">Course:</label>
-        <input type="text" id="course" v-model.trim="courseCode" placeholder="CS4410">
+        <input type="text" id="course" name="course" placeholder="CS4410">
       </div>
     </div>
-    <div class="flex" id="submit">
-      <button v-on:click="search">Search</button>
-    </div>
-  </div>
+    <input type="submit" value="Search" id="search-btn">
+  </form>
 </template>
 
-<script>
-module.exports = {
-  data: function() {
-    return {
-      schoolName: "",
-      courseCode: ""
-    }
-  },
-  methods: {
-    search() {
-      // TODO: Implement search
-    }
-  }
-}
-</script>
-
 <style scoped>
-button,
 input {
   font-size: inherit;
 }
@@ -65,7 +46,7 @@ input {
   padding: 5px 10px;
 }
 
-#submit button{
+#search-btn {
   margin: 10px;
 }
 </style>
