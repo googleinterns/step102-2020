@@ -40,7 +40,7 @@ module.exports = {
     checkForm: function(e) {
       if(!this.school && !this.course) {
         e.preventDefault();
-        this.error = "Please input either a school or course code.";
+        this.error = "Please enter at least one search criterion.";
       }
       else {
         this.error = "";
