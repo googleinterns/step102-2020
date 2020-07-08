@@ -36,6 +36,7 @@ module.exports = {
     checkForm: function(e) {
       if(!this.school && !this.course) {
         e.preventDefault();
+        // TODO: Add error message on form
       }
     }
   }
