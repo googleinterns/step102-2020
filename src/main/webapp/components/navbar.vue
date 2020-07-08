@@ -5,7 +5,7 @@
     <div id="action-items">
       <a href="#" id="post-action">PostANote</a>
       <div class="dropdown">
-        <button class="dropbtn" @click.stop="toggleDropdown">
+        <button class="dropdown-btn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
         </button>
         <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
@@ -115,7 +115,7 @@ module.exports = {
   padding: 0 10px 0 20px;
 }
 
-.dropdown .dropbtn {
+.dropdown .dropdown-btn {
   background-color: inherit;
   border: none;
   color: white;
@@ -126,11 +126,11 @@ module.exports = {
   outline: none;
 }
 
-.dropdown .dropbtn:hover {
+.dropdown .dropdown-btn:hover {
   cursor: pointer;
 }
 
-.dropbtn img {
+.dropdown-btn img {
   height: 65%;
 }
 
