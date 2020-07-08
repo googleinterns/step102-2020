@@ -1,5 +1,5 @@
 <template>
-  <form class="flex" id="search-container" action="/test">
+  <form class="flex" id="search-container" action="/">
     <div class="flex" id="search-area">
       <div class="flex search-item">
         <label for="school">School:</label>
