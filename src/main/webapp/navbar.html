@@ -13,15 +13,10 @@
         components: {
           'navigation': httpVueLoader('components/navbar.vue')
         },
-        props: {
+        data: {
           user: {
-            type: Object,
-            default: function() {
-              return {
-                name: 'Bob the Builder',
-                points: 597
-              }
-            }
+            name: 'Bob the Builder',
+            points: 597
           }
         }
       });

@@ -1,5 +1,5 @@
 <template>
-  <nav class="blue nav-bar">
+  <nav class="blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="../assets/starfish.png" id="logo">
     <div id="action-items">
@@ -8,7 +8,7 @@
         <button class="dropbtn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
         </button>
-        <div class="dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
+        <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
           <img src="../assets/user.svg" height="115px"/>
           <p class="bold" id="dropdown-name">{{ user.name }}</p>
           <p id="dropdown-points">{{ user.points }} points</p>
@@ -56,13 +56,23 @@ module.exports = {
 }
 </script>
 
-<style>
+<style scoped>
 .bold {
   font-weight: bold;
 }
 
 .blue {
   background-color: #004aad;
+}
+
+.light-gray {
+  background-color: #f9f9f9;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
 }
 
 .nav-bar {
@@ -126,7 +136,6 @@ module.exports = {
 
 .dropdown-content {
   align-items: center;
-  background-color: #f9f9f9;
   box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
   display: flex;
   flex-direction: column;
