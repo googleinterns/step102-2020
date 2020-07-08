@@ -1,6 +1,6 @@
 <template>
   <form class="flex" id="search-container" action="/" @submit="checkForm">
-    <div class="flex">
+    <div class="flex" id="input-area">
       <div class="flex" id="search-area">
         <div class="flex search-item">
           <label for="school">School:</label>
@@ -75,10 +75,14 @@ p {
   width: 100%;
 }
 
+#input-area {
+  min-width: 25%;
+}
+
 #search-area {
   flex-direction: column;
+  flex-grow: 1;
   margin: 5px;
-  min-width: 20%;
 }
 
 .search-item {
