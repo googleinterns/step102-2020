@@ -3,12 +3,20 @@
   "name": "Starfish",
   "version": "1.0",
   "description": "Create and share course notes!!",
-  "permissions": ["activeTab", "declarativeContent", "storage", "identity",
-      "https://www.googleapis.com/*", "tabs", "*://*.appspot.com/*", "*://*.cloudshell.dev/*"],
+  "permissions": [
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "identity",
+    "https://www.googleapis.com/*",
+    "tabs",
+    "*://*.appspot.com/*",
+    "*://*.cloudshell.dev/*"
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
-	},
+  },
   "browser_action": {
     "default_popup": "popup.html",
     "default_icon": "images/starfish_32.png"
