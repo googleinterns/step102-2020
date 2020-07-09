@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE doc [
-<!ENTITY env_variables SYSTEM "env_variables.xml">
-]>
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
   <threadsafe>false</threadsafe>
   <sessions-enabled>true</sessions-enabled>
@@ -11,7 +8,9 @@
     <include path="/**" expiration="0s" />
   </static-files>
   <env-variables>
-    <!-- env_variables hidden by .gitignore -->
-    &env_variables;
+    <env-var name="CLOUD_SQL_CONNECTION_NAME" value="step102-2020:us-central1:step102-2020-mysql" />
+    <env-var name="DB_USER" value="mastersf" />
+    <env-var name="DB_PASS" value="starfish" />
+    <env-var name="DB_NAME" value="starfish" />
   </env-variables>
 </appengine-web-app>
