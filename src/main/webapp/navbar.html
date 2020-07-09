@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/http-vue-loader"></script>
+  </head>
+  <body>
+    <div id="my-app">
+      <navigation :user="user"></navigation>
+    </div>
+    <script>
+      new Vue({
+        el: '#my-app',
+        components: {
+          'navigation': httpVueLoader('components/navbar.vue')
+        },
+        data: {
+          user: {
+            name: 'Bob the Builder',
+            points: 597
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
