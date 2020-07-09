@@ -20,6 +20,9 @@ public class ConnectionPoolContextListener implements ServletContextListener {
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
 
+  private final int SECOND = 1000;
+  private final int MINUTE = SECOND * 60;
+
   /** Configures database connection, opens pool, and returns pool as DataSource. */
   private DataSource createConnectionPool() {
     // The configuration object specifies behaviors for the connection pool.
@@ -39,15 +42,15 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     config.setMinimumIdle(5);
 
     // setConnectionTimeout is the maximum number of milliseconds to wait for a connection checkout.
-    config.setConnectionTimeout(10000); // 10 seconds
+    config.setConnectionTimeout(SECOND * 10);
 
     // idleTimeout is the maximum amount of time a connection can sit in the pool. Connections that
     // sit idle for this many milliseconds are retried if minimumIdle is exceeded.
-    config.setIdleTimeout(600000); // 10 minutes
+    config.setIdleTimeout(MINUTE * 10);
 
     // maxLifetime is the maximum possible lifetime of a connection in the pool. Connections that
     // live longer than this many milliseconds will be closed and reestablished between uses.
-    config.setMaxLifetime(1800000); // 30 minutes
+    config.setMaxLifetime(MINUTE * 30);
 
     // Initialize the connection pool using the configuration object.
     DataSource pool = new HikariDataSource(config);
@@ -61,7 +64,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
           "CREATE TABLE IF NOT EXISTS labels ( "
               + "title VARCHAR(255) PRIMARY KEY,"
               + "type ENUM('School', 'Course', 'Other') NOT NULL );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt)) {
         createTableStatement.execute();
       }
     }
@@ -81,7 +84,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
               + "FOREIGN KEY (`school`)"
                   + "REFERENCES `labels` (`title`)"
                   + "ON UPDATE RESTRICT ON DELETE CASCADE );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt)) {
         createTableStatement.execute();
       }
     }
@@ -109,7 +112,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
                   + "REFERENCES `labels` (`title`),"
               + "CONSTRAINT pdf_or_source_url_not_null check ("
                   + "`source_url` IS NOT NULL OR `pdf_source` IS NOT NULL) );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt)) {
         createTableStatement.execute();
       }
     }
@@ -128,7 +131,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
               + "FOREIGN KEY (`label`)"
                   + "REFERENCES `labels` (`title`)"
                   + "ON DELETE CASCADE );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt)) {
         createTableStatement.execute();
       }
     }
@@ -147,7 +150,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
               + "FOREIGN KEY (`note_id`)"
                   + "REFERENCES `notes` (`id`)"
                   + "ON DELETE CASCADE );";
-      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt); ) {
+      try (PreparedStatement createTableStatement = conn.prepareStatement(stmt)) {
         createTableStatement.execute();
       }
     }
@@ -162,7 +165,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     createFavoriteNotesTable(pool);
   }
 
-  /** This function is called when the Servlet is destroyed. */
+  /** Called when the Servlet is destroyed. */
   @Override
   public void contextDestroyed(ServletContextEvent event) {
     HikariDataSource pool = (HikariDataSource) event.getServletContext().getAttribute("my-pool");
