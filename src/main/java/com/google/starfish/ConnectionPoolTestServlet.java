@@ -16,14 +16,14 @@ import javax.sql.DataSource;
  */  
 @WebServlet("/test-pool-connection")  
 public class ConnectionPoolTestServlet extends HttpServlet {  
-	@Override
-	public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-		PrintWriter out = res.getWriter();  
-		DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
-		try (Connection conn = pool.getConnection()) {
-			if (conn != null) res.getWriter().println("Database is connected!");
-		} catch (SQLException ex) {
-				res.getWriter().println("Database is not connected");  
-		}
-	}  
+  @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    PrintWriter out = res.getWriter();  
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
+    try (Connection conn = pool.getConnection()) {
+      if (conn != null) res.getWriter().println("Database is connected!");
+    } catch (SQLException ex) {
+        res.getWriter().println("Database is not connected");  
+    }
+  }  
 }  
