@@ -11,9 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
 
-/** 
- * Servlet implementation class MyTestServlet 
- */  
+/** Servlet that checks the status of open database connection pool in the app context. */  
 @WebServlet("/test-pool-connection")  
 public class ConnectionPoolTestServlet extends HttpServlet {  
   @Override

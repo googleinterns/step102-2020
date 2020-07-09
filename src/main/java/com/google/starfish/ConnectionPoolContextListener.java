@@ -20,6 +20,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
 
+  /** Configures database connection, opens pool, and returns pool as DataSource. */
   private DataSource createConnectionPool() {
     // The configuration object specifies behaviors for the connection pool.
     HikariConfig config = new HikariConfig();
@@ -152,9 +153,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     }
   }
 
-  /**
-   * Creates every table in the Starfish DB Schema on the MySQL Instance.
-   */
+  /** Creates every table based on the Starfish DB Schema. */
   private void createAllTablesInSchema(DataSource pool) throws SQLException {
     createLabelsTable(pool);
     createUsersTable(pool);
@@ -163,9 +162,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     createFavoriteNotesTable(pool);
   }
 
-  /**
-   * This function is called when the Servlet is destroyed.
-   */
+  /** This function is called when the Servlet is destroyed. */
   @Override
   public void contextDestroyed(ServletContextEvent event) {
     HikariDataSource pool = (HikariDataSource) event.getServletContext().getAttribute("my-pool");
@@ -175,8 +172,8 @@ public class ConnectionPoolContextListener implements ServletContextListener {
   }
 
   /**
-   * Called when the application starts and will safely create a connection pool
-   * that can be used to connect to the Database and add it to the servlet context.
+   * Called when the application starts to safely create a connection pool
+   * that can be used to connect to the Database.
    */
   @Override
   public void contextInitialized(ServletContextEvent event) {
