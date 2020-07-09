@@ -12,6 +12,7 @@
           <img src="../assets/user.svg" height="115px"/>
           <p class="bold" id="dropdown-name">{{ user.name }}</p>
           <p id="dropdown-points">{{ user.points }} points</p>
+          <!-- TODO: Update links when new pages are created -->
           <a class="dropdown-link" href="#">My Profile</a> 
           <a class="dropdown-link" href="#">Favorite Notes</a>
           <a class="dropdown-link" href="#">Logout</a>
