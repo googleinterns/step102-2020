@@ -5,3 +5,4 @@ target/
 .idea
 .factorypath
 .project
+src/main/webapp/WEB-INF/env_variables.xml
