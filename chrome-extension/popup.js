@@ -1,4 +1,4 @@
-import keys from './config';
+import keys from './config.js';
 
 const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
 
