@@ -2,7 +2,7 @@ import keys from './config.js';
 
 const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
 
-const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js';
+const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
 
 const DISCOVERY_DOCS = [
@@ -19,7 +19,6 @@ let loggedIn = false;
 window.onload = function() {
   let scriptEl = document.createElement('script');
   document.head.appendChild(scriptEl);
-  scriptEl.onload = initGAPI;
   scriptEl.src = GAPI_CLIENT_URL;
 
   document.getElementById('generate-note-btn').onclick = generateNote;
