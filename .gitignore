@@ -5,3 +5,4 @@ target/
 .idea
 .factorypath
 .project
+chrome-extension/config.js

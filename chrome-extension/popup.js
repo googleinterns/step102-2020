@@ -1,4 +1,5 @@
-const API_KEY = 'AIzaSyAed5yuxCNrXlEFAqSoWwAQpE3Ng95Tzl8';
+import keys from './config';
+
 const DISCOVERY_DOCS = [
   "https://docs.googleapis.com/$discovery/rest?version=v1",
   "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
@@ -19,14 +20,14 @@ function onGAPILoad() {
   document.getElementById('doc-name-input').value = 'gNote ' + getDate();
 
   gapi.client.init({
-    apiKey: API_KEY,
+    apiKey: keys.API_KEY,
     discoveryDocs: DISCOVERY_DOCS,
   }).then(handleLogin)
   .catch(error => console.log('Error:', error));
 }
 
 /**
- * Requests user login, if necessary, then sets gapi access token
+ * Requests user login (if necessary) then sets gapi access token
  * and displays user info in popup.
  */
 function handleLogin() {
