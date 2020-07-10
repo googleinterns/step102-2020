@@ -1,4 +1,4 @@
-package com.google.starfish;  
+package com.google.starfish.servlets;  
 
 import java.io.IOException;  
 import java.io.PrintWriter;  

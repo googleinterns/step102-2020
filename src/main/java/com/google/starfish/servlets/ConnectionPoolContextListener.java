@@ -1,4 +1,4 @@
-package com.google.starfish;
+package com.google.starfish.servlets;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -21,7 +21,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
   private static final String DB_NAME = System.getenv("DB_NAME");
 
   private final int MILLISECONDS_IN_SECOND = 1000;
-  private final int SECONDS_IN_MINUTE = SECOND * 60;
+  private final int SECONDS_IN_MINUTE = MILLISECONDS_IN_SECOND * 60;
 
   /** Configures database connection, opens pool, and returns pool as DataSource. */
   private DataSource createConnectionPool() {
@@ -118,10 +118,10 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     }
   }
 
-  private void createOtherNoteLabelsTable(DataSource pool) throws SQLException {
+  private void createMiscNoteLabelsTable(DataSource pool) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt =
-          "CREATE TABLE IF NOT EXISTS other_note_labels ( "
+          "CREATE TABLE IF NOT EXISTS misc_note_labels ( "
               + "note_id INT NOT NULL,"
               + "label VARCHAR(255) NOT NULL,"
               + "PRIMARY KEY (note_id, label),"
@@ -161,7 +161,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     createLabelsTable(pool);
     createUsersTable(pool);
     createNotesTable(pool);
-    createOtherNoteLabelsTable(pool);
+    createMiscNoteLabelsTable(pool);
     createFavoriteNotesTable(pool);
   }
 
