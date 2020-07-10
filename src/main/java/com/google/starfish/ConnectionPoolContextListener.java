@@ -50,7 +50,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
 
     // maxLifetime is the maximum possible lifetime of a connection in the pool. Connections that
     // live longer than this many milliseconds will be closed and reestablished between uses.
-    config.setMaxLifetime(MINUTE * 30);
+    config.setMaxLifetime(SECONDS_IN_MINUTE * 30);
 
     // Initialize the connection pool using the configuration object.
     DataSource pool = new HikariDataSource(config);
