@@ -5,8 +5,6 @@ const DISCOVERY_DOCS = [
 ];
 
 const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
-const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
-const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
 
 let loggedIn = false;
@@ -28,11 +26,11 @@ function onGAPILoad() {
       if (chrome.runtime.lastError) {
         return;
       }
-      loggedIn = true;
-      setAuthStatus();
       gapi.auth.setToken({
         access_token: token,
       });
+      loggedIn = true;
+      setAccountInfo();
     })
   }, function(error) {
     console.log('error', error)
@@ -41,7 +39,7 @@ function onGAPILoad() {
 
 /** Returns formatted string of today's date. */
 function getDate() {
-  let today = new Date();
+  const today = new Date();
   const dd = String(today.getDate()).padStart(2, '0');
   const mm = String(today.getMonth() + 1).padStart(2, '0');
   const yyyy = today.getFullYear();
@@ -57,24 +55,27 @@ function generateNote() {
   // TODO: Add generate note functionality
 }
 
-/** Logs out the user by revoking their authentication token. */
+/**
+ * Logs out the user by revoking their authentication token and removing
+ * it from the cache.
+ */
 function logout() {
   chrome.identity.getAuthToken({interactive: false}, function(token) {
     var url = REVOKE_TOKEN_URL + token;
     window.fetch(url);
 
-    chrome.identity.removeCachedAuthToken({token: token}, function (){
+    chrome.identity.removeCachedAuthToken({token: token}, function() {
       loggedIn = false;
-      setAuthStatus();
+      setAccountInfo();
     });
   })
 }
 
 /**
- * Displays the user's email info and logout button if the user
- * is logged in. Otherwise, hide them.
+ * Displays the user's email and a logout button if the user
+ * is currently logged in. Otherwise, hides them.
  */
-function setAuthStatus() {
+function setAccountInfo() {
   if(loggedIn) {
     chrome.identity.getProfileUserInfo(function(userInfo) {
       document.getElementById('logout-btn').style.display = 'inline';

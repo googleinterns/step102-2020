@@ -8,6 +8,7 @@
     "declarativeContent",
     "storage",
     "identity",
+    "identity.email",
     "https://www.googleapis.com/*",
     "tabs",
     "*://*.appspot.com/*",
