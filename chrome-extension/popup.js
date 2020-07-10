@@ -39,6 +39,16 @@ function onGAPILoad() {
   });
 }
 
+/** Returns formatted string of today's date. */
+function getDate() {
+  let today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+
+  return mm + '/' + dd + '/' + yyyy;
+}
+
 /**
  * Generates a copy of the notes template and opens a new tab
  * with the newly created Google Doc.
