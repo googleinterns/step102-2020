@@ -20,8 +20,8 @@ public class ConnectionPoolContextListener implements ServletContextListener {
   private static final String DB_PASS = System.getenv("DB_PASS");
   private static final String DB_NAME = System.getenv("DB_NAME");
 
-  private final int SECOND = 1000;
-  private final int MINUTE = SECOND * 60;
+  private final int MILLISECONDS_IN_SECOND = 1000;
+  private final int SECONDS_IN_MINUTE = SECOND * 60;
 
   /** Configures database connection, opens pool, and returns pool as DataSource. */
   private DataSource createConnectionPool() {
@@ -42,11 +42,11 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     config.setMinimumIdle(5);
 
     // setConnectionTimeout is the maximum number of milliseconds to wait for a connection checkout.
-    config.setConnectionTimeout(SECOND * 10);
+    config.setConnectionTimeout(MILLISECONDS_IN_SECOND * 10);
 
     // idleTimeout is the maximum amount of time a connection can sit in the pool. Connections that
     // sit idle for this many milliseconds are retried if minimumIdle is exceeded.
-    config.setIdleTimeout(MINUTE * 10);
+    config.setIdleTimeout(SECONDS_IN_MINUTE * 10);
 
     // maxLifetime is the maximum possible lifetime of a connection in the pool. Connections that
     // live longer than this many milliseconds will be closed and reestablished between uses.
