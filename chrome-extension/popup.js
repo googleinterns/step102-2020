@@ -1,24 +1,34 @@
 import keys from './config';
 
+const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
+
+const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js';
+const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
+
 const DISCOVERY_DOCS = [
   "https://docs.googleapis.com/$discovery/rest?version=v1",
   "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
 ];
 
-const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
-const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
-
 let loggedIn = false;
 
 /**
- * Initializes Google APIs client library for browser-side JavaScript (gapi)
- * and the button functions when script is loaded.
+ * Gets the script for Google APIs client library for browser-side
+ * JavaScript (gapi), sets the button functions, and fills the input. 
  */
-function onGAPILoad() {
+window.onload = function() {
+  let scriptEl = document.createElement('script');
+  document.head.appendChild(scriptEl);
+  scriptEl.onload = initGAPI;
+  scriptEl.src = GAPI_CLIENT_URL;
+
   document.getElementById('generate-note-btn').onclick = generateNote;
   document.getElementById('logout-btn').onclick = logout;
   document.getElementById('doc-name-input').value = 'gNote ' + getDate();
+}
 
+/** Initializes gapi. */
+function initGAPI() {
   gapi.client.init({
     apiKey: keys.API_KEY,
     discoveryDocs: DISCOVERY_DOCS,
