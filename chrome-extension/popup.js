@@ -27,7 +27,7 @@ window.onload = function() {
 }
 
 /** Initializes gapi. */
-function initGAPI() {
+window.initGAPI = function initGAPI() {
   gapi.client.init({
     apiKey: keys.API_KEY,
     discoveryDocs: DISCOVERY_DOCS,
