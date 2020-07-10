@@ -16,7 +16,15 @@ public class User {
   private long[] favoriteNotes;
 
   /** Default constructor that throws null exception if NOT NULL fields are null */
-  public User(long id, String displayPicture, String displayName, Date dateJoined, String email, long points, String school, long[] favoriteNotes) {
+  public User(long id, 
+      String displayPicture, 
+      String displayName, 
+      Date dateJoined, 
+      String email, 
+      long points, 
+      String school, 
+      long[] favoriteNotes) {
+
     if (id == null || email == null || points == null) { throw new ArgumentNullException(); }
     this.id = id;
     this.displayPicture = displayPicture;
