@@ -21,20 +21,25 @@ function onGAPILoad() {
   gapi.client.init({
     apiKey: API_KEY,
     discoveryDocs: DISCOVERY_DOCS,
-  }).then(function() {
-    chrome.identity.getAuthToken({interactive: true}, function(token) {
-      if (chrome.runtime.lastError) {
-        return;
-      }
-      gapi.auth.setToken({
-        access_token: token,
-      });
-      loggedIn = true;
-      setAccountInfo();
-    })
-  }, function(error) {
-    console.log('error', error)
-  });
+  }).then(handleLogin)
+  .catch(error => console.log('Error:', error));
+}
+
+/**
+ * Requests user login, if necessary, then sets gapi access token
+ * and displays user info in popup.
+ */
+function handleLogin() {
+  chrome.identity.getAuthToken({interactive: true}, function(token) {
+    if (chrome.runtime.lastError) {
+      return;
+    }
+    gapi.auth.setToken({
+      access_token: token,
+    });
+    loggedIn = true;
+    setAccountInfo();
+  })
 }
 
 /** Returns formatted string of today's date. */
@@ -61,7 +66,7 @@ function generateNote() {
  */
 function logout() {
   chrome.identity.getAuthToken({interactive: false}, function(token) {
-    var url = REVOKE_TOKEN_URL + token;
+    const url = REVOKE_TOKEN_URL + token;
     window.fetch(url);
 
     chrome.identity.removeCachedAuthToken({token: token}, function() {
