@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/upload-notes")
 public class UploadNotesServlet extends HttpServlet {
 
+  private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String blobKey = getUploadedFileBlobKey(request, "notes-pdf");
@@ -31,7 +33,6 @@ public class UploadNotesServlet extends HttpServlet {
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileBlobKey(HttpServletRequest request, String formInputElementName) {
-    BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
     Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(request);
     List<BlobKey> blobKeys = blobs.get(formInputElementName);
 
