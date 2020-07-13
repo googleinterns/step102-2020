@@ -112,6 +112,7 @@ module.exports = {
 }
 
 .dropdown {
+  height: 100%;
   overflow: hidden;
   padding: 0 10px 0 20px;
 }
@@ -125,6 +126,7 @@ module.exports = {
   height: 100%;
   margin: 0;
   outline: none;
+  width: 75px;
 }
 
 .dropdown .dropdown-btn:hover {
