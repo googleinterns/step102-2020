@@ -39,7 +39,7 @@
           <textarea name="other-tags" cols="50" rows="5"></textarea>
         </div>
         <div class="form-item">
-          <label for="notes-pdf">Notes PDF<span class="required">*</span></label>
+          <label for="notes-pdf">Notes PDF</label>
           <iframe id="preview" height="400" width="350"></iframe>
           <br>
           <input type="file"

@@ -19,11 +19,6 @@ div#my-nav {
   height: 80px;
 }
 
-.required {
-  color: red;
-  font-weight: bold;
-}
-
 #form-content {
   font-size: 1rem;
   margin: 25px;
