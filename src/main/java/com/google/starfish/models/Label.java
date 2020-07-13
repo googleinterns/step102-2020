@@ -4,7 +4,7 @@ package com.google.starfish.models;
 enum Type {
   SCHOOL,
   COURSE,
-  OTHER
+  MISC
 }
 
 /** Represents a label */
