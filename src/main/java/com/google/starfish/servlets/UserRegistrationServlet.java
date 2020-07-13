@@ -56,8 +56,6 @@ public class UserRegistrationServlet extends HttpServlet {
       String email = payload.getEmail();
       String name = (String) payload.get("name");
       String pictureUrl = (String) payload.get("picture");
-      String locale = (String) payload.get("locale");
-      String familyName = (String) payload.get("family_name");
       String givenName = (String) payload.get("given_name");
 
       DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
