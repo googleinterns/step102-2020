@@ -2,20 +2,23 @@
   <nav class="blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="../assets/starfish.png" id="logo">
-    <div id="action-items">
-      <a href="#" id="post-action">PostANote</a>
+    <div class="action-items" v-if="!signedIn">
+      <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
+    </div>
+    <div class="action-items" v-if="signedIn">
+      <a href="#" class="vert-center">PostANote</a>
       <div class="dropdown">
         <button class="dropdown-btn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
         </button>
         <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
           <img src="../assets/user.svg" height="115px"/>
-          <p class="bold" id="dropdown-name">{{ user.name }}</p>
+          <p class="bold" id="dropdown-name">{{ email }}</p>
           <p id="dropdown-points">{{ user.points }} points</p>
           <!-- TODO: Update links when new pages are created -->
           <a class="dropdown-link" href="#">My Profile</a> 
           <a class="dropdown-link" href="#">Favorite Notes</a>
-          <a class="dropdown-link" href="#">Logout</a>
+          <a class="dropdown-link" href="#" @click="signOut">Logout</a>
         </div>
       </div>
     </div> 
@@ -40,7 +43,11 @@ Vue.directive('click-outside', {
 module.exports = {
   data: function() {
     return {
-      showDropdown: false
+      showDropdown: false,
+      signedIn: false,
+      clientId: "506538592562-klrt6tseu4eg2pi7cvt9m84ifh5neccp.apps.googleusercontent.com",
+      googleAuth: null,
+      email: null
     }
   },
   props: {
@@ -52,7 +59,47 @@ module.exports = {
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
+    },
+    onGAPILoad() {
+      gapi.load('auth2', this.initGoogleAuth);
+    },
+    initGoogleAuth() {
+      gapi.auth2.init({
+        client_id: this.clientId,
+        scope: 'https://www.googleapis.com/auth/userinfo.email'
+      }).then(() => {
+        this.googleAuth = gapi.auth2.getAuthInstance();
+        this.signedIn = this.googleAuth.isSignedIn.get();
+        if(this.signedIn) this.setUserInfo();
+      })
+    },
+    setUserInfo() {
+      const userProfile = this.googleAuth.currentUser.get().getBasicProfile();
+      this.email = userProfile.getEmail();
+    },
+    signIn() {
+      gapi.auth2.getAuthInstance().signIn().then(() => {
+        const user = this.googleAuth.currentUser.get();
+        this.signedIn = true;
+        this.setUserInfo();
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    signOut() {
+      this.googleAuth.disconnect();
+      this.googleAuth.signOut().then(() => {
+        this.signedIn = false;
+        this.showDropdown = false;
+        this.email = "";
+      })
     }
+  },
+  mounted() {
+    let gapiScript = document.createElement('script');
+    gapiScript.onload = this.onGAPILoad;
+    gapiScript.src = "https://apis.google.com/js/client.js";
+    document.head.appendChild(gapiScript);
   }
 }
 </script>
@@ -100,15 +147,18 @@ module.exports = {
   padding: 0 0 5px 0;
 }
 
-#action-items {
+.action-items {
   height: 100%;
   margin-left: auto;
 }
 
-#post-action {
+.vert-center {
   height: 80px;
   line-height: 80px;
-  padding: 0;
+}
+
+#signin-link {
+  padding-right: 30px;
 }
 
 .dropdown {
