@@ -17,6 +17,8 @@ import javax.servlet.ServletException;
 import java.security.GeneralSecurityException;
 import javax.servlet.annotation.WebServlet;  
 import javax.servlet.http.HttpServlet;  
+import javax.servlet.http.HttpSession;  
+import javax.servlet.http.Cookie;  
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
@@ -26,11 +28,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Servlet that handles user registration and authentication. */  
-@WebServlet("/user-registration")  
+@WebServlet("/user-signin")  
 public class UserRegistrationServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(UserRegistrationServlet.class.getName());
-  private final String CLIENT_ID = "starfish";
+  private static final String CLIENT_ID = System.getenv("CLIENT_ID");
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -52,7 +54,6 @@ public class UserRegistrationServlet extends HttpServlet {
 
       // Get profile information from payload
       String email = payload.getEmail();
-      boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
       String name = (String) payload.get("name");
       String pictureUrl = (String) payload.get("picture");
       String locale = (String) payload.get("locale");
@@ -64,38 +65,47 @@ public class UserRegistrationServlet extends HttpServlet {
       try (Connection conn = pool.getConnection()) {
         boolean userExists = checkIfUserExists(conn, userId);
         // Do nothing if the user already exists
-        if (userExists) return;
+        if (!userExists) {
+          String stmt =
+              "INSERT INTO users ( "
+                  + "id,"
+                  + "display_picture,"
+                  + "display_name,"
+                  + "date_joined,"
+                  + "email,"
+                  + "points,"
+                  + "school ) "
+            + "VALUES ( "
+                  + "?,"
+                  + "?,"
+                  + "?,"
+                  + "?,"
+                  + "?,"
+                  + "?,"
+                  + "? ); ";
+          try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
+            userStmt.setString(1, userId);
+            userStmt.setString(2, pictureUrl);
+            userStmt.setString(3, givenName);
+            userStmt.setDate(4, new Date(Calendar.getInstance().getTimeInMillis()));
+            userStmt.setString(5, email);
+            // User starts with 0 points
+            userStmt.setInt(6, 0);
+            userStmt.setNull(7, Types.VARCHAR);
 
-        String stmt =
-            "INSERT INTO users ( "
-                + "id,"
-                + "display_picture,"
-                + "display_name,"
-                + "date_joined,"
-                + "email,"
-                + "points,"
-                + "school ) "
-          + "VALUES ( "
-                + "?,"
-                + "?,"
-                + "?,"
-                + "?,"
-                + "?,"
-                + "?,"
-                + "? ); ";
-        try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
-          userStmt.setString(1, userId);
-          userStmt.setString(2, pictureUrl);
-          userStmt.setString(3, givenName);
-          userStmt.setDate(4, new Date(Calendar.getInstance().getTimeInMillis()));
-          userStmt.setString(5, email);
-          // User starts with 0 points
-          userStmt.setInt(6, 0);
-          userStmt.setNull(7, Types.VARCHAR);
+            // Finally, execute the statement. If it fails, an error will be thrown
+            userStmt.execute();
 
-          // Finally, execute the statement. If it fails, an error will be thrown
-          userStmt.execute();
+          }
         }
+
+        // Create new user session and save as cookie on client side
+        HttpSession newSession = req.getSession(true);
+        newSession.setAttribute("user_id", userId);
+        Cookie activeSession = new Cookie("sessionId", newSession.getId());
+        res.addCookie(activeSession);
+        res.sendRedirect("/profile.html");
+
       } catch (SQLException ex) {
         LOGGER.log(Level.WARNING, "Error while attempting to insert new user.", ex);
         // Set an error code of 500 if the server can't connect to the database
