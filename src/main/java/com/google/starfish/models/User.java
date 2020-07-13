@@ -14,6 +14,8 @@ public class User {
   private String school;
   // Array of noteIds that have have been favorited by the user
   private long[] favoriteNotes;
+  // Array of noteIds that have have been uploaded by the user
+  private long[] uploadedNotes;
 
   /** Default constructor that throws null exception if NOT NULL fields are null */
   public User(long id, 
@@ -23,7 +25,8 @@ public class User {
       String email, 
       long points, 
       String school, 
-      long[] favoriteNotes) {
+      long[] favoriteNotes,
+      long[] uploadedNotes) {
 
     if (id == null || email == null || points == null) { throw new ArgumentNullException(); }
     this.id = id;
@@ -34,6 +37,7 @@ public class User {
     this.points = points;
     this.school = school;
     this.favoriteNotes = favoriteNotes;
+    this.uploadedNotes = uploadedNotes;
   }
 
   /** Overloaded constructor that takes only NOT NULL fields */
