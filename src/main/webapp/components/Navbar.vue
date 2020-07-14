@@ -45,7 +45,7 @@ module.exports = {
     return {
       showDropdown: false,
       signedIn: false,
-      clientId: "506538592562-klrt6tseu4eg2pi7cvt9m84ifh5neccp.apps.googleusercontent.com",
+      clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
       googleAuth: null,
       user: null
     }
@@ -65,6 +65,7 @@ module.exports = {
         client_id: this.clientId
       }).then(() => {
         this.googleAuth = gapi.auth2.getAuthInstance();
+        console.log(this.googleAuth);
         if(this.googleAuth.isSignedIn.get()) this.fetchUser();
       })
     },

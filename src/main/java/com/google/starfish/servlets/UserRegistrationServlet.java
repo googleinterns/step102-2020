@@ -102,8 +102,6 @@ public class UserRegistrationServlet extends HttpServlet {
         newSession.setAttribute("user_id", userId);
         Cookie activeSession = new Cookie("sessionId", newSession.getId());
         res.addCookie(activeSession);
-        res.sendRedirect("/profile.html");
-
       } catch (SQLException ex) {
         LOGGER.log(Level.WARNING, "Error while attempting to insert new user.", ex);
         // Set an error code of 500 if the server can't connect to the database
