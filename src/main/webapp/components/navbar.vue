@@ -84,7 +84,7 @@ module.exports = {
       this.$emit('set-user', userData);
     },
     signIn() {
-      gapi.auth2.getAuthInstance().signIn().then(() => {
+      this.googleAuth.signIn().then(() => {
         this.fetchUser();
       }).catch(err => {
         console.log(err);
