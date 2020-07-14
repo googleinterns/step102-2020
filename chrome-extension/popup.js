@@ -66,7 +66,7 @@ function getDate() {
  */
 function generateNote() {
   let docName = document.getElementById('doc-name-input').value.trim();
-  if(docName === "") {
+  if(docName === '') {
     docName = 'gNote ' + getDate();
   }
 
@@ -78,8 +78,8 @@ function generateNote() {
       name: docName,
     }
   }).then(function(response) {
-    const newURL = GOOGLE_DOC_URL + response.result.id;
-    chrome.tabs.create({ url: newURL });
+    const gNoteURL = GOOGLE_DOC_URL + response.result.id;
+    chrome.tabs.create({ url: gNoteURL });
   }).catch(error => {
     console.log('Error:', error);
   })
