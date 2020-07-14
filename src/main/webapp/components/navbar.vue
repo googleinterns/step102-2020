@@ -81,7 +81,6 @@ module.exports = {
     setUserInfo(userData) {
       this.signedIn = true;
       this.user = userData;
-      this.$emit('set-user', userData);
     },
     signIn() {
       this.googleAuth.signIn().then(() => {
@@ -104,6 +103,11 @@ module.exports = {
     gapiScript.onload = this.onGAPILoad;
     gapiScript.src = "https://apis.google.com/js/client.js";
     document.head.appendChild(gapiScript);
+  },
+  watch: {
+    user: function(userVal) {
+      this.$emit('set-user', userVal);
+    }
   }
 }
 </script>
