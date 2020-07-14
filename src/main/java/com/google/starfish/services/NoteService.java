@@ -6,17 +6,17 @@ import java.sql.SQLException;
 import java.sql.ResultSet;  
 import javax.sql.DataSource;
 
-public class NoteService {
+public class NoteService extends GenericService {
 
-  public static ResultSet getById(DataSource pool, long id) throws SQLException {
-    return GenericService.getById(pool, id, Table.NOTES);
+  public ResultSet getById(DataSource pool, long id) throws SQLException {
+    return super.getById(pool, id, Table.NOTES);
   }
 
-  public static boolean deleteById(DataSource pool, long id) throws SQLException {
-    return GenericService.deleteById(pool, id, Table.NOTES);
+  public boolean deleteById(DataSource pool, long id) throws SQLException {
+    return super.deleteById(pool, id, Table.NOTES);
   }
 
-  public static long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
+  public long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT COUNT(*) AS num_favorites "

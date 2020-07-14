@@ -21,7 +21,7 @@ enum Table {
 }
 
 public class GenericService {
-  public static ResultSet getById(DataSource pool, long id, Table sqlTable) throws SQLException {
+  public ResultSet getById(DataSource pool, long id, Table sqlTable) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT * "
@@ -36,7 +36,7 @@ public class GenericService {
     }
   }
 
-  public static boolean deleteById(DataSource pool, long id, Table sqlTable) throws SQLException {
+  public boolean deleteById(DataSource pool, long id, Table sqlTable) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "DELETE * "
