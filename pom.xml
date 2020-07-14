@@ -39,8 +39,32 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.20</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.cloud.sql</groupId>
+      <artifactId>mysql-socket-factory-connector-j-8</artifactId>
+      <version>1.0.16</version>
+    </dependency>
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>3.4.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
+   </dependency>
+   <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.30</version>
+   </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <!-- Provides `mvn package appengine:run` for local testing
@@ -51,7 +75,7 @@
         <version>2.2.0</version>
         <configuration>
           <!-- Add Project ID -->
-          <deploy.projectId>PROJECT_ID</deploy.projectId>
+          <deploy.projectId>step102-2020</deploy.projectId>
           <deploy.version>1</deploy.version>
         </configuration>
       </plugin>

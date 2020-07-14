@@ -1,0 +1,39 @@
+{
+  "key": "MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC0THI7tV+wC1Yu1VLkJA3RrHMGDwqhB0eSV+wLJECMPlWmQL9nywGnw/SotZ2UC35bHAAVZL3DQEIrZViEVPrQjmjYstKXJhoAcYWrq7LeFFqpbgu5R2vnXU8Etdv7MJ+lmCREe0UbCBkdzPC5sDs9PdasH0Ip38qhqBQCHiDoL07UkjaK4sAME1gC84v9sU5Juqzu9eJlizdU39xqnPfMj/7S9KjGgW43QQGxDOT8IoqQiDzYjLay4g1fkJ6DtXeKZGBMOm3eTVFLkr1uND3frCDWU45gG2RVIwY/RRGBFma6kYJ5Q6hUznNA+0esz4yDHWiHXmwtIXZK07ebuUG3AgMBAAECggEAIVNN/AZSyPXXeLGacCvP2BURb6nBE7GGQ6D3srmBKsrsxt2J43Ps+ubn5nUnSrFzKgD7bPjhcGEEugOyAEe60mi4LXGkJib3QGS7SddjKNRHS7DY/uaaJboj/GFm5z9+Crwb3AKS6+OrzMvQJOpTkMbI0qi2cIn6aLXp+Ng7yd6ARMqgfHgxUPm2cf1KV+SXNFlyrS0tXV9HxhgOEsnEJKUwgKgsp8UCnluBlImsGpPzKpwRG6/3cmLIt2t8MYJOygNeH4e+44ODPHTTK8TlpxIJ4/EN2HuP5CWxUuIwF5FHOha74w437/cCNTNhwfdNtfr/HsOLGwwAGXzSAW8KyQKBgQD7PVN7a4CIzAuLHYOpgLva0MtzcpDvamDI/68ICXq5GlcDaXpsbfg8fxn/RIxBluqyfdFpoQyqMb5MM0ximquHyB5NcDjGwXTtF5wSiG4blDnd4/PXG9hCq4ZzqMqO93KtXWFMIVwbPrxyaKmXOzaEog36njayQUf53n5C7PGh6QKBgQC3twLE/WhpliCk+IwZ9aSKI6hlL+/GHR/G0jhGjmJFJ4GVOXgYOt8iv8Syr7j/iCv2PWYXOAbmBghPhgQaKQqbRWn8sUxstHVtxDrPRtwNDmitpmPHKzXiLFoWX9Z4/ZHe46aUyw70Xz77cOPewsqK7qUKnBlj1RDB6QMkI0binwKBgQCmyFVND1ZqeZoIJfWrZoxOfGEzKJDSfrn1dNbK7RANJVEyMKlWpcIu1ul5LhY1zGvNRfzotELmENOVXlCM/MR2BQEowyDNwMtQQWYYX31IzaOEi7jpydBMofVFfn3JXrdAI0dd9J9ibslG4fgDLwnIDpRdFP6WYwPW+j6zSvw1UQKBgQCueycrNk2LMmVQqSpOoWkjNZiCedOtAg4jA5clE6erbEj7E/jGcmtoEl/bIV9/ebHfDRM/7BtJLeOIu4x72AzVyUhPEYi3GXEJzjvYjsEBuXSbsBLFn3lulJb+9wi4IoP+/5E/cdeDKk6j+eTBtZkt+FdRS04l7b8bm5U7JjH1mwKBgFSVj7t0tljQqBIFy+3dqQ6xfcgIuuYWJXJ5I22R1z9ZsUBhI7i0DCMJE58yiHfdP5LNb2SIAzewh4r0agkmHUgtMCLRW3Gs2N3/AumLUHegWqyo5xuzVGpLyJ4dxrVYGPr5f6vgOu/6gYf473j7ttWpH31DuWUParHzxOhffOO8",
+  "name": "Starfish",
+  "version": "1.0",
+  "description": "Create and share course notes!!",
+  "permissions": [
+    "activeTab",
+    "declarativeContent",
+    "storage",
+    "identity",
+    "identity.email",
+    "https://www.googleapis.com/*",
+    "tabs",
+    "*://*.appspot.com/*",
+    "*://*.cloudshell.dev/*"
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/starfish_32.png"
+  },
+  "icons": {
+    "32": "images/starfish_32.png",
+    "512": "images/starfish_512.png"
+  },
+  "manifest_version": 2,
+  "oauth2": {
+    "client_id": "506538592562-t2ei82rtds9adtiabnajp983h407kfqp.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email",
+      "https://www.googleapis.com/auth/drive",
+      "https://www.googleapis.com/auth/documents"
+    ]
+  },
+  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'"
+}

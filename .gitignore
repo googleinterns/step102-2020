@@ -5,3 +5,5 @@ target/
 .idea
 .factorypath
 .project
+chrome-extension/config.js
+src/main/webapp/WEB-INF/appengine-web.xml
