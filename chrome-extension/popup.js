@@ -3,6 +3,8 @@ import keys from './config.js';
 const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
 
 const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
+const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
+const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
 
 const DISCOVERY_DOCS = [
@@ -63,7 +65,24 @@ function getDate() {
  * with the newly created Google Doc.
  */
 function generateNote() {
-  // TODO: Add generate note functionality
+  let docName = document.getElementById('doc-name-input').value.trim();
+  if(docName === "") {
+    docName = 'gNote ' + getDate();
+  }
+
+  gapi.client.request({
+    path: COPY_FILE_URL,
+    method: 'POST',
+    params: {fileId: NOTES_TEMPLATE_ID},
+    body: {
+      name: docName,
+    }
+  }).then(function(response) {
+    const newURL = GOOGLE_DOC_URL + response.result.id;
+    chrome.tabs.create({ url: newURL });
+  }).catch(error => {
+    console.log('Error:', error);
+  })
 }
 
 /**
