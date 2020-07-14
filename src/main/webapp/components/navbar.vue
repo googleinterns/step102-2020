@@ -13,7 +13,7 @@
         </button>
         <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
           <img src="../assets/user.svg" height="115px"/>
-          <p class="bold" id="dropdown-name">{{ email }}</p>
+          <p class="bold" id="dropdown-name">{{ user.name }}</p>
           <p id="dropdown-points">{{ user.points }} points</p>
           <!-- TODO: Update links when new pages are created -->
           <a class="dropdown-link" href="#">My Profile</a> 
@@ -47,11 +47,8 @@ module.exports = {
       signedIn: false,
       clientId: "506538592562-klrt6tseu4eg2pi7cvt9m84ifh5neccp.apps.googleusercontent.com",
       googleAuth: null,
-      email: null
+      user: null
     }
-  },
-  props: {
-    user: Object
   },
   methods: {
     hideDropdown() {
@@ -69,19 +66,27 @@ module.exports = {
         scope: 'https://www.googleapis.com/auth/userinfo.email'
       }).then(() => {
         this.googleAuth = gapi.auth2.getAuthInstance();
-        this.signedIn = this.googleAuth.isSignedIn.get();
-        if(this.signedIn) this.setUserInfo();
+        if(this.googleAuth.isSignedIn.get()) this.fetchUser();
       })
     },
-    setUserInfo() {
-      const userProfile = this.googleAuth.currentUser.get().getBasicProfile();
-      this.email = userProfile.getEmail();
+    fetchUser() {
+      const user = this.googleAuth.currentUser.get();
+      const token = user.getAuthResponse().id_token;
+      fetch('/user-signin?idToken=' + token)
+        .then(response => response.json())
+        .then(userData => setUserInfo(userData))
+        .catch(err => {
+          console.log(err);
+        })
+    },
+    setUserInfo(userData) {
+      this.signedIn = true;
+      this.user = userData;
+      this.$emit('set-user', userData);
     },
     signIn() {
       gapi.auth2.getAuthInstance().signIn().then(() => {
-        const user = this.googleAuth.currentUser.get();
-        this.signedIn = true;
-        this.setUserInfo();
+        this.fetchUser();
       }).catch(err => {
         console.log(err);
       });
@@ -91,7 +96,7 @@ module.exports = {
       this.googleAuth.signOut().then(() => {
         this.signedIn = false;
         this.showDropdown = false;
-        this.email = "";
+        this.user = null;
       })
     }
   },
