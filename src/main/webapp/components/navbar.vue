@@ -62,8 +62,7 @@ module.exports = {
     },
     initGoogleAuth() {
       gapi.auth2.init({
-        client_id: this.clientId,
-        scope: 'https://www.googleapis.com/auth/userinfo.email'
+        client_id: this.clientId
       }).then(() => {
         this.googleAuth = gapi.auth2.getAuthInstance();
         if(this.googleAuth.isSignedIn.get()) this.fetchUser();
