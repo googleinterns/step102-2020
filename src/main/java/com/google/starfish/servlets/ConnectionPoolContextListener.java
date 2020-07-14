@@ -74,7 +74,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     try (Connection conn = pool.getConnection()) {
       String stmt =
           "CREATE TABLE IF NOT EXISTS users ( "
-              + "id INT PRIMARY KEY AUTO_INCREMENT,"
+              + "id VARCHAR(255) PRIMARY KEY,"
               + "display_picture VARCHAR(255),"
               + "display_name VARCHAR(255),"
               + "date_joined DATE,"
@@ -95,7 +95,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       String stmt =
           "CREATE TABLE IF NOT EXISTS notes ( "
               + "id INT PRIMARY KEY AUTO_INCREMENT,"
-              + "author_id INT NOT NULL,"
+              + "author_id VARCHAR(255) NOT NULL,"
               + "school VARCHAR(255) NOT NULL,"
               + "course VARCHAR(255) NOT NULL,"
               + "title VARCHAR(255) NOT NULL,"
@@ -141,7 +141,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
     try (Connection conn = pool.getConnection()) {
       String stmt =
           "CREATE TABLE IF NOT EXISTS favorite_notes ( "
-              + "user_id INT NOT NULL,"
+              + "user_id VARCHAR(255) NOT NULL,"
               + "note_id INT NOT NULL,"
               + "PRIMARY KEY (user_id, note_id),"
               + "FOREIGN KEY (`user_id`)"

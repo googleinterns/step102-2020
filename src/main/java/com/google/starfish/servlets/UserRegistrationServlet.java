@@ -36,10 +36,11 @@ public class UserRegistrationServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    System.out.println("Starting verification");
     GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance())
       .setAudience(Collections.singletonList(CLIENT_ID))
       .build();
-
+    System.out.println("ending verification");
     try {
       GoogleIdToken idToken = verifier.verify(req.getParameter("idToken"));
       if (idToken == null) {
@@ -47,10 +48,12 @@ public class UserRegistrationServlet extends HttpServlet {
         res.getWriter().println("INVALID TOKEN ID");
         return;
       }
+      System.out.println(idToken);
 
       Payload payload = idToken.getPayload();
 
       String userId = payload.getSubject();
+      System.out.println("User id is " + userId);
 
       // Get profile information from payload
       String email = payload.getEmail();
@@ -63,7 +66,8 @@ public class UserRegistrationServlet extends HttpServlet {
       try (Connection conn = pool.getConnection()) {
         boolean userExists = checkIfUserExists(conn, userId);
         // Do nothing if the user already exists
-        if (!userExists) {
+        // if (!userExists) {
+          System.out.println("user doesn't exist");
           String stmt =
               "INSERT INTO users ( "
                   + "id,"
@@ -95,7 +99,7 @@ public class UserRegistrationServlet extends HttpServlet {
             userStmt.execute();
 
           }
-        }
+        // }
 
         // Create new user session and save as cookie on client side
         HttpSession newSession = req.getSession(true);
@@ -118,7 +122,9 @@ public class UserRegistrationServlet extends HttpServlet {
     try (PreparedStatement userExistsStmt = conn.prepareStatement(stmt)) {
       userExistsStmt.setString(1, userId);
       ResultSet userExistsResult = userExistsStmt.executeQuery();
-      return userExistsResult.next();
+      boolean temp = userExistsResult.next();
+      System.out.println(temp);
+      return temp;
     } 
   }
 }

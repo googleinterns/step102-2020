@@ -47,7 +47,10 @@ module.exports = {
       signedIn: false,
       clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
       googleAuth: null,
-      user: null
+      user: {
+        name: 'blah',
+        points: 1
+      }
     }
   },
   methods: {
@@ -72,12 +75,13 @@ module.exports = {
     fetchUser() {
       const user = this.googleAuth.currentUser.get();
       const token = user.getAuthResponse().id_token;
-      fetch('/user-signin?idToken=' + token)
-        .then(response => response.json())
-        .then(userData => setUserInfo(userData))
-        .catch(err => {
-          console.log(err);
-        })
+      fetch('/user-signin?idToken=' + token, {
+        method: 'POST'
+      }).then(response => response.json())
+      .then(userData => setUserInfo(userData))
+      .catch(err => {
+        console.log(err);
+      })
     },
     setUserInfo(userData) {
       this.signedIn = true;
