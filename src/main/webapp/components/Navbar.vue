@@ -47,7 +47,10 @@ module.exports = {
       signedIn: false,
       clientId: "506538592562-klrt6tseu4eg2pi7cvt9m84ifh5neccp.apps.googleusercontent.com",
       googleAuth: null,
-      user: null
+      user: {
+        name: 'Bob the Builder',
+        points: 597
+      }
     }
   },
   methods: {

@@ -9,7 +9,7 @@
 <body>
   <div id="app">
     <v-app>
-      <navigation :user="user"></navigation>
+      <navigation></navigation>
     </v-app>
   </div>
 
@@ -22,12 +22,6 @@
       el: '#app',
       components: {
         'navigation': httpVueLoader('components/navbar.vue')
-      },
-      data: {
-        user: {
-          name: 'Bob the Builder',
-          points: 597
-        }
       },
       vuetify: new Vuetify(),
     })
