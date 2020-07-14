@@ -1,5 +1,5 @@
 <template>
-  <nav class="blue sticky nav-bar">
+  <nav class="navy-blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="../assets/starfish.png" id="logo">
     <div class="action-items" v-if="!signedIn">
@@ -113,7 +113,7 @@ module.exports = {
   font-weight: bold;
 }
 
-.blue {
+.navy-blue {
   background-color: #004aad;
 }
 
@@ -122,8 +122,9 @@ module.exports = {
 }
 
 .sticky {
-  position: fixed;
+  position: sticky;
   top: 0;
+  left: 0;
   width: 100%;
 }
 
@@ -166,6 +167,7 @@ module.exports = {
 }
 
 .dropdown {
+  height: 100%;
   overflow: hidden;
   padding: 0 10px 0 20px;
 }
@@ -179,6 +181,7 @@ module.exports = {
   height: 100%;
   margin: 0;
   outline: none;
+  width: 75px;
 }
 
 .dropdown .dropdown-btn:hover {
