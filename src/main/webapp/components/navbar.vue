@@ -1,5 +1,5 @@
 <template>
-  <nav class="blue sticky nav-bar">
+  <nav class="navy-blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="../assets/starfish.png" id="logo">
     <div id="action-items">
@@ -62,7 +62,7 @@ module.exports = {
   font-weight: bold;
 }
 
-.blue {
+.navy-blue {
   background-color: #004aad;
 }
 
@@ -71,7 +71,7 @@ module.exports = {
 }
 
 .sticky {
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   width: 100%;
