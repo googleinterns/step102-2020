@@ -1,5 +1,7 @@
 package com.google.starfish.models;
 
+import java.util.Objects;
+
 /** Enum declaration for type of label. */
 enum Type {
   SCHOOL,
@@ -14,8 +16,7 @@ public class Label {
   private Type type;
 
   public Label(String title, Type type) {
-    if (title == null || type == null) { throw new ArgumentNullException(); }
-    this.title = title;
-    this.type = type;
+    this.title = Objects.requireNonNull(title);
+    this.type = Objects.requireNonNull(type);
   }
 }
