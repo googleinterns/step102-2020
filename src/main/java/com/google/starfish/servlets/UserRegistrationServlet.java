@@ -66,7 +66,7 @@ public class UserRegistrationServlet extends HttpServlet {
       try (Connection conn = pool.getConnection()) {
         boolean userExists = checkIfUserExists(conn, userId);
         // Do nothing if the user already exists
-        // if (!userExists) {
+        if (!userExists) {
           System.out.println("user doesn't exist");
           String stmt =
               "INSERT INTO users ( "
@@ -99,7 +99,7 @@ public class UserRegistrationServlet extends HttpServlet {
             userStmt.execute();
 
           }
-        // }
+        }
 
         // Create new user session and save as cookie on client side
         HttpSession newSession = req.getSession(true);
@@ -122,9 +122,8 @@ public class UserRegistrationServlet extends HttpServlet {
     try (PreparedStatement userExistsStmt = conn.prepareStatement(stmt)) {
       userExistsStmt.setString(1, userId);
       ResultSet userExistsResult = userExistsStmt.executeQuery();
-      boolean temp = userExistsResult.next();
-      System.out.println(temp);
-      return temp;
+      userExistsResult.next();
+      return userExistsResult.getBoolean(1);
     } 
   }
 }
