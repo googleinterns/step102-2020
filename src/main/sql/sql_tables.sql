@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS notes (
   )
 );
 
-CREATE TABLE IF NOT EXISTS other_note_labels (
+CREATE TABLE IF NOT EXISTS misc_note_labels (
   note_id INT NOT NULL,
   label VARCHAR(255) NOT NULL,
   PRIMARY KEY (note_id, label),
