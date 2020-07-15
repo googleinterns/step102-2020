@@ -17,7 +17,7 @@ import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 
-/** Servlet that checks the status of open database connection pool in the app context. */  
+/** Servlet that returns search results for notes based on school and course */
 @WebServlet("/search")  
 public class SearchServlet extends HttpServlet {  
 
@@ -73,6 +73,7 @@ public class SearchServlet extends HttpServlet {
     }
   }  
 
+  /** Converts an array list to JSON */
   private String convertArrayListToJson(ArrayList<Note> notes) {
     Gson gson = new Gson();
     return gson.toJson(notes);

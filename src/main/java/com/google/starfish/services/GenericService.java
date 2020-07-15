@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/** Enum that holds starfishDB sql tables as strings */
 enum Table {
   USERS("users"), NOTES("notes"), LABELS("labels"), FAVORITE_NOTES("favorite_notes"), MISC_LABELS("misc_note_labels");
 
@@ -20,7 +21,10 @@ enum Table {
   }
 }
 
+/** Generic Service class that provides the functionality to get and delete row by id in any table */
 public class GenericService {
+
+  /** Gets row by table and id from sql */
   public ResultSet getById(DataSource pool, long id, Table sqlTable) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
@@ -36,6 +40,7 @@ public class GenericService {
     }
   }
 
+  /** Deletes row by table and id from sql */
   public boolean deleteById(DataSource pool, long id, Table sqlTable) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
@@ -48,6 +53,5 @@ public class GenericService {
         return deleteStmt.execute();
       } 
     }
-
   }
 }

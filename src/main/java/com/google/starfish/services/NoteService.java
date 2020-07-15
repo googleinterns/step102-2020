@@ -6,6 +6,12 @@ import java.sql.SQLException;
 import java.sql.ResultSet;  
 import javax.sql.DataSource;
 
+/**
+ * Service class for Notes that allows retrieval of values stored as
+ * instance variables on the Note class that aren't stored on the 
+ * notes table in sql
+ *
+ */
 public class NoteService extends GenericService {
 
   public ResultSet getById(DataSource pool, long id) throws SQLException {
@@ -16,6 +22,7 @@ public class NoteService extends GenericService {
     return super.deleteById(pool, id, Table.NOTES);
   }
 
+  /** Gets the number of times a note has been favorited by note id */
   public long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
