@@ -94,7 +94,7 @@ module.exports = {
       this.user = userData;
     },
     getCookie() {
-      let cookie = ("; "+document.cookie).split("; sessionId=").pop().split(";").shift();
+      let cookie = ("; "+document.cookie).split("; SFCookie=").pop().split(";").shift();
       if(cookie) {
         console.log(cookie);
       } else {
@@ -109,13 +109,17 @@ module.exports = {
       });
     },
     signOut() {
+      this.getCookie();
       this.googleAuth.disconnect();
       this.googleAuth.signOut().then(() => {
         // TODO: send request to delete session
+        fetch('/user-logout', {
+          method: 'POST'
+        }).then(response => console.log(response));
         this.getCookie();
         this.signedIn = false;
         this.showDropdown = false;
-        this.user = null;
+        //this.user = null;
       })
     }
   },

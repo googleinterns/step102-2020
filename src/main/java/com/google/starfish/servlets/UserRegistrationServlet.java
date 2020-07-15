@@ -44,7 +44,7 @@ public class UserRegistrationServlet extends HttpServlet {
         sessionId = cookie.getValue();
       }
     }
-    HttpSession activeSession = HttpSessionCollector.find(sessionId);
+    HttpSession activeSession = req.getSession(false);
     if (activeSession == null) {
       LOGGER.log(Level.WARNING, "No user is logged in.");
       // Set an error code of 403 if the user is not logged in
