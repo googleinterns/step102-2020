@@ -1,5 +1,5 @@
 <template>
-  <form class="flex" id="search-container" action="/" @submit="checkForm">
+  <form class="flex" id="search-container" action="/" @submit.prevent="onSubmit">
     <div class="flex" id="input-area">
       <div class="flex" id="search-area">
         <div class="flex search-item">
@@ -37,14 +37,26 @@ module.exports = {
     }
   },
   methods: {
-    checkForm: function(e) {
+    onSubmit: function(event) {
       if(!this.school && !this.course) {
-        e.preventDefault();
         this.error = "Please enter at least one search criterion.";
       }
-      else {
+      else /* Form validated */ {
         this.error = "";
+        this.queryDatabase(this.school, this.course)
+          .then(result => this.$emit('searchresult', result))
+          .catch(error => this.error = error);
       }
+    },
+    queryDatabase: async function(school, course) {
+      let url = new URL("/notes", window.location.href);
+      url.searchParams.set('school', school);
+      url.searchParams.set('course', course);
+
+      return fetch(url).then(response => response.json())
+        .catch(error => {
+          throw new Error(error);
+        });
     }
   }
 }
