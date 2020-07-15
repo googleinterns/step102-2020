@@ -1,29 +1,13 @@
 package com.google.starfish.servlets;  
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
 import java.io.IOException;  
-import java.io.PrintWriter;  
-import java.sql.Connection;  
-import java.sql.SQLException;  
-import java.sql.PreparedStatement;
-import java.sql.Types;  
-import java.sql.ResultSet;
-import java.sql.Date;
 import javax.servlet.ServletException;  
-import java.security.GeneralSecurityException;
 import javax.servlet.annotation.WebServlet;  
 import javax.servlet.http.HttpServlet;  
 import javax.servlet.http.HttpSession;  
 import javax.servlet.http.Cookie;  
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
-import javax.sql.DataSource;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,12 +27,11 @@ public class TestAuthServlet extends HttpServlet {
         sessionId = cookie.getValue();
       }
     }
+    // If there was no cookie passed with request to /test-auth, then auth has failed and user is not logged in
     if(sessionId == null) {
-      res.setStatus(418);
+      res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
       return;
     }
-
-    System.out.println(sessionId);
 
     HttpSession activeSession = req.getSession(false);
     if (activeSession == null || activeSession.getAttribute("user_id") == null) {
@@ -57,6 +40,8 @@ public class TestAuthServlet extends HttpServlet {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
+
+    // If this user has an active session, then the user is logged in
     res.setStatus(HttpServletResponse.SC_OK);
   }
 }
