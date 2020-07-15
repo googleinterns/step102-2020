@@ -2,11 +2,8 @@
   <nav class="navy-blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="../assets/starfish.png" id="logo">
-    <div class="action-items" v-if="!signedIn">
-      <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
-    </div>
-    <div class="action-items" v-if="signedIn">
-      <a href="#" class="vert-center">PostANote</a>
+    <div id="action-items">
+      <a href="#" id="post-action">PostANote</a>
       <div class="dropdown">
         <button class="dropdown-btn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
@@ -18,7 +15,7 @@
           <!-- TODO: Update links when new pages are created -->
           <a class="dropdown-link" href="#">My Profile</a> 
           <a class="dropdown-link" href="#">Favorite Notes</a>
-          <a class="dropdown-link" href="#" @click="signOut">Logout</a>
+          <a class="dropdown-link" href="#">Logout</a>
         </div>
       </div>
     </div> 
@@ -43,15 +40,11 @@ Vue.directive('click-outside', {
 module.exports = {
   data: function() {
     return {
-      showDropdown: false,
-      signedIn: false,
-      clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
-      googleAuth: null,
-      user: {
-        name: 'blah',
-        points: 1
-      }
+      showDropdown: false
     }
+  },
+  props: {
+    user: Object
   },
   methods: {
     hideDropdown() {
@@ -59,79 +52,6 @@ module.exports = {
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
-    },
-    onGAPILoad() {
-      gapi.load('auth2', this.initGoogleAuth);
-    },
-    initGoogleAuth() {
-      gapi.auth2.init({
-        client_id: this.clientId
-      }).then(() => {
-        this.googleAuth = gapi.auth2.getAuthInstance();
-        console.log(this.googleAuth);
-        if(this.googleAuth.isSignedIn.get()) this.fetchUser();
-      })
-    },
-    fetchUser() {
-      const user = this.googleAuth.currentUser.get();
-      const token = user.getAuthResponse().id_token;
-      // TODO: Send expiresTime to servlet to set expiration for cookie
-      const expiresTime = user.getAuthResponse().expires_at;
-      fetch('/user-signin?idToken=' + token, {
-        method: 'POST'
-      }).then(response => {
-        this.signedIn = true;
-        this.getCookie();
-        // TODO: make GET request to retrieve user data
-      })
-      .catch(err => {
-        console.log(err);
-      })
-    },
-    setUserInfo(userData) {
-      console.log(userData);
-      this.signedIn = true;
-      this.user = userData;
-    },
-    getCookie() {
-      let cookie = ("; "+document.cookie).split("; SFCookie=").pop().split(";").shift();
-      if(cookie) {
-        console.log(cookie);
-      } else {
-        console.log("no cookie");
-      }
-    },
-    signIn() {
-      this.googleAuth.signIn().then(() => {
-        this.fetchUser();
-      }).catch(err => {
-        console.log(err);
-      });
-    },
-    signOut() {
-      this.getCookie();
-      this.googleAuth.disconnect();
-      this.googleAuth.signOut().then(() => {
-        // TODO: send request to delete session
-        fetch('/user-logout', {
-          method: 'POST'
-        }).then(response => console.log(response));
-        this.getCookie();
-        this.signedIn = false;
-        this.showDropdown = false;
-        //this.user = null;
-      })
-    }
-  },
-  mounted() {
-    let gapiScript = document.createElement('script');
-    gapiScript.onload = this.onGAPILoad;
-    gapiScript.src = "https://apis.google.com/js/client.js";
-    document.head.appendChild(gapiScript);
-  },
-  watch: {
-    user: function(userVal) {
-      this.$emit('set-user', userVal);
     }
   }
 }
@@ -181,18 +101,15 @@ module.exports = {
   padding: 0 0 5px 0;
 }
 
-.action-items {
+#action-items {
   height: 100%;
   margin-left: auto;
 }
 
-.vert-center {
+#post-action {
   height: 80px;
   line-height: 80px;
-}
-
-#signin-link {
-  padding-right: 30px;
+  padding: 0;
 }
 
 .dropdown {
