@@ -33,6 +33,48 @@ public class UserRegistrationServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(UserRegistrationServlet.class.getName());
   private static final String CLIENT_ID = System.getenv("CLIENT_ID");
+  private final String COOKIE_NAME = "SFCookie";
+
+  @Override 
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    Cookie[] cookies = req.getCookies();
+    String sessionId = null;
+    for (Cookie cookie : cookies) {
+      if (COOKIE_NAME.equals(cookie.getName())) {
+        sessionId = cookie.getValue();
+      }
+    }
+    HttpSession activeSession = HttpSessionCollector.find(sessionId);
+    if (activeSession == null) {
+      LOGGER.log(Level.WARNING, "No user is logged in.");
+      // Set an error code of 403 if the user is not logged in
+      res.setStatus(HttpServletResponse.SC_FORBIDDEN);
+      return;
+    }
+    String userId = (String) activeSession.getAttribute("user_id");
+
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+    
+    try (Connection conn = pool.getConnection()) {
+      String stmt = 
+          "SELECT * "
+        + "FROM users "
+        + "WHERE id=? "
+        + "LIMIT 1;";
+
+      try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
+        userStmt.setString(1, userId);
+        
+        ResultSet rs = userStmt.executeQuery();
+        rs.next();
+      }
+    } catch (SQLException ex) {
+      LOGGER.log(Level.WARNING, "Error while speaking to database:", ex);
+      // Set an error code of 500 if the server can't connect to the database
+      res.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      res.getWriter().println("INTERNAL SERVER ERROR");
+    }
+  }
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -104,7 +146,7 @@ public class UserRegistrationServlet extends HttpServlet {
         // Create new user session and save as cookie on client side
         HttpSession newSession = req.getSession(true);
         newSession.setAttribute("user_id", userId);
-        Cookie activeSession = new Cookie("sessionId", newSession.getId());
+        Cookie activeSession = new Cookie("SFCookie", newSession.getId());
         res.addCookie(activeSession);
       } catch (SQLException ex) {
         LOGGER.log(Level.WARNING, "Error while attempting to insert new user.", ex);
