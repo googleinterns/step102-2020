@@ -75,17 +75,31 @@ module.exports = {
     fetchUser() {
       const user = this.googleAuth.currentUser.get();
       const token = user.getAuthResponse().id_token;
+      // TODO: Send expiresTime to servlet to set expiration for cookie
+      const expiresTime = user.getAuthResponse().expires_at;
       fetch('/user-signin?idToken=' + token, {
         method: 'POST'
-      }).then(response => response.json())
-      .then(userData => setUserInfo(userData))
+      }).then(response => {
+        this.signedIn = true;
+        this.getCookie();
+        // TODO: make GET request to retrieve user data
+      })
       .catch(err => {
         console.log(err);
       })
     },
     setUserInfo(userData) {
+      console.log(userData);
       this.signedIn = true;
       this.user = userData;
+    },
+    getCookie() {
+      let cookie = ("; "+document.cookie).split("; sessionId=").pop().split(";").shift();
+      if(cookie) {
+        console.log(cookie);
+      } else {
+        console.log("no cookie");
+      }
     },
     signIn() {
       this.googleAuth.signIn().then(() => {
@@ -97,6 +111,8 @@ module.exports = {
     signOut() {
       this.googleAuth.disconnect();
       this.googleAuth.signOut().then(() => {
+        // TODO: send request to delete session
+        this.getCookie();
         this.signedIn = false;
         this.showDropdown = false;
         this.user = null;
