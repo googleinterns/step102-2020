@@ -98,9 +98,13 @@ module.exports = {
     signOut() {
       this.googleAuth.disconnect();
       this.googleAuth.signOut().then(() => {
-        this.signedIn = false;
-        this.showDropdown = false;
-        // TODO: Set user to null once testing is completed
+        fetch('/user-logout', {
+          method: 'POST'
+        }).then(response => {
+          this.signedIn = false;
+          this.showDropdown = false;
+          // TODO: Set user to null once servlets are completed
+        });
       })
     }
   },
