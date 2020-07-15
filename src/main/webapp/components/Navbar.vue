@@ -45,9 +45,13 @@ module.exports = {
     return {
       showDropdown: false,
       signedIn: false,
-      clientId: "506538592562-klrt6tseu4eg2pi7cvt9m84ifh5neccp.apps.googleusercontent.com",
+      clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
       googleAuth: null,
-      user: null
+      // TODO: Set user to null once testing is finished
+      user: {
+        name: 'Default Name',
+        points: 0
+      }
     }
   },
   methods: {
@@ -65,26 +69,28 @@ module.exports = {
         client_id: this.clientId
       }).then(() => {
         this.googleAuth = gapi.auth2.getAuthInstance();
-        if(this.googleAuth.isSignedIn.get()) this.fetchUser();
+        if(this.googleAuth.isSignedIn.get()) this.registerUser();
       })
     },
-    fetchUser() {
-      const user = this.googleAuth.currentUser.get();
-      const token = user.getAuthResponse().id_token;
-      fetch('/user-signin?idToken=' + token)
-        .then(response => response.json())
-        .then(userData => setUserInfo(userData))
+    registerUser() {
+      const authRes = this.googleAuth.currentUser.get().getAuthResponse();
+      const token = authRes.id_token;
+      const expirationTime = authRes.expires_at;
+      fetch('/user-signin?idToken=' + token + 'exp=' + expirationTime)
+        .then(response => {
+          this.signedIn = true;
+          // TODO: Send GET request to retrieve user data then set it
+        })
         .catch(err => {
           console.log(err);
         })
     },
     setUserInfo(userData) {
-      this.signedIn = true;
       this.user = userData;
     },
     signIn() {
       this.googleAuth.signIn().then(() => {
-        this.fetchUser();
+        this.registerUser();
       }).catch(err => {
         console.log(err);
       });
