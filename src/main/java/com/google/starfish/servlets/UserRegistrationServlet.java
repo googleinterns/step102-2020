@@ -6,7 +6,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import java.io.IOException;  
-import java.io.PrintWriter;  
 import java.sql.Connection;  
 import java.sql.SQLException;  
 import java.sql.PreparedStatement;
@@ -67,6 +66,8 @@ public class UserRegistrationServlet extends HttpServlet {
         
         ResultSet rs = userStmt.executeQuery();
         rs.next();
+
+        // TO-DO: Once we have a UserService, we can create a User Object and send it back to client
       }
     } catch (SQLException ex) {
       LOGGER.log(Level.WARNING, "Error while speaking to database:", ex);
@@ -148,6 +149,9 @@ public class UserRegistrationServlet extends HttpServlet {
         newSession.setAttribute("user_id", userId);
         Cookie activeSession = new Cookie("SFCookie", newSession.getId());
         res.addCookie(activeSession);
+
+        // TO-DO: Once we have a UserService, we can create a User object and send that back to client
+
       } catch (SQLException ex) {
         LOGGER.log(Level.WARNING, "Error while attempting to insert new user.", ex);
         // Set an error code of 500 if the server can't connect to the database
