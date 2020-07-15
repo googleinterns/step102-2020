@@ -70,6 +70,7 @@ public class SearchServlet extends HttpServlet {
     }
   }  
 
+  /** Dynamically generates sql query statement for note search */
   private String getSearchQuery(String school, String course) {
     String stmt = 
         "SELECT * "
