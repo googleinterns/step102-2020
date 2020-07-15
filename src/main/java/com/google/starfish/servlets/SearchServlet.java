@@ -26,8 +26,8 @@ public class SearchServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
-    String reqSchool = req.getParameter("school");
-    String reqCourse= req.getParameter("course");
+    String reqSchool = req.getParameter("school").toLowerCase();
+    String reqCourse= req.getParameter("course").toLowerCase();
     ArrayList<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = 
