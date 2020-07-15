@@ -26,14 +26,11 @@ public class SearchServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
-    String reqSchool = req.getParameter("school").toLowerCase();
-    String reqCourse= req.getParameter("course").toLowerCase();
+    String reqSchool = req.getParameter("school").toLowerCase().trim();
+    String reqCourse= req.getParameter("course").toLowerCase().trim();
     ArrayList<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT * "
-        + "FROM `starfish.notes` "
-        + "WHERE `school`= ? AND `course` = ?;";
+      String stmt = getSearchQuery(reqSchool, reqCourse);
       try (PreparedStatement getNotesStatement = conn.prepareStatement(stmt)) {
         getNotesStatement.setString(1, reqSchool);
         getNotesStatement.setString(2, reqCourse);
@@ -72,6 +69,21 @@ public class SearchServlet extends HttpServlet {
         res.getWriter().println("Error caught while speaking to database: " + ex);  
     }
   }  
+
+  private String getSearchQuery(String school, String course) {
+    String stmt = 
+        "SELECT * "
+      + "FROM `starfish.notes` "
+      + "WHERE 1=1";
+    if (school != null && !school.isEmpty()) {
+      stmt += " AND `school`= ?";
+    }
+    if (course != null && !course.isEmpty()) {
+      stmt += " AND `course`= ?";
+    }
+    stmt += ";";
+    return stmt;
+  }
 
   /** Converts an array list to JSON */
   private String convertArrayListToJson(ArrayList<Note> notes) {
