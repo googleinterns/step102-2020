@@ -100,7 +100,7 @@ module.exports = {
       this.googleAuth.signOut().then(() => {
         this.signedIn = false;
         this.showDropdown = false;
-        this.user = null;
+        // TODO: Set user to null once testing is completed
       })
     }
   },
