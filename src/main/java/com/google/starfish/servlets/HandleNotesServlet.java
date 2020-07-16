@@ -30,7 +30,7 @@ public class HandleNotesServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
-    if(validateUser(request)) {
+    if(!validateUser(request)) {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
