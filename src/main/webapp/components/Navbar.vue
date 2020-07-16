@@ -2,8 +2,11 @@
   <nav class="navy-blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="../assets/starfish.png" id="logo">
-    <div id="action-items">
-      <a href="#" id="post-action">PostANote</a>
+    <div class="action-items" v-if="!signedIn">
+      <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
+    </div>
+    <div class="action-items" v-if="signedIn">
+      <a href="#" class="vert-center">PostANote</a>
       <div class="dropdown">
         <button class="dropdown-btn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
@@ -15,7 +18,7 @@
           <!-- TODO: Update links when new pages are created -->
           <a class="dropdown-link" href="#">My Profile</a> 
           <a class="dropdown-link" href="#">Favorite Notes</a>
-          <a class="dropdown-link" href="#">Logout</a>
+          <a class="dropdown-link" href="#" @click="signOut">Logout</a>
         </div>
       </div>
     </div> 
@@ -40,11 +43,16 @@ Vue.directive('click-outside', {
 module.exports = {
   data: function() {
     return {
-      showDropdown: false
+      showDropdown: false,
+      signedIn: false,
+      clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
+      googleAuth: null,
+      // TODO: Set user to null once testing is finished
+      user: {
+        name: 'Default Name',
+        points: 0
+      }
     }
-  },
-  props: {
-    user: Object
   },
   methods: {
     hideDropdown() {
@@ -52,6 +60,63 @@ module.exports = {
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
+    },
+    onGAPILoad() {
+      gapi.load('auth2', this.initGoogleAuth);
+    },
+    initGoogleAuth() {
+      gapi.auth2.init({
+        client_id: this.clientId
+      }).then(() => {
+        this.googleAuth = gapi.auth2.getAuthInstance();
+        if(this.googleAuth.isSignedIn.get()) this.registerUser();
+      })
+    },
+    registerUser() {
+      const authRes = this.googleAuth.currentUser.get().getAuthResponse();
+      const token = authRes.id_token;
+      const expirationTime = authRes.expires_at;
+      fetch('/user-signin?idToken=' + token + 'exp=' + expirationTime)
+        .then(response => {
+          this.signedIn = true;
+          // TODO: Send GET request to retrieve user data then set it
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    },
+    setUserInfo(userData) {
+      this.user = userData;
+    },
+    signIn() {
+      this.googleAuth.signIn().then(() => {
+        this.registerUser();
+      }).catch(err => {
+        console.log(err);
+      });
+    },
+    signOut() {
+      this.googleAuth.disconnect();
+      this.googleAuth.signOut().then(() => {
+        fetch('/user-logout', {
+          method: 'POST'
+        }).then(response => {
+          this.signedIn = false;
+          this.showDropdown = false;
+          // TODO: Set user to null once servlets are completed
+        });
+      })
+    }
+  },
+  mounted() {
+    let gapiScript = document.createElement('script');
+    gapiScript.onload = this.onGAPILoad;
+    gapiScript.src = "https://apis.google.com/js/client.js";
+    document.head.appendChild(gapiScript);
+  },
+  watch: {
+    user: function(userVal) {
+      this.$emit('set-user', userVal);
     }
   }
 }
@@ -101,15 +166,18 @@ module.exports = {
   padding: 0 0 5px 0;
 }
 
-#action-items {
+.action-items {
   height: 100%;
   margin-left: auto;
 }
 
-#post-action {
+.vert-center {
   height: 80px;
   line-height: 80px;
-  padding: 0;
+}
+
+#signin-link {
+  padding-right: 30px;
 }
 
 .dropdown {
