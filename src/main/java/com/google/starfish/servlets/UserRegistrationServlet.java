@@ -145,7 +145,7 @@ public class UserRegistrationServlet extends HttpServlet {
         Cookie activeSession = new Cookie("SFCookie", newSession.getId());
         res.addCookie(activeSession);
 
-        // TO-DO: Once we have a UserService, we can create a User object and send that back to client
+        // TO-DO: Once we have a UserService, client can make a new GET request to retrive the active User
 
       } catch (SQLException ex) {
         LOGGER.log(Level.WARNING, "Error while attempting to insert new user.", ex);
