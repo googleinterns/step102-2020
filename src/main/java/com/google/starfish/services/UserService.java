@@ -13,15 +13,15 @@ public class UserService extends GenericService {
 
   NoteService noteService = new NoteService();
 
-  public ResultSet getById(DataSource pool, long id) throws SQLException {
+  public ResultSet getById(DataSource pool, String id) throws SQLException {
     return super.getById(pool, id, Table.USERS);
   }
 
-  public boolean deleteById(DataSource pool, long id) throws SQLException {
+  public boolean deleteById(DataSource pool, String id) throws SQLException {
     return super.deleteById(pool, id, Table.USERS);
   }
 
-  public Note[] getFavoriteNotesById(DataSource pool, long userId) throws SQLException {
+  public Note[] getFavoriteNotesById(DataSource pool, String userId) throws SQLException {
     ArrayList<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = 
@@ -33,7 +33,7 @@ public class UserService extends GenericService {
                       + "WHERE user_id=?) "
           + "as b ON a.id=b.note_id;";
       try (PreparedStatement favNotesStmt = conn.prepareStatement(stmt)) {
-        favNotesStmt.setLong(1, userId);
+        favNotesStmt.setString(1, userId);
         ResultSet rs = favNotesStmt.executeQuery();
         while (rs.next()) {
           long noteId = rs.getLong("id");
@@ -66,7 +66,7 @@ public class UserService extends GenericService {
     }
   }
 
-  public Note[] getUploadedNotesById(DataSource pool, long userId) throws SQLException {
+  public Note[] getUploadedNotesById(DataSource pool, String userId) throws SQLException {
     ArrayList<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = 
@@ -74,7 +74,7 @@ public class UserService extends GenericService {
         + "FROM " + Table.NOTES + " "
         + "WHERE author_id=?;";
       try (PreparedStatement upldNotesStmt = conn.prepareStatement(stmt)) {
-        upldNotesStmt.setLong(1, userId);
+        upldNotesStmt.setString(1, userId);
         ResultSet rs = upldNotesStmt.executeQuery();
         while (rs.next()) {
           long noteId = rs.getLong("id");
