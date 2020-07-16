@@ -48,6 +48,34 @@ public class GenericService {
         return deleteStmt.execute();
       } 
     }
+  }
 
+  public ResultSet getById(DataSource pool, String id, Table sqlTable) throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt = 
+          "SELECT * "
+        + "FROM starfish." + sqlTable + " "
+        + "WHERE `id`= ? "
+        + "LIMIT 1;";
+      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
+        getStmt.setString(1, id);
+        ResultSet rs = getStmt.executeQuery();
+        return rs;
+      } 
+    }
+  }
+
+  public boolean deleteById(DataSource pool, String id, Table sqlTable) throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt = 
+          "DELETE * "
+        + "FROM starfish." + sqlTable + " "
+        + "WHERE `id`= ? "
+        + "LIMIT 1;";
+      try (PreparedStatement deleteStmt = conn.prepareStatement(stmt)) {
+        deleteStmt.setString(1, id);
+        return deleteStmt.execute();
+      } 
+    }
   }
 }
