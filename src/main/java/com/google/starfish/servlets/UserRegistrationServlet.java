@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /** Servlet that handles user registration and authentication. */  
-@WebServlet("/user-signin")  
+@WebServlet("/user-registration")  
 public class UserRegistrationServlet extends HttpServlet {
 
   private static final Logger LOGGER = Logger.getLogger(UserRegistrationServlet.class.getName());
