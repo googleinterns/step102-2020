@@ -24,7 +24,7 @@
                     :can-modify="isFavorited">
         </label-list>
 
-        <iframe :src="pdfSrc"></iframe>
+        <iframe :src="src"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -51,12 +51,12 @@
       course: String,
       labels: Array,
       isFavorited: Boolean,
-      /* pdfSrc: String, // TODO: Rename to Blobkey */
+      pdfSource: String, 
     },
     data: function() {
       return {
         showPreview: false,
-        pdfSrc: '/serve-notes?key=mNCTQ9i8e3JoyD1TrynatQ'
+        /* pdfSrc: '/serve-notes?key=PTsH-P4GY_jlNY216et_Bg' */
       }
     },
     computed: {
@@ -64,7 +64,7 @@
         return this.dateCreated?.toDateString();
       },
       src: function() {
-        return `/serve-notes?key=${this.pdfSrc}`
+        return `/serve-notes?key=${this.pdfSource}`
       }
     },
     mounted: function() {
