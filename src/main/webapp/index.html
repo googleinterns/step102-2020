@@ -21,9 +21,9 @@
     <div id="app">
       <v-app>
         <navbar></navbar>
-        <search-bar></search-bar>
+        <search-bar @searchresult="updateSearchResult"></search-bar>
         <note-grid>
-          <note-grid-collecion></note-grid-collecion>
+          <note-grid-collection :notes="searchResult"></note-grid-collecion>
         </note-grid>
       </v-app>
     </div>
@@ -38,6 +38,7 @@
     <script>
       new Vue({
         el: '#app',
+        vuetify: new Vuetify(),
         // Example for how to load component <sample-component>
         components: {
           'navbar': httpVueLoader('/components/Navbar.vue'),
@@ -45,7 +46,14 @@
           'note-grid': httpVueLoader('/components/NoteGrid.vue'),
           'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
         },
-        vuetify: new Vuetify(),
+        data: {
+          searchResult: [],
+        },
+        methods: {
+          updateSearchResult: function(result) {
+            this.searchResult = result;
+          },
+        }
       })
     </script>
   </body>
