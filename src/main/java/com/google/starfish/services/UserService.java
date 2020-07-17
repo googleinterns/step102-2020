@@ -37,7 +37,7 @@ public class UserService extends GenericService {
         ResultSet rs = favNotesStmt.executeQuery();
         while (rs.next()) {
           long noteId = rs.getLong("id");
-          long authorId = rs.getLong("author_id");
+          String authorId = rs.getString("author_id");
           String school = rs.getString("school");
           String course = rs.getString("course");
           String title = rs.getString("title");
@@ -78,7 +78,7 @@ public class UserService extends GenericService {
         ResultSet rs = upldNotesStmt.executeQuery();
         while (rs.next()) {
           long noteId = rs.getLong("id");
-          long authorId = rs.getLong("author_id");
+          String authorId = rs.getString("author_id");
           String school = rs.getString("school");
           String course = rs.getString("course");
           String title = rs.getString("title");
