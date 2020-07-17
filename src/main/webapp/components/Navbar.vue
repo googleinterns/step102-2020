@@ -6,7 +6,7 @@
       <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
     </div>
     <div class="action-items" v-if="signedIn">
-      <a href="#" class="vert-center">PostANote</a>
+      <upload-form></upload-form>  
       <div class="dropdown">
         <button class="dropdown-btn" @click.stop="toggleDropdown">
           <img id="user-profile" src="../assets/user.svg">
@@ -41,6 +41,9 @@ Vue.directive('click-outside', {
 });
 
 module.exports = {
+  components: {
+    'upload-form': httpVueLoader('/components/UploadForm.vue'),
+  },
   data: function() {
     return {
       showDropdown: false,
@@ -170,6 +173,7 @@ module.exports = {
 .action-items {
   height: 100%;
   margin-left: auto;
+  width: auto;
 }
 
 .vert-center {
