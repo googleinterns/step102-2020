@@ -1,64 +1,77 @@
 <template>
-  <!-- TODO: Turn into a dialog with a button activator -->
-  <v-form ref="form" @submit.prevent="onSubmit">
-    <v-row>
-      <v-col>
-        <v-file-input label="Upload a PDF"
-                      v-model="file"
-                      accept=".pdf"
-                      show-size
-                      @change="onFileChange">
-        </v-file-input>
+  <v-dialog v-model="form">
+    <template v-slot:activator="{ on, attrs }">
+      <v-btn color="primary"
+            dark
+            class="float-left"
+            v-bind="attrs"
+            v-on="on">
+        Post A Note
+      </v-btn>
+    </template>
+    <v-card>
+      <v-form ref="form" @submit.prevent="onSubmit">
+        <v-row>
+          <v-col>
+            <v-file-input label="Upload a PDF"
+                          v-model="file"
+                          accept=".pdf"
+                          show-size
+                          @change="onFileChange">
+            </v-file-input>
 
-        <v-text-field label="Title"
-                      v-model="title"
-                      clearable>
-        </v-text-field>
+            <v-text-field label="Title"
+                          v-model="title"
+                          clearable>
+            </v-text-field>
 
-        <v-combobox label="School"
-                    v-model="school"
-                    ref="school"
-                    clearable chips
-                    :items="commonSchools">
+            <v-combobox label="School"
+                        v-model="school"
+                        ref="school"
+                        clearable chips
+                        :items="commonSchools">
+              <template v-slot:no-data>
+                <span v-html="noDataHtml"></span>
+              </template>
+            </v-combobox>
+
+            <v-combobox label="Course"
+                        v-model="course"
+                        ref="course"
+                        clearable chips
+                        :items="commonCourses">
+              <template v-slot:no-data>
+                <span v-html="noDataHtml"></span>
+              </template>
+            </v-combobox>
+          </v-col>
+
+          <v-col>
+            <iframe :src="previewUrl"></iframe>
+          </v-col>
+        </v-row>
+
+        <v-combobox label="Miscellaneous Labels"
+                    v-model="miscLabels"
+                    multiple chips deletable-chips
+                    clearable hide-selected
+                    :items="commonLabels">
           <template v-slot:no-data>
             <span v-html="noDataHtml"></span>
           </template>
         </v-combobox>
 
-        <v-combobox label="Course"
-                    v-model="course"
-                    ref="course"
-                    clearable chips
-                    :items="commonCourses">
-          <template v-slot:no-data>
-            <span v-html="noDataHtml"></span>
-          </template>
-        </v-combobox>
-      </v-col>
-
-      <v-col>
-        <iframe :src="previewUrl"></iframe>
-      </v-col>
-    </v-row>
-
-    <v-combobox label="Miscellaneous Labels"
-                v-model="miscLabels"
-                multiple chips deletable-chips
-                clearable hide-selected
-                :items="commonLabels">
-      <template v-slot:no-data>
-        <span v-html="noDataHtml"></span>
-      </template>
-    </v-combobox>
-
-    <v-btn type="submit">Post Note</v-btn>
-  </v-form>
+        <v-btn type="submit">Post Note</v-btn>
+      </v-form>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script>
 module.exports = {
   data: function() {
     return {
+      form: false,
       uploadUrl: null,
       file: null,
       previewUrl: null,
@@ -112,11 +125,17 @@ module.exports = {
       fetch(this.uploadUrl, {
         method: 'POST',
         body: formData,
-      }).then(this.reset());
+      }).then(() => {
+        this.reset();
+        this.closeForm();
+      });
     },
     reset: function() {
       this.$refs.form.reset()
-    }, 
+    },
+    closeForm: function() {
+      this.form = false;
+    },
   },
   mounted: function() {
     // Get new upload url for the form
