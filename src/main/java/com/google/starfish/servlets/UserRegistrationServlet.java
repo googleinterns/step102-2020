@@ -41,6 +41,7 @@ public class UserRegistrationServlet extends HttpServlet {
     for (Cookie cookie : cookies) {
       if (COOKIE_NAME.equals(cookie.getName())) {
         sessionId = cookie.getValue();
+        break;
       }
     }
     HttpSession activeSession = req.getSession(false);
@@ -132,10 +133,8 @@ public class UserRegistrationServlet extends HttpServlet {
             // User starts with 0 points
             userStmt.setInt(6, 0);
             userStmt.setNull(7, Types.VARCHAR);
-
             // Finally, execute the statement. If it fails, an error will be thrown
             userStmt.execute();
-
           }
         }
 

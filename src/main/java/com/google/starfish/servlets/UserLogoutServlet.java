@@ -28,6 +28,7 @@ public class UserLogoutServlet extends HttpServlet {
         cookie.setValue(null);
         cookie.setPath("/");
         res.addCookie(cookie);
+        break;
       }
     }
 
