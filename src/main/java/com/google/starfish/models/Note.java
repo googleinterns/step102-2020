@@ -7,7 +7,7 @@ import java.util.Objects;
 public class Note {
 
   private long id;
-  private long authorId;
+  private String authorId;
   private String school;
   private String course;
   private String title;
@@ -21,7 +21,7 @@ public class Note {
   public static class Builder {
 
     private long id;
-    private long authorId;
+    private String authorId;
     private String school;
     private String course;
     private String title;
@@ -37,7 +37,7 @@ public class Note {
       return this;
     }
 
-    public Builder setAuthorId(long authorId) {
+    public Builder setAuthorId(String authorId) {
       this.authorId = authorId;
       return this;
     }
@@ -100,7 +100,7 @@ public class Note {
 
   /** Default constructor that throws null exception if NOT NULL fields are null */
   public Note(long id, 
-              long authorId, 
+              String authorId, 
               String school, 
               String course, 
               String title, 
