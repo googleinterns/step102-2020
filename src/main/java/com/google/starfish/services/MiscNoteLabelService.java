@@ -79,7 +79,7 @@ public class MiscNoteLabelService {
   }
 
    /** Gets the misc labels attached to the note with the given note id */
-  public String[] getMiscLabelsById(DataSource pool, long noteId) throws SQLException {
+  public String[] getMiscLabelsByNoteId(DataSource pool, long noteId) throws SQLException {
     try(Connection conn = pool.getConnection()) {
       String stmt =
           "SELECT label " 
