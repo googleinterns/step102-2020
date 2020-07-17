@@ -27,7 +27,7 @@ public class NoteService extends TableService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT COUNT(*) AS num_favorites "
-        + "FROM starfish." + Table.FAVORITE_NOTES + " "
+        + "FROM " + Table.FAVORITE_NOTES.getSqlTable() + " "
         + "WHERE `note_id`=?;";
       try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
         selectStmt.setLong(1, noteId);
@@ -45,7 +45,7 @@ public class NoteService extends TableService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT * "
-        + "FROM " + Table.NOTES + " "
+        + "FROM " + Table.NOTES.getSqlTable() + " "
         + "WHERE author_id=?;";
       try (PreparedStatement upldNotesStmt = conn.prepareStatement(stmt)) {
         upldNotesStmt.setString(1, userId);
