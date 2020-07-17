@@ -41,7 +41,7 @@ public class SearchServlet extends HttpServlet {
           ResultSet rs = getNotesStatement.executeQuery();
           conn.commit();
 
-          List<Note> notes = createNotesFromResultOfSeach(pool, rs);
+          List<Note> notes = buildNotesFromQueryResult(pool, rs);
           String json = convertListToJson(notes);
           res.setContentType("application/json");
           res.getWriter().println(json);
@@ -78,7 +78,7 @@ public class SearchServlet extends HttpServlet {
   }
 
   /** Creates a list of note objects based on the result set of a search query in the DB */
-  private List<Note> createNotesFromResultOfSeach(DataSource pool, ResultSet rs) throws SQLException {
+  private List<Note> buildNotesFromQueryResult(DataSource pool, ResultSet rs) throws SQLException {
     List<Note> notes = new ArrayList<>();
     while (rs.next()) {
       long noteId = rs.getLong("id");
