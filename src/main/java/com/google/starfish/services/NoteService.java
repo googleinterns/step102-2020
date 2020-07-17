@@ -12,14 +12,18 @@ import javax.sql.DataSource;
  * notes table in sql
  *
  */
-public class NoteService extends GenericService {
+public class NoteService extends TableService {
+
+  public NoteService() {
+    super(Table.NOTES);
+  }
 
   public ResultSet getById(DataSource pool, long id) throws SQLException {
-    return super.getById(pool, id, Table.NOTES);
+    return super.getRowById(pool, id);
   }
 
   public boolean deleteById(DataSource pool, long id) throws SQLException {
-    return super.deleteById(pool, id, Table.NOTES);
+    return super.deleteRowById(pool, id);
   }
 
   /** Gets the number of times a note has been favorited by note id */
