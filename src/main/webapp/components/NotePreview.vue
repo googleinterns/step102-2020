@@ -20,7 +20,7 @@
 
         <label-list :school="school"
                     :course="course"
-                    :labels="labels"
+                    :labels="miscLabels"
                     :can-modify="isFavorited">
         </label-list>
 
@@ -49,7 +49,7 @@
       numDownloads: Number,
       school: String,
       course: String,
-      labels: Array,
+      miscLabels: Array,
       isFavorited: Boolean,
       pdfSource: String, 
     },

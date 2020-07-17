@@ -54,6 +54,7 @@ public class SearchServlet extends HttpServlet {
           long numDownloads = rs.getLong("num_downloads");
           long numFavorites = noteService.getNumFavoritesById(pool, noteId);
           System.out.println("Note id: " + noteId);
+          String[] miscLabels = noteService.getMiscLabelsById(pool, noteId);
 
           Note thisNote = new Note.Builder()
                               .setId(noteId)
@@ -65,6 +66,7 @@ public class SearchServlet extends HttpServlet {
                               .setDateCreated(dateCreated)
                               .setNumDownloads(numDownloads)
                               .setNumFavorites(numFavorites)
+                              .setMiscLabels(miscLabels)
                               .build();
           notes.add(thisNote);
           count++;
