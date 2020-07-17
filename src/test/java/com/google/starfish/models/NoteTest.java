@@ -15,7 +15,7 @@ public final class NoteTest {
   public void constructorTestWithRequiredParams() {
     note = new Note.Builder()
                    .setId(1)
-                   .setAuthorId(3)
+                   .setAuthorId("123232")
                    .setNoteTitle("Test Note")
                    .setSourceUrl("https://test.com")
                    .setRequiredLabels("Western University", "SE2203")
@@ -30,7 +30,7 @@ public final class NoteTest {
   public void constructorTestWithRequiredAndOptionalParams() {
     note = new Note.Builder()
                    .setId(1)
-                   .setAuthorId(3)
+                   .setAuthorId("123231")
                    .setNoteTitle("Test Note")
                    .setSourceUrl("https://test.com")
                    .setRequiredLabels("Western University", "SE2203")
