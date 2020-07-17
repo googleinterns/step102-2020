@@ -1,4 +1,5 @@
 <template>
+  <!-- TODO: Turn into a dialog with a button activator -->
   <v-form ref="form" @submit.prevent="onSubmit">
     <v-row>
       <v-col>
@@ -63,12 +64,14 @@ module.exports = {
       previewUrl: null,
       title: null,
       school: "Unaffiliated",
-      commonSchools: ['UF', 'MIT', 'NYU', 'UCLA'],
+      commonSchools: ['UF', 'MIT', 'NYU', 'UCLA'], // Sample data
       course: "Unaffiliated",
-      commonCourses: ['CIS4301', 'ENC1101', 'PHY2049'],
+      commonCourses: ['CIS4301', 'ENC1101', 'PHY2049'], // Sample data
       miscLabels: null,
-      commonLabels: ['Hard', 'Professor X', 'Test Prep'],
+      commonLabels: ['Hard', 'Professor X', 'Test Prep'], // TODO: Turn into objects so a header can be included.
+                                                          // TODO: fetch commonLabels based on school and course
       noDataHtml: "No matching results. Type and press <kbd>enter</kbd> to create a new one",
+      // TODO: Add rules for form validation
     }
   },
   watch: {
@@ -120,6 +123,7 @@ module.exports = {
     fetch('/blobstore-upload-url')
       .then(response => response.text())
       .then(url => this.uploadUrl = url);
+    // TODO: Fetch the most common schools and courses
   }
 }
 </script>
