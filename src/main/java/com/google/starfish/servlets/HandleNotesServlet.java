@@ -68,6 +68,12 @@ public class HandleNotesServlet extends HttpServlet {
     // TODO: Make SQL queries not auto commit and rollback transaction on catching exception
     
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
+
+    labelService.insertSchoolLabel(pool, school);
+    labelService.insertCourseLabel(pool, course);
+    for (String miscLabel : miscLabels) {
+      labelService.insertMiscLabel(pool, miscLabel);
+    }
     
     try (Connection conn = pool.getConnection()) {
       String stmt =
@@ -90,7 +96,7 @@ public class HandleNotesServlet extends HttpServlet {
               + "?,"
               + "? ); ";
 
-      try (PreparedStatement noteStmt = conn.prepareStatement(stmt, Statement.RETURN_GENERATED_KEYS)) {
+      try (PreparedStatement noteStmt = conn.prepareStatement(stmt, new String[] {"id"})) {
         noteStmt.setString(1, userId);
         noteStmt.setString(2, school);
         noteStmt.setString(3, course);
@@ -99,8 +105,10 @@ public class HandleNotesServlet extends HttpServlet {
         noteStmt.setString(6, blobKey);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
         noteStmt.setLong(8, 0);
+        System.out.println(noteStmt);
         System.out.println("Posting note");
         int rowsAffected = noteStmt.executeUpdate();
+        System.out.println("Done posting note");
         if (rowsAffected == 1) {
           long noteId = 0;
           ResultSet rs = noteStmt.getGeneratedKeys();
@@ -109,12 +117,11 @@ public class HandleNotesServlet extends HttpServlet {
             System.out.println("NoteId: " + noteId);
 
             // Use label services to insert all new labels into the database
-            labelService.insertSchoolLabel(pool, school);
-            labelService.insertCourseLabel(pool, course);
+            // labelService.insertSchoolLabel(pool, school);
+            // labelService.insertCourseLabel(pool, course);
             for (String miscLabel : miscLabels) {
-              labelService.insertMiscLabel(pool, miscLabel);
-            }
-            for (String miscLabel : miscLabels) {
+              System.out.println("Note Id being inserted into misc_notes: " + noteId);
+              System.out.println("Label being inserted into misc_notes: " + miscLabel);
               miscNoteLabelService.insertMiscNoteLabelById(pool, noteId, miscLabel);
             }
           } 
@@ -125,6 +132,8 @@ public class HandleNotesServlet extends HttpServlet {
       // Set an error code of 500 if the server can't connect to the database
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       response.getWriter().println("INTERNAL SERVER ERROR: " + ex);
+    } catch (Throwable e) {
+      e.printStackTrace();
     }
     response.sendRedirect("/");
   }
