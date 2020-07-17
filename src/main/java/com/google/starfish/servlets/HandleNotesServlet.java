@@ -61,17 +61,16 @@ public class HandleNotesServlet extends HttpServlet {
       return;
     }
     String title = request.getParameter("title");
-    String school = request.getParameter("school");
-    String course = request.getParameter("course");
+    String school = request.getParameter("school").toLowerCase();
+    String course = request.getParameter("course").toLowerCase();
     String[] miscLabels = request.getParameter("miscLabels").split(",");
 
-    // TODO: Make SQL queries not auto commit and rollback transaction on catching exception
-    
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 
     labelService.insertSchoolLabel(pool, school);
     labelService.insertCourseLabel(pool, course);
     for (String miscLabel : miscLabels) {
+      miscLabel.toLowerCase();
       labelService.insertMiscLabel(pool, miscLabel);
     }
     
