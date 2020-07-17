@@ -5,11 +5,11 @@
     <div class="metadata">
       <div class="note-title">{{title}}</div>
       <div class="info-row">
-        <p>{{school.code}} &bull; {{course.code}}</p>
+        <p>{{school}} &bull; {{course}}</p>
         <img src="assets/gdrive18x.webp">
-        {{dateString}}
+        {{dateCreated}}
         <div class="rating-box">
-          {{favoriteCount}}
+          {{numFavorites}}
           <span class="star">&star;</span>          
         </div>
       </div>
@@ -23,20 +23,19 @@
     props: {
       thumbnailSrc: String,
       title: String,
-      date: Date,
+      dateCreated: String,
       school: Object,
       course: Object,
       labels: Array,
-      downloadCount: Number,
-      favoriteCount: Number,
+      numDownloads: Number,
+      numFavorites: Number,
       isFavorited: Boolean
     },
     computed: {
       thumbnail: function() {
-        return {backgroundImage:`url(${this.thumbnailSrc})`};
-      },
-      dateString: function() {
-        return this.date.toDateString();
+        // TODO: Generate a thumbnail of the pdf
+        let source = 'assets/notes.png';
+        return {backgroundImage:`url(${source})`};
       }
     },
     methods: {
