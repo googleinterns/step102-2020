@@ -23,7 +23,7 @@ public class NoteService extends GenericService {
   }
 
   /** Gets the number of times a note has been favorited by note id */
-  public static long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
+  public long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT COUNT(*) AS num_favorites "
