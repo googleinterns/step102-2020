@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import com.google.starfish.models.Note;
 
+/**
+ * Service class for FavoriteNotes Table
+ */
 public class FavoriteNoteService {
 
   /** Gets a favorite note by the compoud id */

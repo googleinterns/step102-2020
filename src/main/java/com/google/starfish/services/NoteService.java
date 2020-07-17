@@ -11,10 +11,7 @@ import java.util.ArrayList;
 import com.google.starfish.models.Note;
 
 /**
- * Service class for Notes that allows retrieval of values stored as
- * instance variables on the Note class that aren't stored on the 
- * notes table in sql
- *
+ * Service class for Notes Table
  */
 public class NoteService extends TableService {
 

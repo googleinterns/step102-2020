@@ -21,7 +21,10 @@ enum Table {
   }
 }
 
-/** Table Service class that provides the functionality to get and delete row by id in any table */
+/** 
+ * A generic service class that provides the functionality to 
+ * get and delete row by id in tables with non-compound keys 
+ */
 public class TableService {
 
   Table sqlTable;

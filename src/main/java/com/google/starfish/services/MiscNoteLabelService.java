@@ -8,6 +8,9 @@ import javax.sql.DataSource;
 import java.util.List;
 import java.util.ArrayList;
 
+/**
+ * Service class for MiscNoteLabels Table
+ */
 public class MiscNoteLabelService {
 
   /** Gets misc note label by compound id */

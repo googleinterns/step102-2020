@@ -20,6 +20,9 @@ enum Type {
   }
 }
 
+/**
+ * Service class for Labels Table
+ */
 public class LabelService extends TableService {
 
   public LabelService() {
