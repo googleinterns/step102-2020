@@ -39,15 +39,20 @@ public class HandleNotesServlet extends HttpServlet {
     String userId = (String) activeSession.getAttribute("user_id");
 
     String blobKey = getUploadedFileBlobKey(request, "file");
-    String title = request.getParameter("title");
-    String school = request.getParameter("school");
-    String course = request.getParameter("course");
-    // TODO: Not sure how the labels will be separated, will need to parse into array of strings
-    String miscLabels = request.getParameter("miscLabels");
+    if(blobKey == null) {
+      response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
+      return;
+    }
+    String title = request.getParameter("title").toLowerCase();
+    String school = request.getParameter("school").toLowerCase();
+    String course = request.getParameter("course").toLowerCase();
+    String[] miscLabels = request.getParameter("miscLabels").split(",");
 
-    // TODO: Put params into database
+    // TODO: Put labels into database
 
-    response.sendRedirect("/");
+    // TODO: Put note into database
+
+    response.setStatus(HttpServletResponse.SC_OK);
   }
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
@@ -60,7 +65,7 @@ public class HandleNotesServlet extends HttpServlet {
       return null;
     }
 
-    // Form only contains a single file input, so get the first index.
+    // Form only contains a single file input, so get the first index
     BlobKey blobKey = blobKeys.get(0);
 
     // User submitted empty file
