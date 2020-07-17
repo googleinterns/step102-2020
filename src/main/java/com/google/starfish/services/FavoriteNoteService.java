@@ -30,8 +30,8 @@ public class FavoriteNoteService {
     }
   }
 
-  /** Deletes a favorite note by the compoud id */
-  public ResultSet deleteRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
+  /** Deletes a favorite note by the compound id */
+  public boolean deleteRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "DELETE * "
@@ -39,11 +39,11 @@ public class FavoriteNoteService {
         + "WHERE `note_id`= ? AND "
         + "`user_id` = ? "
         + "LIMIT 1;";
-      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
-        getStmt.setLong(1, noteId);
-        getStmt.setString(2, userId);
-        ResultSet rs = getStmt.executeQuery();
-        return rs;
+      try (PreparedStatement deleteStmt = conn.prepareStatement(stmt)) {
+        deleteStmt.setLong(1, noteId);
+        deleteStmt.setString(2, userId);
+        boolean deleted = deleteStmt.execute();
+        return deleted;
       } 
     }
   }
