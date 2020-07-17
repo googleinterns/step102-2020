@@ -51,7 +51,7 @@
       course: String,
       labels: Array,
       isFavorited: Boolean,
-      pdfSrc: String,
+      pdfSrc: String, // TODO: Rename to Blobkey
     },
     data: function() {
       return {
@@ -62,6 +62,9 @@
       dateString: function() {
         return this.date?.toDateString();
       },
+      src: function() {
+        return `/serve-notes?key=${this.pdfSrc}`
+      }
     },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
