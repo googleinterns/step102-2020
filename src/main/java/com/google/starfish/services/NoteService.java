@@ -18,14 +18,6 @@ public class NoteService extends TableService {
     super(Table.NOTES);
   }
 
-  public ResultSet getById(DataSource pool, long id) throws SQLException {
-    return super.getRowById(pool, id);
-  }
-
-  public boolean deleteById(DataSource pool, long id) throws SQLException {
-    return super.deleteRowById(pool, id);
-  }
-
   /** Gets the number of times a note has been favorited by note id */
   public long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
