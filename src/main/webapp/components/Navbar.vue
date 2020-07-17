@@ -1,46 +1,65 @@
 <template>
   <nav class="navy-blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
-    <img src="../assets/starfish.png" id="logo">
+    <img src="/assets/starfish.png" id="logo">
     <div class="action-items" v-if="!signedIn">
-      <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
+      <v-btn color="primary"
+             dark
+             @click.stop="signIn"
+             id="signin-link">
+        Sign Up/Login
+      </v-btn>
     </div>
     <div class="action-items" v-if="signedIn">
-      <a href="#" class="vert-center">PostANote</a>
-      <div class="dropdown">
-        <button class="dropdown-btn" @click.stop="toggleDropdown">
-          <img id="user-profile" src="../assets/user.svg">
-        </button>
-        <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
-          <img src="../assets/user.svg" height="115px"/>
-          <p class="bold" id="dropdown-name">{{ user.name }}</p>
-          <p id="dropdown-points">{{ user.points }} points</p>
-          <!-- TODO: Update links when new pages are created -->
-          <a class="dropdown-link" href="#">My Profile</a> 
-          <a class="dropdown-link" href="#">Favorite Notes</a>
-          <a class="dropdown-link" href="#" @click="signOut">Logout</a>
-        </div>
-      </div>
+      <upload-form id="post-note"></upload-form>
+      <!-- User dropdown menu -->
+      <v-menu v-model="showDropdown" :offset-y="true">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs"
+                 v-on="on">
+            <v-avatar>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-avatar>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list>
+            <v-list-item>
+              <v-list-item-avatar>
+                <v-icon>mdi-account-circle</v-icon>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ user.name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+
+          <v-list>
+            <v-list-item @click="">
+              <v-list-item-title>My Profile</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="">
+              <v-list-item-title>Favorite Notes</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="signOut">
+              <v-list-item-title>Logout</v-list-item-title>
+            </v-list-item>            
+          </v-list>
+        </v-card>
+      </v-menu>
     </div> 
   </nav>
 </template>
 
 <script>
-Vue.directive('click-outside', {
-  bind: function (el, binding, vnode) {
-    this.event = function(event) {
-      if(!(el == event.target || el.contains(event.target))) {
-        vnode.context[binding.expression](event);
-      }
-    };
-    document.body.addEventListener('click', this.event);
-  },
-  unbind: function(el) {
-    document.body.removeEventListener('click', this.event);
-  }
-});
-
 module.exports = {
+  components: {
+    'upload-form': httpVueLoader('/components/UploadForm.vue')
+  },
   data: function() {
     return {
       showDropdown: false,
@@ -55,12 +74,6 @@ module.exports = {
     }
   },
   methods: {
-    hideDropdown() {
-      this.showDropdown = false;
-    },
-    toggleDropdown() {
-      this.showDropdown = !this.showDropdown;
-    },
     onGAPILoad() {
       gapi.load('auth2', this.initGoogleAuth);
     },
@@ -76,8 +89,9 @@ module.exports = {
       const authRes = this.googleAuth.currentUser.get().getAuthResponse();
       const token = authRes.id_token;
       const expirationTime = authRes.expires_at;
-      fetch('/user-signin?idToken=' + token + 'exp=' + expirationTime)
-        .then(response => {
+      fetch('/user-signin?idToken=' + token + 'exp=' + expirationTime, {
+        method: 'POST'
+      }).then(response => {
           this.signedIn = true;
           // TODO: Send GET request to retrieve user data then set it
         })
@@ -123,16 +137,20 @@ module.exports = {
 </script>
 
 <style scoped>
+button {
+  margin: 0 10px;
+}
+
+button:focus {
+  outline: none;
+}
+
 .bold {
   font-weight: bold;
 }
 
 .navy-blue {
   background-color: #004aad;
-}
-
-.light-gray {
-  background-color: #f9f9f9;
 }
 
 .sticky {
@@ -167,73 +185,14 @@ module.exports = {
 }
 
 .action-items {
+  align-items: center;
+  display: flex;
   height: 100%;
   margin-left: auto;
-}
-
-.vert-center {
-  height: 80px;
-  line-height: 80px;
+  width: auto;
 }
 
 #signin-link {
-  padding-right: 30px;
-}
-
-.dropdown {
-  height: 100%;
-  overflow: hidden;
-  padding: 0 10px 0 20px;
-}
-
-.dropdown .dropdown-btn {
-  background-color: inherit;
-  border: none;
-  color: white;
-  font-size: 16px;
-  font-family: inherit;
-  height: 100%;
-  margin: 0;
-  outline: none;
-  width: 75px;
-}
-
-.dropdown .dropdown-btn:hover {
-  cursor: pointer;
-}
-
-.dropdown-btn img {
-  height: 65%;
-}
-
-.dropdown-content {
-  align-items: center;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  height: 375px;
-  justify-content: center;
-  margin-right: 10px;
-  position: absolute;
-  right: 0;
-  width: 350px;
-  z-index: 1;
-}
-
-#dropdown-name {
-  font-size: 1.75rem;
-  margin: 25px 0 0 0;
-}
-
-#dropdown-points {
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.dropdown-content a {
-  color: #575757;
-  font-size: 1.25rem;
-  margin: 20px 0 -15px 0;
-  padding: 0;
+  margin-right: 30px;
 }
 </style>
