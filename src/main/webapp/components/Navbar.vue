@@ -3,12 +3,17 @@
     <a href="index.html" class="bold" id="title">starfish</a>
     <img src="/assets/starfish.png" id="logo">
     <div class="action-items" v-if="!signedIn">
-      <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
+      <v-btn color="primary"
+            dark
+            @click.stop="signIn"
+            id="signin-link">
+        Sign Up/Login
+      </v-btn>
     </div>
     <div class="action-items" v-if="signedIn">
-      <upload-form></upload-form>
+      <upload-form id="post-note"></upload-form>
       <!-- User dropdown menu -->
-      <v-menu v-model="showDropdown">
+      <v-menu v-model="showDropdown" :offset-y="true">
         <template v-slot:activator="{ on, attrs }">
           <v-btn v-bind="attrs"
                  v-on="on">
@@ -178,12 +183,22 @@ module.exports = {
   margin: 0 10px 0 20px;
 }
 
+button {
+  margin: 0 10px;
+}
+
+button:focus {
+  outline: none;
+}
+
 #logo {
   height: 60%;
   padding: 0 0 5px 0;
 }
 
 .action-items {
+  align-items: center;
+  display: flex;
   height: 100%;
   margin-left: auto;
   width: auto;
@@ -195,7 +210,7 @@ module.exports = {
 }
 
 #signin-link {
-  padding-right: 30px;
+  margin-right: 30px;
 }
 
 .dropdown {
