@@ -21,12 +21,10 @@
     <div id="app">
       <v-app>
         <navbar></navbar>
-        <main class="blue">
-          <h1 class="title">starfish</h1>
-          <h3 class="subtitle">Share and find the best course notes. Completely free.</h3>
-          <search-bar></search-bar>
-          <img id="laptop" src="assets/laptop-min.png">
-        </main>
+        <search-bar></search-bar>
+        <note-grid>
+          <note-grid-collecion></note-grid-collecion>
+        </note-grid>
       </v-app>
     </div>
 
@@ -44,6 +42,8 @@
         components: {
           'navbar': httpVueLoader('/components/Navbar.vue'),
           'search-bar': httpVueLoader('/components/SearchBar.vue'),
+          'note-grid': httpVueLoader('/components/NoteGrid.vue'),
+          'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
         },
         vuetify: new Vuetify(),
       })
