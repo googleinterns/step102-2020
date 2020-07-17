@@ -49,7 +49,7 @@ public class MiscNoteLabelService extends GenericService {
         conn.setAutoCommit(false);
         String stmt =
             "INSERT INTO misc_note_labels ( "
-                + "note_d,"
+                + "note_id,"
                 + "label ) "
           + "VALUES ( "
                 + "?,"
@@ -57,7 +57,8 @@ public class MiscNoteLabelService extends GenericService {
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           label.toLowerCase().trim();
           insertStmt.setLong(1, noteId);
-          insertStmt.setString(1, label);
+          insertStmt.setString(2, label);
+          System.out.println(insertStmt);
           insertStmt.execute();
           conn.commit();
         }
