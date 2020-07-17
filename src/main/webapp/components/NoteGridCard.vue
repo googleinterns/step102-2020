@@ -5,11 +5,11 @@
     <div class="metadata">
       <div class="note-title">{{title}}</div>
       <div class="info-row">
-        <p>{{school.code}} &bull; {{course.code}}</p>
-        <img src="assets/gdrive18x.webp">
+        <p>{{school}} &bull; {{course}}</p>
+        <img src="assets/gdrive.webp">
         {{dateString}}
         <div class="rating-box">
-          {{favoriteCount}}
+          {{numFavorites}}
           <span class="star">&star;</span>          
         </div>
       </div>
@@ -27,13 +27,14 @@
       school: String,
       course: String,
       labels: Array,
-      downloadCount: Number,
-      favoriteCount: Number,
+      numDownloads: Number,
+      numFavorites: Number,
       isFavorited: Boolean
     },
     computed: {
       thumbnail: function() {
-        return {backgroundImage:`url(${this.thumbnailSrc})`};
+        let source = 'assets/notes.png';
+        return {backgroundImage:`url(${source})`};
       },
       dateString: function() {
         if(this.date) {
