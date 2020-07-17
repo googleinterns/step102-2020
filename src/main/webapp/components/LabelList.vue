@@ -8,9 +8,9 @@
             close-icon='mdi-find-replace'>
       <v-avatar left
                 color="orange darken-3">
-        {{school.code}}
+        {{school}}
       </v-avatar>
-      {{school.name}}
+      {{school}}
     </v-chip>
 
     <!-- Course Label -->
@@ -20,9 +20,9 @@
             :close="canModify"
             close-icon='mdi-find-replace'>
       <v-icon left x-small>
-        {{course.code}}
+        {{course}}
       </v-icon>
-      {{course.name}}
+      {{course}}
     </v-chip>
 
     <!-- Remaining Labels -->
@@ -54,21 +54,15 @@ module.exports = {
       }
     },
     school: {
-      type: Object,
+      type: String,
       default: function() {
-        return {
-          code: 'N/A',
-          name: 'Unaffiliated'
-        }
+        return 'Unaffiliated';
       }
     },
     course: {
-      type: Object,
+      type: String,
       default: function() {
-        return {
-          code: 'N/A',
-          name: 'Unaffiliated'
-        }
+        return 'Unaffiliated';
       }
     },
     labels: Array
