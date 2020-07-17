@@ -41,16 +41,19 @@ public class SearchServlet extends HttpServlet {
         int count = 0;
         System.out.println("executed query");
         while (rs.next()) {
+          System.out.println("entered while loop");
+
           long noteId = rs.getLong("id");
-          long authorId = rs.getLong("author_id");
+          String authorId = rs.getString("author_id");
           String school = rs.getString("school");
           String course = rs.getString("course");
           String title = rs.getString("title");
-          String sourceUrl = rs.getString("title");
+          String sourceUrl = rs.getString("source_url");
           String pdfSource = rs.getString("pdf_source");
           Date dateCreated = rs.getDate("date_created");
           long numDownloads = rs.getLong("num_downloads");
-          long numFavorites = NoteService.getNumFavoritesById(pool, noteId);
+          long numFavorites = noteService.getNumFavoritesById(pool, noteId);
+          System.out.println("Note id: " + noteId);
 
           Note thisNote = new Note.Builder()
                               .setId(noteId)
@@ -83,7 +86,7 @@ public class SearchServlet extends HttpServlet {
   private String getSearchQuery(String school, String course) {
     String stmt = 
         "SELECT * "
-      + "FROM `notes` "
+      + "FROM notes "
       + "WHERE 1=1";
     if (school != null && !school.isEmpty()) {
       stmt += " AND `school`='" + school + "'";
