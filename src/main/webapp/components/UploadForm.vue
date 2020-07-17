@@ -80,14 +80,10 @@ module.exports = {
       course: "Unaffiliated",
       commonCourses: ['CIS4301', 'ENC1101', 'PHY2049'], // Sample data
       miscLabels: null,
-      /* 
-      TODO: Turn into objects so a header can be included to describe the types
-            of labels being displayed (e.g. commonly used labels)
-      TODO: fetch commonLabels based on school and course
-      */
+      // TODO: Add header to describe the type of labels being displayed
+      // TODO: fetch commonLabels based on school and course
       commonLabels: ['Hard', 'Professor X', 'Test Prep'], 
       noDataHtml: "No matching results. Type and press <kbd>enter</kbd> to create a new one",
-      // TODO: Add rules for form validation
     }
   },
   watch: {
@@ -102,6 +98,7 @@ module.exports = {
     },
   },
   methods: {
+    // TODO: Add form validation
     nextTick: function(f) {
       // Avoids race conditions with function f
       setTimeout(f, 0);
