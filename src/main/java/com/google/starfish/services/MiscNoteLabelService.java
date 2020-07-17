@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class MiscNoteLabelService {
 
-  /** Gets mis note label by compound id */
+  /** Gets misc note label by compound id */
   public ResultSet getRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
