@@ -18,26 +18,10 @@ import com.google.starfish.models.Note;
  */
 public class NoteService extends TableService {
 
+  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
+
   public NoteService() {
     super(Table.NOTES);
-  }
-
-  /** Gets the number of times a note has been favorited by note id */
-  public long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
-    try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT COUNT(*) AS num_favorites "
-        + "FROM " + Table.FAVORITE_NOTES.getSqlTable() + " "
-        + "WHERE `note_id`=?;";
-      try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
-        selectStmt.setLong(1, noteId);
-        ResultSet rs = selectStmt.executeQuery();
-        rs.next();
-        long numFavorites = rs.getLong("num_favorites");
-        rs.close();
-        return numFavorites;
-      }
-    }
   }
 
   public Note[] getUploadedNotesByUserId(DataSource pool, String userId) throws SQLException {
@@ -60,7 +44,7 @@ public class NoteService extends TableService {
           String pdfSource = rs.getString("pdf_source");
           Date dateCreated = rs.getDate("date_created");
           long numDownloads = rs.getLong("num_downloads");
-          long numFavorites = getNumFavoritesById(pool, noteId);
+          long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, noteId);
 
           Note thisNote = new Note.Builder()
                               .setId(noteId)
