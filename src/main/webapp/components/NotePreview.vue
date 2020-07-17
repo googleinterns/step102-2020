@@ -56,7 +56,7 @@
     data: function() {
       return {
         showPreview: false,
-        pdfSrc: '/serve-notes?key=8lZZ6Lx5HE5dQgzwgtJkew'
+        pdfSrc: '/serve-notes?key=mNCTQ9i8e3JoyD1TrynatQ'
       }
     },
     computed: {
