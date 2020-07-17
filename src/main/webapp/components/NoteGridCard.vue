@@ -24,8 +24,8 @@
       thumbnailSrc: String,
       title: String,
       date: Date,
-      school: Object,
-      course: Object,
+      school: String,
+      course: String,
       labels: Array,
       downloadCount: Number,
       favoriteCount: Number,
@@ -36,7 +36,10 @@
         return {backgroundImage:`url(${this.thumbnailSrc})`};
       },
       dateString: function() {
-        return this.date.toDateString();
+        if(this.date) {
+          return this.date.toDateString();
+        }
+        return "";
       }
     },
     methods: {
