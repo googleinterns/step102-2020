@@ -1,56 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>STEP Capstone</title>
-    <link rel="stylesheet" href="styles/upload-form.css">
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <h1>Upload Course Notes</h1>
-    <div id="upload-form">
-      <div id="preview">
-        <h4>Set Thumbnail</h4>
-        <iframe src="assets/notes.pdf"></iframe>
-      </div>
-      <form>
-        <label for="notes-file">Select File:</label>
-        <br>
-        <input type="file" name="notes-file">
-        <br>
-        <br>
-        <label for="notes-title">Title</label>
-        <br>
-        <input type="text" name="notes-title">
-        <br>
-        <br>
-        <div class="inline-block">
-          <label for="school">School</label>
-          <br>
-          <input type="text" name="school">
-        </div>
-        <div class="inline-block">
-          <label for="course">Course Code or Name</label>
-          <br>
-          <input type="text" name="course">
-        </div>
-        <br>
-        <div class="inline-block">
-          <label for="other-tags">Other Tags</label>
-          <br>
-          <textarea name="other-tags"></textarea>
-        </div>
-        <div class="inline-block">
-          <strong>Common Labels for this Course</strong>
-          <ul>
-            <li>Professor Oak</li>
-            <li>Visual Learner</li>
-          </ul>
-        </div>
-        <br>
-        <br>
-        <input type="submit">
-      </form>
-    </div>
-  </body>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <upload-form></upload-form>
+    </v-app>
+  </div>
+
+  <script src="https://unpkg.com/http-vue-loader"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      components: {
+        'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
+        'note-grid': httpVueLoader('/components/NoteGrid.vue'),
+        'upload-form': httpVueLoader('/components/UploadForm.vue'),
+        'navbar': httpVueLoader('/components/navbar.vue'),
+        'search-bar': httpVueLoader('/components/SearchBar.vue'),
+      },
+      vuetify: new Vuetify(),
+      data: {
+        user: {
+            name: 'Bob the Builder',
+            points: 597
+        },
+        notes: [
+          {
+            title: 'Lagrange Transformations',
+            author: 'John Doe',
+            pdfSrc: 'assets/notes.pdf',
+            thumbnailSrc: 'assets/notes.png',
+            date: new Date(),
+            school: {
+              code: 'NYU',
+              name: 'New York University'
+            },
+            course: {
+              code: 'MAC1147',
+              name: 'Differential Equations'
+            },
+            labels: [
+              'Professor Guile',
+              'Math',
+              'Hard',
+              'Note Caviar',
+              'Test Prep',
+            ],
+            downloadCount: 11,
+            favoriteCount: 3,
+          },
+          {
+            title: 'Triggers and Contraints',
+            author: 'Andres Holguin',
+            pdfSrc: 'assets/notes.pdf',
+            thumbnailSrc: 'assets/notes.png',
+            date: new Date(),
+            school: {
+              code: 'UF',
+              name: 'University of Florida'
+            },
+            course: {
+              code: 'CIS4301',
+              name: 'Intro to Databases'
+            },
+            labels: [
+              'Professor Blanchard',
+              'Visual'
+            ],
+            downloadCount: 654,
+            favoriteCount: 321,
+          },          
+        ]
+      },
+      methods: {
+        previewNote: function(note) {
+          this.note = note;
+          this.showModal = true;
+        }
+      }
+    })
+  </script>
+</body>
 </html>
