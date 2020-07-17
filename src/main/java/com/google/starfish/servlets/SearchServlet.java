@@ -28,14 +28,18 @@ public class SearchServlet extends HttpServlet {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
     String reqSchool = req.getParameter("school").toLowerCase().trim();
     String reqCourse= req.getParameter("course").toLowerCase().trim();
+    System.out.println(reqSchool);
+    System.out.println(reqCourse);
     ArrayList<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = getSearchQuery(reqSchool, reqCourse);
       try (PreparedStatement getNotesStatement = conn.prepareStatement(stmt)) {
-        getNotesStatement.setString(1, reqSchool);
-        getNotesStatement.setString(2, reqCourse);
+        // getNotesStatement.setString(1, reqSchool);
+        // getNotesStatement.setString(2, reqCourse);
+        System.out.println(getNotesStatement);
         ResultSet rs = getNotesStatement.executeQuery();
-
+        int count = 0;
+        System.out.println("executed query");
         while (rs.next()) {
           long noteId = rs.getLong("id");
           long authorId = rs.getLong("author_id");
@@ -46,7 +50,7 @@ public class SearchServlet extends HttpServlet {
           String pdfSource = rs.getString("pdf_source");
           Date dateCreated = rs.getDate("date_created");
           long numDownloads = rs.getLong("num_downloads");
-          long numFavorites = noteService.getNumFavoritesById(pool, noteId);
+          long numFavorites = NoteService.getNumFavoritesById(pool, noteId);
 
           Note thisNote = new Note.Builder()
                               .setId(noteId)
@@ -60,9 +64,14 @@ public class SearchServlet extends HttpServlet {
                               .setNumFavorites(numFavorites)
                               .build();
           notes.add(thisNote);
+          count++;
+          System.out.println("Found a note.");
         }
+        System.out.println(count);
         String json = convertArrayListToJson(notes);
+        System.out.println("Converting to json");
         res.setContentType("application/json");
+        System.out.println(json);
         res.getWriter().println(json);
       }
     } catch (SQLException ex) {
@@ -74,15 +83,16 @@ public class SearchServlet extends HttpServlet {
   private String getSearchQuery(String school, String course) {
     String stmt = 
         "SELECT * "
-      + "FROM `starfish.notes` "
+      + "FROM `notes` "
       + "WHERE 1=1";
     if (school != null && !school.isEmpty()) {
-      stmt += " AND `school`= ?";
+      stmt += " AND `school`='" + school + "'";
     }
     if (course != null && !course.isEmpty()) {
-      stmt += " AND `course`= ?";
+      stmt += " AND `course`='"+ course + "'";
     }
     stmt += ";";
+    System.out.println(stmt);
     return stmt;
   }
 
