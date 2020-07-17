@@ -6,14 +6,14 @@
           {{title}}
         </v-card-title>
         <v-card-subtitle>
-          <em>{{author}}</em> - {{dateString}}
+          <em>{{author}}</em> - {{dateCreated}}
         </v-card-subtitle>
 
-        <v-badge :content="favoriteCount"
+        <v-badge :content="numFavorites"
                   class="ma-2">
           <v-icon>mdi-star</v-icon>
         </v-badge>
-        <v-badge :content="downloadCount"
+        <v-badge :content="numDownloads"
                   class="ma-2">
           <v-icon>mdi-download</v-icon>
         </v-badge>
@@ -44,23 +44,24 @@
         }
       },
       author: String,
-      date: Date,
-      favoriteCount: Number,
-      downloadCount: Number,
+      dateCreated: String,
+      numFavorites: Number,
+      numDownloads: Number,
       school: String,
       course: String,
       labels: Array,
       isFavorited: Boolean,
-      pdfSrc: String, // TODO: Rename to Blobkey
+      /* pdfSrc: String, // TODO: Rename to Blobkey */
     },
     data: function() {
       return {
         showPreview: false,
+        pdfSrc: '/serve-notes?key=8lZZ6Lx5HE5dQgzwgtJkew'
       }
     },
     computed: {
       dateString: function() {
-        return this.date?.toDateString();
+        return this.dateCreated?.toDateString();
       },
       src: function() {
         return `/serve-notes?key=${this.pdfSrc}`
