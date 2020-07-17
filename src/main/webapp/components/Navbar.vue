@@ -6,27 +6,53 @@
       <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
     </div>
     <div class="action-items" v-if="signedIn">
-      <upload-form></upload-form>  
-      <div class="dropdown">
-        <button class="dropdown-btn" @click.stop="toggleDropdown">
-          <img id="user-profile" src="/assets/user.svg">
-        </button>
-        <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
-          <img src="/assets/user.svg" height="115px"/>
-          <p class="bold" id="dropdown-name">{{ user.name }}</p>
-          <p id="dropdown-points">{{ user.points }} points</p>
-          <!-- TODO: Update links when new pages are created -->
-          <a class="dropdown-link" href="#">My Profile</a> 
-          <a class="dropdown-link" href="#">Favorite Notes</a>
-          <a class="dropdown-link" href="#" @click="signOut">Logout</a>
-        </div>
-      </div>
+      <upload-form></upload-form>
+      <!-- User dropdown menu -->
+      <v-menu v-model="showDropdown">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn v-bind="attrs"
+                 v-on="on">
+            <v-avatar>
+              <v-icon>mdi-account-circle</v-icon>
+            </v-avatar>
+          </v-btn>
+        </template>
+        <v-card>
+          <v-list>
+            <v-list-item>
+              <v-list-item-avatar>
+                <v-icon>mdi-account-circle</v-icon>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>{{ user.name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+
+          <v-divider></v-divider>
+
+          <v-list>
+            <v-list-item @click="">
+              <v-list-item-title>My Profile</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item @click="">
+              <v-list-item-title>Favorite Notes</v-list-item-title>
+            </v-list-item>
+
+            <v-list-item @click="signOut">
+              <v-list-item-title>Logout</v-list-item-title>
+            </v-list-item>            
+          </v-list>
+        </v-card>
+      </v-menu>
     </div> 
   </nav>
 </template>
 
 <script>
-
 module.exports = {
   components: {
     'upload-form': httpVueLoader('/components/UploadForm.vue'),
