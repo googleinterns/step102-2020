@@ -1,7 +1,7 @@
 <template>
   <nav class="navy-blue sticky nav-bar">
     <a href="index.html" class="bold" id="title">starfish</a>
-    <img src="../assets/starfish.png" id="logo">
+    <img src="/assets/starfish.png" id="logo">
     <div class="action-items" v-if="!signedIn">
       <a href="#" class="vert-center" @click.stop="signIn" id="signin-link">Sign Up/Login</a>
     </div>
@@ -9,10 +9,10 @@
       <upload-form></upload-form>  
       <div class="dropdown">
         <button class="dropdown-btn" @click.stop="toggleDropdown">
-          <img id="user-profile" src="../assets/user.svg">
+          <img id="user-profile" src="/assets/user.svg">
         </button>
         <div class="light-gray dropdown-content" v-if="showDropdown" v-click-outside="hideDropdown">
-          <img src="../assets/user.svg" height="115px"/>
+          <img src="/assets/user.svg" height="115px"/>
           <p class="bold" id="dropdown-name">{{ user.name }}</p>
           <p id="dropdown-points">{{ user.points }} points</p>
           <!-- TODO: Update links when new pages are created -->
