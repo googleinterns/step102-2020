@@ -1,39 +1,35 @@
 <template>
-  <form class="flex" id="search-container" action="/" @submit.prevent="onSubmit">
-    <div class="flex" id="input-area">
-      <div class="flex" id="search-area">
-        <div class="flex search-item">
-          <label for="school">School:</label>
-          <input
-              type="text"
-              id="school"
-              name="school"
-              v-model.trim="school"
-              placeholder="Cambridge University">
-        </div>
-        <div class="flex search-item">
-          <label for="course">Course:</label>
-          <input
-              type="text"
-              id="course"
-              name="course"
-              v-model.trim="course"
-              placeholder="CS4410">
-        </div>
-      </div>
-      <input type="submit" value="Search" id="search-btn">
-    </div>
-    <p class="red" v-if="error">{{ error }}</p>
-  </form>
+  <v-form ref="form" id="search-form" @submit.prevent="onSubmit">
+    <v-row>
+      <v-col class="left">
+        <v-text-field label="School"
+                      v-model.trim="school"
+                      placeholder="Cambridge University">
+        </v-text-field>
+
+        <v-text-field label="Course"
+                      v-model.trim="course"
+                      placeholder="CS4410">
+        </v-text-field>
+      </v-col>
+
+      <v-col class="right">
+        <v-btn type="submit">Search</v-btn>
+      </v-col>
+    </v-row>
+    <v-row id="error-container" v-if="error">
+      <p>{{ error }}</p>
+    </v-row>
+  </v-form>
 </template>
 
 <script>
 module.exports = {
   data: function() {
     return {
-      school: null,
-      course: null,
-      error: null
+      school: "",
+      course: "",
+      error: ""
     }
   },
   methods: {
@@ -43,17 +39,19 @@ module.exports = {
       }
       else /* Form validated */ {
         this.error = "";
-        this.queryDatabase(this.school, this.course)
-          .then(result => this.$emit('searchresult', result))
-          .catch(error => this.error = error);
+        this.queryDatabase(this.school, this.course);
       }
     },
-    queryDatabase: async function(school, course) {
-      let url = new URL("/notes", window.location.href);
+    queryDatabase: function(school, course) {
+      let url = new URL("/search", window.location.href);
       url.searchParams.set('school', school);
       url.searchParams.set('course', course);
 
-      return fetch(url).then(response => response.json())
+      fetch(url)
+        .then(response => response.json())
+        .then(result => {
+          this.$emit('searchresult', result);
+        })
         .catch(error => {
           throw new Error(error);
         });
@@ -63,52 +61,21 @@ module.exports = {
 </script>
 
 <style scoped>
-input {
-  font-size: inherit;
-}
-
-p {
-  margin: 0;
-}
-
-.flex {
+.right {
+  align-items: center;
   display: flex;
+  flex-grow: 0;
 }
 
-.red {
+#search-form {
+  align-self: center;
+  min-width: 375px;
+  width: 30%;
+}
+
+#error-container {
   color: red;
-}
-
-#search-container {
-  align-items: center;
-  flex-direction: column;
-  font-size: 1.5rem;
+  display: flex;
   justify-content: center;
-  width: 100%;
-}
-
-#input-area {
-  min-width: 25%;
-}
-
-#search-area {
-  flex-direction: column;
-  flex-grow: 1;
-  margin: 5px;
-}
-
-.search-item {
-  align-items: center;
-  margin: 5px 0;
-}
-
-.search-item input {
-  flex-grow: 1;
-  margin-left: 3px;
-  padding: 5px 10px;
-}
-
-#search-btn {
-  margin: 10px;
 }
 </style>
