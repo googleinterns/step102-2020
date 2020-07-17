@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class MiscNoteLabelService {
 
+  /** Gets mis note label by compound id */
   public ResultSet getRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
@@ -27,7 +28,8 @@ public class MiscNoteLabelService {
     }
   }
 
-  public ResultSet deleteRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
+  /** Deletes misc note label by compound id */
+  public boolean deleteRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "DELETE * "
@@ -35,15 +37,16 @@ public class MiscNoteLabelService {
         + "WHERE `note_id`= ? AND "
         + "`label` = ? "
         + "LIMIT 1;";
-      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
-        getStmt.setLong(1, noteId);
-        getStmt.setString(2, label);
-        ResultSet rs = getStmt.executeQuery();
-        return rs;
+      try (PreparedStatement deleteStmt = conn.prepareStatement(stmt)) {
+        deleteStmt.setLong(1, noteId);
+        deleteStmt.setString(2, label);
+        boolean deleted = deleteStmt.execute();
+        return deleted;
       } 
     }
   }
 
+  /** Inserts a misc note label by note id and label title */
   public void insertMiscNoteLabel(DataSource pool, long noteId, String label) {
     if (label == null) return;
     try (Connection conn = pool.getConnection()) {
