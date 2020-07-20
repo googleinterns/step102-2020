@@ -111,7 +111,7 @@ function getDate() {
  */
 function generateNote() {
   let loadingIcon = document.getElementById('loading');
-  loadingIcon.style.display = 'block';
+  loadingIcon.style.display = 'flex';
   let docName = document.getElementById('doc-name-input').value.trim();
   if(docName === '') {
     docName = 'gNote ' + getDate();
