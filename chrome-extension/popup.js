@@ -7,12 +7,27 @@ const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
 
+const CLIENT_ID = encodeURIComponent(keys.CLIENT_ID);
+const CLIENT_SECRET = encodeURIComponent(keys.CLIENT_SECRET);
+const API_KEY = keys.API_KEY;
+const REDIRECT_URI = 
+    encodeURIComponent('https://' + chrome.runtime.id + '.chromiumapp.org');
+const SCOPES = encodeURIComponent([
+  "openid",
+  "email",
+  "profile",
+  "https://www.googleapis.com/auth/userinfo.email",
+  "https://www.googleapis.com/auth/drive",
+  "https://www.googleapis.com/auth/documents"
+].join(' '));
+
 const DISCOVERY_DOCS = [
   "https://docs.googleapis.com/$discovery/rest?version=v1",
   "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
 ];
 
 let loggedIn = false;
+let accessToken = "";
 
 /**
  * Gets the script for Google APIs client library for browser-side
@@ -25,6 +40,7 @@ window.onload = function() {
 
   document.getElementById('generate-note-btn').onclick = generateNote;
   document.getElementById('logout-btn').onclick = logout;
+  document.getElementById('login-btn').onclick = handleLogin;
   document.getElementById('doc-name-input').value = 'gNote ' + getDate();
 }
 
@@ -42,16 +58,54 @@ window.initGAPI = function initGAPI() {
  * and displays user info in popup.
  */
 function handleLogin() {
-  chrome.identity.getAuthToken({interactive: true}, function(token) {
-    if (chrome.runtime.lastError) {
-      return;
+  const url =
+      'https://accounts.google.com/o/oauth2/auth' + 
+      '?client_id=' + CLIENT_ID + 
+      '&response_type=code' + 
+      '&access_type=offline' +
+      '&redirect_uri=' + REDIRECT_URI + 
+      '&scope=' + SCOPES;
+  chrome.identity.launchWebAuthFlow({
+    url: url,
+    interactive: true
+  }), function(redirectedTo) {
+    if(chrome.runtime.lastError) {
+      console.log(chrome.runtime.lastError);
+    } else {
+      const response = redirectedTo.split('?code=', 2)[1];
+      const code = response.split('&scope', 1)[0];
+      const newUrl =
+          'https://oauth2.googleapis.com/token' +
+          '?grant_type=authorization_code' + 
+          '&code=' + code + 
+          '&redirect_uri=' + REDIRECT_URI + 
+          '&client_id=' + CLIENT_ID + 
+          '&client_secret=' + CLIENT_SECRET;
+      getTokenEndpoint(newUrl)
+        .then(function(tokenInfo) {
+          accessToken = tokenInfo.access_token;
+          gapi.auth.setToken({ access_token: accessToken });
+          loggedIn = true;
+          setAccountInfo();
+        })
     }
-    gapi.auth.setToken({
-      access_token: token,
-    });
-    loggedIn = true;
-    setAccountInfo();
-  })
+  }
+  // chrome.identity.getAuthToken({interactive: true}, function(token) {
+  //   if (chrome.runtime.lastError) {
+  //     return;
+  //   }
+  //   gapi.auth.setToken({
+  //     access_token: token,
+  //   });
+  //   loggedIn = true;
+  //   setAccountInfo();
+  // })
+}
+
+function getTokenEndpoint(url) {
+  return fetch(url, {
+    method: 'POST'
+  }).then(response => response.json());
 }
 
 /** Returns formatted string of today's date. */
@@ -111,10 +165,14 @@ function setAccountInfo() {
       document.getElementById('logout-btn').style.display = 'inline';
       document.getElementById('email').textContent = userInfo.email;
       document.getElementById('user-info').style.display = 'block';
+      document.getElementById('login-btn').style.display = 'none';
+      document.getElementById('generate-note-btn').disabled = false;
     });
   } else {
     document.getElementById('logout-btn').style.display = 'none';
     document.getElementById('email').textContent = "";
     document.getElementById('user-info').style.display = 'none';
+    document.getElementById('login-btn').style.display = 'inline';
+    document.getElementById('generate-note-btn').disabled = true;
   }
 }
