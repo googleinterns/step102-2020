@@ -13,21 +13,21 @@ const API_KEY = keys.API_KEY;
 const REDIRECT_URI = 
     encodeURIComponent('https://' + chrome.runtime.id + '.chromiumapp.org');
 const SCOPES = encodeURIComponent([
-  "openid",
-  "email",
-  "profile",
-  "https://www.googleapis.com/auth/userinfo.email",
-  "https://www.googleapis.com/auth/drive",
-  "https://www.googleapis.com/auth/documents"
+  'openid',
+  'email',
+  'profile',
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/drive',
+  'https://www.googleapis.com/auth/documents'
 ].join(' '));
 
 const DISCOVERY_DOCS = [
-  "https://docs.googleapis.com/$discovery/rest?version=v1",
-  "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"
+  'https://docs.googleapis.com/$discovery/rest?version=v1',
+  'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest'
 ];
 
 let loggedIn = false;
-let accessToken = "";
+let accessToken = '';
 
 /**
  * Gets the script for Google APIs client library for browser-side
@@ -102,7 +102,7 @@ function getTokenEndpoint(url) {
 /** Returns formatted string of today's date. */
 function getDate() {
   const today = new Date();
-  return today.toLocaleDateString("en-US");
+  return today.toLocaleDateString('en-US');
 }
 
 /**
@@ -110,6 +110,8 @@ function getDate() {
  * with the newly created Google Doc.
  */
 function generateNote() {
+  let loadingIcon = document.getElementById('loading');
+  loadingIcon.style.display = 'block';
   let docName = document.getElementById('doc-name-input').value.trim();
   if(docName === '') {
     docName = 'gNote ' + getDate();
@@ -124,8 +126,10 @@ function generateNote() {
     }
   }).then(function(response) {
     const gNoteURL = GOOGLE_DOC_URL + response.result.id;
+    loadingIcon.style.display = 'none';
     chrome.tabs.create({ url: gNoteURL });
   }).catch(error => {
+    loadingIcon.style.display = 'none';
     console.log('Error:', error);
   })
 }
@@ -160,7 +164,7 @@ function setAccountInfo() {
     });
   } else {
     document.getElementById('logout-btn').style.display = 'none';
-    document.getElementById('email').textContent = "";
+    document.getElementById('email').textContent = '';
     document.getElementById('user-info').style.display = 'none';
     document.getElementById('login-btn').style.display = 'inline';
     document.getElementById('generate-note-btn').disabled = true;
