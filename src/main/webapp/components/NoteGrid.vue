@@ -6,7 +6,7 @@
     </note-preview>
 
     <!-- Slot for all the <note-grid-collection> components -->
-    <slot></slot>
+    <slot :filters="filters"></slot>
   </div>
 </template>
 
@@ -19,6 +19,7 @@ module.exports = {
     return {
       isFavorited: true,
       noteToPreview: {},
+      filters: [],
     }
   },
   mounted: function() {
