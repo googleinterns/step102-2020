@@ -67,7 +67,6 @@ public class FavoriteNoteService {
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           insertStmt.setLong(1, noteId);
           insertStmt.setString(2, userId);
-          System.out.println(insertStmt);
           insertStmt.execute();
           conn.commit();
         }
