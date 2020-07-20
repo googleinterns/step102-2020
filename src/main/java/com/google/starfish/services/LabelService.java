@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /** Enum that holds label types */
 enum Type {
@@ -44,6 +48,57 @@ public class LabelService extends TableService {
   /** Inserts new misc label */
   public void insertMiscLabel(DataSource pool, String label) {
     insertLabel(pool, label, Type.MISC);
+  }
+
+  /** Returns a map of all school and course labels in the database */
+  public HashMap<String, String[]> getAllSchoolAndCourseLabels(DataSource pool) {
+    HashMap<String, String[]> organizedLabels = new HashMap<>();
+    try (Connection conn = pool.getConnection()) {
+      List<String> schools = new ArrayList<>();
+      List<String> courses = new ArrayList<>();
+      try {
+        conn.setAutoCommit(false);
+        String stmt1 = 
+            "SELECT * " 
+          + "FROM " + LABELS + " "
+          + "WHERE type= " + Type.SCHOOL.getType();
+        String stmt2 = 
+            "SELECT * " 
+          + "FROM " + LABELS + " "
+          + "WHERE type= " + Type.COURSE.getType();
+        try (PreparedStatement schoolStmt = conn.prepareStatement(stmt1); 
+            PreparedStatement courseStmt = conn.prepareStatement(stmt2)) {
+          ResultSet schoolResults = schoolStmt.executeQuery();
+          ResultSet courseResults = courseStmt.executeQuery();
+          conn.commit();
+          while (schoolResults.next()) {
+            String school = schoolResults.getString("title");
+            schools.add(school);
+          }
+          while (courseResults.next()) {
+            String course = courseResults.getString("title");
+            courses.add(course);
+          }
+          organizedLabels.put("schools", schools.toArray(new String[0]));
+          organizedLabels.put("courses", courses.toArray(new String[0]));
+          return organizedLabels;
+        }
+      } catch(SQLException ex) {
+        if (conn != null) {
+          try {
+            System.err.print("Transaction is being rolled back.");
+            conn.rollback();
+          } catch (SQLException excep) {
+            System.err.print(excep);
+            return null;
+          }
+        }
+        return null;
+      }
+    } catch (SQLException ex) {
+      System.err.print(ex);
+      return null;
+    }
   }
 
   private void insertLabel(DataSource pool, String label, Type type) {
