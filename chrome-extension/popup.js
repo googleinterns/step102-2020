@@ -68,7 +68,7 @@ function login() {
   chrome.identity.launchWebAuthFlow({
     url: url,
     interactive: true
-  }, function(redirectedTo) {
+  }, redirectedTo => {
     if(chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError);
     } else {
@@ -83,7 +83,7 @@ function login() {
           '&client_id=' + CLIENT_ID + 
           '&client_secret=' + CLIENT_SECRET;
       getTokenEndpoint(newUrl)
-        .then(function(tokenInfo) {
+        .then(tokenInfo => {
           accessToken = tokenInfo.access_token;
           gapi.auth.setToken({ access_token: accessToken });
           loggedIn = true;
@@ -125,7 +125,7 @@ function generateNote() {
     body: {
       name: docName,
     }
-  }).then(function(response) {
+  }).then(response => {
     // TODO: Make POST request to upload notes servlet
     const gNoteURL = GOOGLE_DOC_URL + response.result.id;
     loadingIcon.style.display = 'none';
@@ -157,7 +157,7 @@ function logout() {
  */
 function setAccountInfo() {
   if(loggedIn) {
-    chrome.identity.getProfileUserInfo(function(userInfo) {
+    chrome.identity.getProfileUserInfo(userInfo => {
       document.getElementById('logout-btn').style.display = 'inline';
       document.getElementById('email').textContent = userInfo.email;
       document.getElementById('user-info').style.display = 'block';
