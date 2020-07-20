@@ -25,7 +25,7 @@ import java.sql.ResultSet;
 import java.sql.Date;
 import java.util.Calendar;
 
-
+/** Servlet to handle note uploading and adding associated labels to the database */
 @WebServlet("/handle-notes")
 public class HandleNotesServlet extends HttpServlet {
 
