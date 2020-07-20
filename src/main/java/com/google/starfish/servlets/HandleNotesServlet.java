@@ -88,6 +88,7 @@ public class HandleNotesServlet extends HttpServlet {
     for (Cookie cookie : cookies) {
       if (COOKIE_NAME.equals(cookie.getName())) {
         sessionId = cookie.getValue();
+        break;
       }
     }
 
