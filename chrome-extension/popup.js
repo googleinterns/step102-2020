@@ -118,7 +118,7 @@ function generateNote() {
   gapi.client.request({
     path: COPY_FILE_URL,
     method: 'POST',
-    params: {fileId: NOTES_TEMPLATE_ID},
+    params: {fileId: NOTES_TEMPLATE_DOC_ID},
     body: {
       name: docName,
     }
