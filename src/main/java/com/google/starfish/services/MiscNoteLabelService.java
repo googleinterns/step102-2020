@@ -100,7 +100,7 @@ public class MiscNoteLabelService {
           labels.add(rs.getString("label"));
         }
         rs.close();
-        return labels.toArray(new String[labels.size()]);
+        return labels.toArray(new String[0]);
       }
     }
   }
