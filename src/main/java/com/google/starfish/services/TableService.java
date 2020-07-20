@@ -27,10 +27,10 @@ enum Table {
  */
 public class TableService {
 
-  Table sqlTable;
+  String sqlTable;
 
   public TableService(Table sqlTable) {
-    this.sqlTable = sqlTable;
+    this.sqlTable = sqlTable.getSqlTable();
   }
 
   /** Gets row by long id from sql */
@@ -40,7 +40,7 @@ public class TableService {
         conn.setAutoCommit(false);
         String stmt = 
             "SELECT * "
-          + "FROM " + this.sqlTable.getSqlTable() + " "
+          + "FROM " + this.sqlTable + " "
           + "WHERE `id`= ? "
           + "LIMIT 1;";
         try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
@@ -74,7 +74,7 @@ public class TableService {
         conn.setAutoCommit(false);
         String stmt = 
             "SELECT * "
-          + "FROM " + this.sqlTable.getSqlTable() + " "
+          + "FROM " + this.sqlTable + " "
           + "WHERE `id`= ? "
           + "LIMIT 1;";
         try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
@@ -108,7 +108,7 @@ public class TableService {
         conn.setAutoCommit(false);
         String stmt = 
             "DELETE * "
-          + "FROM " + this.sqlTable.getSqlTable() + " "
+          + "FROM " + this.sqlTable + " "
           + "WHERE `id`= ? "
           + "LIMIT 1;";
         try (PreparedStatement deleteStmt = conn.prepareStatement(stmt)) {
@@ -142,7 +142,7 @@ public class TableService {
         conn.setAutoCommit(false);
         String stmt = 
             "DELETE * "
-          + "FROM starfish." + this.sqlTable.getSqlTable() + " "
+          + "FROM " + this.sqlTable + " "
           + "WHERE `id`= ? "
           + "LIMIT 1;";
         try (PreparedStatement deleteStmt = conn.prepareStatement(stmt)) {
