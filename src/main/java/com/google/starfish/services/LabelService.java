@@ -61,11 +61,11 @@ public class LabelService extends TableService {
         String stmt1 = 
             "SELECT * " 
           + "FROM " + LABELS + " "
-          + "WHERE type= " + Type.SCHOOL.getType();
+          + "WHERE type= \"" + Type.SCHOOL.getType() + "\"";
         String stmt2 = 
             "SELECT * " 
           + "FROM " + LABELS + " "
-          + "WHERE type= " + Type.COURSE.getType();
+          + "WHERE type= \"" + Type.COURSE.getType() + "\"";
         try (PreparedStatement schoolStmt = conn.prepareStatement(stmt1); 
             PreparedStatement courseStmt = conn.prepareStatement(stmt2)) {
           ResultSet schoolResults = schoolStmt.executeQuery();

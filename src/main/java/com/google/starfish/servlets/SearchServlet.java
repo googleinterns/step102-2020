@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.util.Date;
 import com.google.starfish.services.NoteService;
-import com.google.starfish.services.FavoriteNoteService;
 import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import java.util.List;
 public class SearchServlet extends HttpServlet {  
 
   private NoteService noteService = new NoteService();
-  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -38,6 +36,8 @@ public class SearchServlet extends HttpServlet {
         conn.setAutoCommit(false);
         String stmt = getSearchQuery(reqSchool, reqCourse);
         try (PreparedStatement getNotesStatement = conn.prepareStatement(stmt)) {
+          getNotesStatement.setString(1, reqSchool);
+          getNotesStatement.setString(2, reqCourse);
           ResultSet rs = getNotesStatement.executeQuery();
           conn.commit();
 
@@ -65,13 +65,13 @@ public class SearchServlet extends HttpServlet {
   private String getSearchQuery(String school, String course) {
     String stmt = 
         "SELECT * "
-      + "FROM `notes` "
+      + "FROM `starfish.notes` "
       + "WHERE 1=1";
     if (school != null && !school.isEmpty()) {
-      stmt += " AND `school`= '" + school + "'";
+      stmt += " AND `school`= ?";
     }
     if (course != null && !course.isEmpty()) {
-      stmt += " AND `course`= '" + course + "'";
+      stmt += " AND `course`= ?";
     }
     stmt += ";";
     return stmt;
@@ -82,7 +82,7 @@ public class SearchServlet extends HttpServlet {
     List<Note> notes = new ArrayList<>();
     while (rs.next()) {
       long noteId = rs.getLong("id");
-      String authorId = rs.getString("author_id");
+      long authorId = rs.getLong("author_id");
       String school = rs.getString("school");
       String course = rs.getString("course");
       String title = rs.getString("title");
@@ -90,7 +90,7 @@ public class SearchServlet extends HttpServlet {
       String pdfSource = rs.getString("pdf_source");
       Date dateCreated = rs.getDate("date_created");
       long numDownloads = rs.getLong("num_downloads");
-      long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, noteId);
+      long numFavorites = noteService.getNumFavoritesById(pool, noteId);
 
       Note thisNote = new Note.Builder()
                           .setId(noteId)
