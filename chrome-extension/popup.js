@@ -40,7 +40,7 @@ window.onload = function() {
 
   document.getElementById('generate-note-btn').onclick = generateNote;
   document.getElementById('logout-btn').onclick = logout;
-  document.getElementById('login-btn').onclick = handleLogin;
+  document.getElementById('login-btn').onclick = login;
   document.getElementById('doc-name-input').value = 'gNote ' + getDate();
 }
 
@@ -49,7 +49,7 @@ window.initGAPI = function initGAPI() {
   gapi.client.init({
     apiKey: API_KEY,
     discoveryDocs: DISCOVERY_DOCS,
-  }).then(handleLogin)
+  }).then(login)
   .catch(error => console.log('Error:', error));
 }
 
@@ -57,7 +57,7 @@ window.initGAPI = function initGAPI() {
  * Requests user login (if necessary) then sets gapi access token
  * and displays user info in popup.
  */
-function handleLogin() {
+function login() {
   const url =
       'https://accounts.google.com/o/oauth2/auth' + 
       '?client_id=' + CLIENT_ID + 
