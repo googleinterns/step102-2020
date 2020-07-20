@@ -15,24 +15,6 @@ public class MiscNoteLabelService {
 
   private String MISC_LABELS = Table.MISC_LABELS.getSqlTable();
 
-  /** Gets misc note label by compound id */
-  public ResultSet getRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
-    try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT * "
-        + "FROM " + MISC_LABELS + " "
-        + "WHERE `note_id`= ? AND "
-        + "`label` = ? "
-        + "LIMIT 1;";
-      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
-        getStmt.setLong(1, noteId);
-        getStmt.setString(2, label);
-        ResultSet rs = getStmt.executeQuery();
-        return rs;
-      } 
-    }
-  }
-
   /** Deletes misc note label by compound id */
   public boolean deleteRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
     try (Connection conn = pool.getConnection()) {

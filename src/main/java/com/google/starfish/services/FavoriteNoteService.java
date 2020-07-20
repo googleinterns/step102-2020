@@ -18,24 +18,6 @@ public class FavoriteNoteService {
   private String NOTES = Table.NOTES.getSqlTable();
   private NoteService noteService = new NoteService();
 
-  /** Gets a favorite note by the compoud id */
-  public ResultSet getRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
-    try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT * "
-        + "FROM " + FAVORITE_NOTES + " "
-        + "WHERE `note_id`= ? AND "
-        + "`user_id` = ? "
-        + "LIMIT 1;";
-      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
-        getStmt.setLong(1, noteId);
-        getStmt.setString(2, userId);
-        ResultSet rs = getStmt.executeQuery();
-        return rs;
-      } 
-    }
-  }
-
   /** Deletes a favorite note by the compound id */
   public boolean deleteRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
