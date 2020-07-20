@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
 import com.google.starfish.models.Note;
 
 /**
@@ -16,6 +15,8 @@ import com.google.starfish.models.Note;
 public class FavoriteNoteService {
 
   private String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
+  private String NOTES = Table.NOTES.getSqlTable();
+  private NoteService noteService = new NoteService();
 
   /** Gets a favorite note by the compoud id */
   public ResultSet getRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
@@ -94,7 +95,7 @@ public class FavoriteNoteService {
       String stmt = 
           "SELECT  a.* "
         + "FROM "
-          + Table.NOTES.getSqlTable() + " AS a "
+          + NOTES + " AS a "
           + "INNER JOIN (SELECT * "
                       + "FROM " + FAVORITE_NOTES + " "
                       + "WHERE user_id=?) "
@@ -103,28 +104,7 @@ public class FavoriteNoteService {
         favNotesStmt.setString(1, userId);
         ResultSet rs = favNotesStmt.executeQuery();
         while (rs.next()) {
-          long noteId = rs.getLong("id");
-          String authorId = rs.getString("author_id");
-          String school = rs.getString("school");
-          String course = rs.getString("course");
-          String title = rs.getString("title");
-          String sourceUrl = rs.getString("title");
-          String pdfSource = rs.getString("pdf_source");
-          Date dateCreated = rs.getDate("date_created");
-          long numDownloads = rs.getLong("num_downloads");
-          long numFavorites = getNumFavoritesByNoteId(pool, noteId);
-
-          Note thisNote = new Note.Builder()
-                              .setId(noteId)
-                              .setAuthorId(authorId)
-                              .setRequiredLabels(school, course)
-                              .setNoteTitle(title)
-                              .setSourceUrl(sourceUrl)
-                              .setOptionalPdfSource(pdfSource)
-                              .setDateCreated(dateCreated)
-                              .setNumDownloads(numDownloads)
-                              .setNumFavorites(numFavorites)
-                              .build();
+          Note thisNote = noteService.constructNoteFromSqlResult(pool, rs);
           notes.add(thisNote);
         }
         rs.close();
