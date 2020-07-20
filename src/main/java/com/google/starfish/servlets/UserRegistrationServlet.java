@@ -72,6 +72,7 @@ public class UserRegistrationServlet extends HttpServlet {
       try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
         userStmt.setString(1, userId);
         ResultSet rs = userStmt.executeQuery();
+        rs.next();
         User user = constructUserFromSqlResult(pool, rs);
         String json = convertObjectToJSON(user);
         res.setContentType("application/json");
