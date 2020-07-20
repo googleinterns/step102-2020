@@ -43,7 +43,7 @@ public class NoteService extends TableService {
     }
   }
 
-  public Note constructNoteFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
+  private Note constructNoteFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
     long noteId = rs.getLong("id");
     String authorId = rs.getString("author_id");
     String school = rs.getString("school");
