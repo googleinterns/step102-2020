@@ -23,6 +23,9 @@
         <navbar></navbar>
         <search-bar @searchresult="updateSearchResult"></search-bar>
         <mock-search @searchresult="updateSearchResult"></mock-search>
+        <note-grid v-slot="{ filters }">
+          <note-grid-collection :notes="searchResult" :filters="filters"></note-grid-collection>
+        </note-grid>
       </v-app>
     </div>
 
