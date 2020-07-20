@@ -5,6 +5,11 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.starfish.models.User;
+import com.google.starfish.models.Note;
+import com.google.starfish.services.NoteService;
+import com.google.starfish.services.FavoriteNoteService;
+import com.google.gson.Gson;
 import java.io.IOException;  
 import java.sql.Connection;  
 import java.sql.SQLException;  
@@ -33,6 +38,8 @@ public class UserRegistrationServlet extends HttpServlet {
   private static final Logger LOGGER = Logger.getLogger(UserRegistrationServlet.class.getName());
   private static final String CLIENT_ID = System.getenv("CLIENT_ID");
   private final String COOKIE_NAME = "SFCookie";
+  private NoteService noteService = new NoteService();
+  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
 
   @Override 
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -64,11 +71,11 @@ public class UserRegistrationServlet extends HttpServlet {
 
       try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
         userStmt.setString(1, userId);
-        
         ResultSet rs = userStmt.executeQuery();
-        rs.next();
-
-        // TO-DO: Once we have a UserService, we can create a User Object and send it back to client
+        User user = constructUserFromSqlResult(pool, rs);
+        String json = convertObjectToJSON(user);
+        res.setContentType("application/json");
+        res.getWriter().println(json);
       }
     } catch (SQLException ex) {
       LOGGER.log(Level.WARNING, "Error while speaking to database:", ex);
@@ -157,6 +164,30 @@ public class UserRegistrationServlet extends HttpServlet {
     }
   }
 
+  private User constructUserFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
+    String userId = rs.getString("id");
+    String displayPicture = rs.getString("display_picture");
+    String displayName = rs.getString("display_name");
+    Date dateJoined = rs.getDate("date_joined");
+    String email = rs.getString("email");
+    long points = rs.getLong("points");
+    String school = rs.getString("school");
+    Note[] favoriteNotes = favoriteNoteService.getFavoriteNotesByUserId(pool, userId);
+    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, userId);
+
+    User user = new User.Builder()
+                        .setId(userId)
+                        .setOptionalDisplayProperties(displayPicture, displayName)
+                        .setDateJoined(dateJoined)
+                        .setEmail(email)
+                        .setPoints(points)
+                        .setOptionalSchool(school)
+                        .setOptionalFavoriteNotes(favoriteNotes)
+                        .setOptionalUploadedNotes(uploadedNotes)
+                        .build();
+    return user;
+  }
+
   private boolean checkIfUserExists(Connection conn, String userId) throws SQLException {
     String stmt = "SELECT EXISTS(SELECT * FROM users WHERE id=?);";
     try (PreparedStatement userExistsStmt = conn.prepareStatement(stmt)) {
@@ -165,5 +196,11 @@ public class UserRegistrationServlet extends HttpServlet {
       userExistsResult.next();
       return userExistsResult.getBoolean(1);
     } 
+  }
+
+  /** Converts an object to JSON */
+  private String convertObjectToJSON(User user) {
+    Gson gson = new Gson();
+    return gson.toJson(user);
   }
 }
