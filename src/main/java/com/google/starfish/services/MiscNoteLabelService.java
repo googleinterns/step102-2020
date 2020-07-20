@@ -70,8 +70,9 @@ public class MiscNoteLabelService {
    /** Gets the misc labels attached to the note with the given note id */
   public String[] getMiscLabelsByNoteId(DataSource pool, long noteId) throws SQLException {
     try(Connection conn = pool.getConnection()) {
+      String sqlQueryId = "label";
       String stmt =
-          "SELECT label " 
+          "SELECT " + sqlQueryId + " " 
         + "FROM " + MISC_LABELS + " " 
         + "WHERE `note_id`=?;";
       try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
@@ -79,7 +80,7 @@ public class MiscNoteLabelService {
         ResultSet rs = selectStmt.executeQuery();
         List<String> labels = new ArrayList<>();
         while(rs.next()) {
-          labels.add(rs.getString("label"));
+          labels.add(rs.getString(sqlQueryId));
         }
         rs.close();
         return labels.toArray(new String[0]);

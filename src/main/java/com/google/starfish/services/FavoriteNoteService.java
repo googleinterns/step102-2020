@@ -99,15 +99,16 @@ public class FavoriteNoteService {
   /** Gets the number of times a note has been favorited by note id */
   public long getNumFavoritesByNoteId(DataSource pool, long noteId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
+      String sqlQueryId = "num_favorites";
       String stmt = 
-          "SELECT COUNT(*) AS num_favorites "
+          "SELECT COUNT(*) AS " + sqlQueryId + " "
         + "FROM " + FAVORITE_NOTES + " "
         + "WHERE `note_id`=?;";
       try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
         selectStmt.setLong(1, noteId);
         ResultSet rs = selectStmt.executeQuery();
         rs.next();
-        long numFavorites = rs.getLong("num_favorites");
+        long numFavorites = rs.getLong(sqlQueryId);
         rs.close();
         return numFavorites;
       }
