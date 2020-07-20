@@ -47,7 +47,7 @@ window.onload = function() {
 /** Initializes gapi. */
 window.initGAPI = function initGAPI() {
   gapi.client.init({
-    apiKey: keys.API_KEY,
+    apiKey: API_KEY,
     discoveryDocs: DISCOVERY_DOCS,
   }).then(handleLogin)
   .catch(error => console.log('Error:', error));
@@ -90,18 +90,9 @@ function handleLogin() {
         })
     }
   })
-  // chrome.identity.getAuthToken({interactive: true}, function(token) {
-  //   if (chrome.runtime.lastError) {
-  //     return;
-  //   }
-  //   gapi.auth.setToken({
-  //     access_token: token,
-  //   });
-  //   loggedIn = true;
-  //   setAccountInfo();
-  // })
 }
 
+/** Retrieves access token information for user from the url. */
 function getTokenEndpoint(url) {
   return fetch(url, {
     method: 'POST'
@@ -140,8 +131,8 @@ function generateNote() {
 }
 
 /**
- * Logs out the user by revoking their authentication token and removing
- * it from the cache.
+ * Logs out the user by revoking their authentication token and resetting
+ * gapi's auth token.
  */
 function logout() {
   fetch(REVOKE_TOKEN_URL + accessToken)
@@ -151,20 +142,12 @@ function logout() {
       loggedIn = false;
       setAccountInfo();
     })
-  // chrome.identity.getAuthToken({interactive: false}, function(token) {
-  //   const url = REVOKE_TOKEN_URL + token;
-  //   window.fetch(url);
-
-  //   chrome.identity.removeCachedAuthToken({token: token}, function() {
-  //     loggedIn = false;
-  //     setAccountInfo();
-  //   });
-  // })
 }
 
 /**
- * Displays the user's email and a logout button if the user
- * is currently logged in. Otherwise, hides them.
+ * If the user is logged in, displays their email and logout button, and
+ * enables the generate note button. Otherwise, displays a login button 
+ * and disables the generate note button.
  */
 function setAccountInfo() {
   if(loggedIn) {
