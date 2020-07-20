@@ -1,4 +1,4 @@
-package com.google.servlets;
+package com.google.starfish.servlets;
 
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;

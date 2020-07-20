@@ -11,63 +11,50 @@
     <link rel="stylesheet" href="edit-profile.css">
     <script src="edit-profile.js"></script>
     <link rel="stylesheet" href="styles/landingpage.css">
-    <script src="script.js"></script>
+    <!-- <script src="script.js"></script> -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">  
   </head>
   <body>
-    <div id="nav"></div>
-    <div id="nav-over">
-      <a href="index.html"><span id="title">starfish</span></a>
-      <div id="action-items">
-        <a href="upload-form.html"><span id="post-action">PostANote</span></a>
-        <div class="dropdown">
-          <button class="btn dropdown-toggle" type="button" id="dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img src="profile-pic.png" id="profile-button-img">
-          </button>
-          <div class="dropdown-menu dropdown-menu-right" id="dropdown-menu" aria-labelledby="dropdown-button">
-            <img src="profile-pic.png" height="200px"/>
-            <p id="dropdown-name">Bob the Builder</p>
-            <p id="dropdown-points">597 points</p>
-            <a class="link" href="/profile.html">My Profile</a> 
-            <a class="link" href="#">Favorite Notes</a>
-            <a class="link" href="#">Logout</a>
-          </div>
-        </div>
-      </div>
+    <div id="app">
+      <v-app>
+        <navbar></navbar>
+        <search-bar @searchresult="updateSearchResult"></search-bar>
+        <note-grid>
+          <note-grid-collection :notes="searchResult"></note-grid-collecion>
+        </note-grid>
+      </v-app>
     </div>
-    <!-- <nav class="zone blue sticky"> -->
-    <!--   <ul class="main-nav"> -->
-    <!--     <li> -->
-    <!--       <a href="">starfish</a> -->
-    <!--     </li> -->
-    <!--     <div class="push"> -->
-    <!--       <li> -->
-    <!--         <a href="">PostANote</a> -->
-    <!--       </li> -->
-    <!--       <li> -->
-    <!--         <a href=""><img id="user-profile" src="assets/user.svg"></a> -->
-    <!--       </li> -->
-    <!--     </div> -->
-    <!--   </ul> -->
-    <!-- </nav> -->
-    <main class="blue">
-      <h1 class="title">starfish</h1>
-      <h3 class="subtitle">Share and find the best course notes. Completely free.</h3>
-      <form target="_blank">
-        <label for="topic">Find by Topic:</label><br>
-        <input type="text" name="topic"><br>
-        <div class="inline">
-          <span class="inline-form-el">
-            <label for="school">School:</label><br>
-            <input type="text" name="school"><br>
-          </span>
-          <span class="inline-form-el">
-            <label for="course">Course:</label><br>
-            <input type="text" name="course"><br>
-          </span>
-        </div>
-        <input type="submit" value="Submit" onclick="window.location.href='./searchresults.html'">
-      </form>
-      <img id="laptop" src="assets/laptop-min.png">
-    </main>
+
+    <!-- Vue -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> <!-- TODO: This is dev Version, switch to prod for deployment -->
+    <!-- HTTP Vue Loader -->
+    <script src="https://unpkg.com/http-vue-loader"></script>
+    <!-- Vuetify -->
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <!-- Declares the Vue instance-->
+    <script>
+      new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        // Example for how to load component <sample-component>
+        components: {
+          'navbar': httpVueLoader('/components/Navbar.vue'),
+          'search-bar': httpVueLoader('/components/SearchBar.vue'),
+          'note-grid': httpVueLoader('/components/NoteGrid.vue'),
+          'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
+        },
+        data: {
+          searchResult: [],
+        },
+        methods: {
+          updateSearchResult: function(result) {
+            this.searchResult = result;
+          },
+        }
+      })
+    </script>
   </body>
 </html>

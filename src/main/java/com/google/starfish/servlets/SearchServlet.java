@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.util.Date;
 import com.google.starfish.services.NoteService;
+import com.google.starfish.services.FavoriteNoteService;
 import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import java.util.List;
 public class SearchServlet extends HttpServlet {  
 
   private NoteService noteService = new NoteService();
+  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -36,10 +38,12 @@ public class SearchServlet extends HttpServlet {
         conn.setAutoCommit(false);
         String stmt = getSearchQuery(reqSchool, reqCourse);
         try (PreparedStatement getNotesStatement = conn.prepareStatement(stmt)) {
-          getNotesStatement.setString(1, reqSchool);
-          getNotesStatement.setString(2, reqCourse);
+          // getNotesStatement.setString(1, reqSchool);
+          // getNotesStatement.setString(2, reqCourse);
+          System.out.println(getNotesStatement);
           ResultSet rs = getNotesStatement.executeQuery();
           conn.commit();
+          System.out.println("got results set");
 
           List<Note> notes = buildNotesFromQueryResult(pool, rs);
           String json = convertListToJson(notes);
@@ -65,13 +69,13 @@ public class SearchServlet extends HttpServlet {
   private String getSearchQuery(String school, String course) {
     String stmt = 
         "SELECT * "
-      + "FROM `starfish.notes` "
+      + "FROM `notes` "
       + "WHERE 1=1";
     if (school != null && !school.isEmpty()) {
-      stmt += " AND `school`= ?";
+      stmt += " AND `school`= '" + school + "'";
     }
     if (course != null && !course.isEmpty()) {
-      stmt += " AND `course`= ?";
+      stmt += " AND `course`= '" + course + "'";
     }
     stmt += ";";
     return stmt;
@@ -82,7 +86,7 @@ public class SearchServlet extends HttpServlet {
     List<Note> notes = new ArrayList<>();
     while (rs.next()) {
       long noteId = rs.getLong("id");
-      long authorId = rs.getLong("author_id");
+      String authorId = rs.getString("author_id");
       String school = rs.getString("school");
       String course = rs.getString("course");
       String title = rs.getString("title");
@@ -90,7 +94,7 @@ public class SearchServlet extends HttpServlet {
       String pdfSource = rs.getString("pdf_source");
       Date dateCreated = rs.getDate("date_created");
       long numDownloads = rs.getLong("num_downloads");
-      long numFavorites = noteService.getNumFavoritesById(pool, noteId);
+      long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, noteId);
 
       Note thisNote = new Note.Builder()
                           .setId(noteId)
