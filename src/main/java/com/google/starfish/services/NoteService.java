@@ -34,8 +34,7 @@ public class NoteService extends TableService {
         upldNotesStmt.setString(1, userId);
         ResultSet rs = upldNotesStmt.executeQuery();
         while (rs.next()) {
-          Note thisNote = constructNoteFromSqlResult(pool, rs);
-          notes.add(thisNote);
+          notes.add(constructNoteFromSqlResult(pool, rs));
         }
         rs.close();
         return notes.toArray(new Note[0]);
