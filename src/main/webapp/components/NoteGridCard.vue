@@ -6,7 +6,7 @@
       <div class="note-title">{{title}}</div>
       <div class="info-row">
         <p>{{school}} &bull; {{course}}</p>
-        <img src="assets/gdrive18x.webp">
+        <img src="assets/gdrive.webp">
         {{dateCreated}}
         <div class="rating-box">
           {{numFavorites}}
@@ -24,8 +24,8 @@
       thumbnailSrc: String,
       title: String,
       dateCreated: String,
-      school: Object,
-      course: Object,
+      school: String,
+      course: String,
       labels: Array,
       numDownloads: Number,
       numFavorites: Number,
