@@ -24,19 +24,25 @@ module.exports = {
     activeNotes: function() {
       // Filter the notes that get shown based on filter provided by parent.
       if (this.filters && this.filters.length) {
-        return this.notes.filter(note => {
-          return this.filters.some(filter => {
-            return note.miscLabels.includes(filter)
-          });
-        });
+        return this.notes.filter(this.noteFilter);
+      } else {
+        return this.notes;
       }
-      else return this.notes;
     },
   },
   methods: {
     onClick: function(note) {
       this.$parent.$emit('open-preview', note)
     },
+    noteFilter: function(note) {
+      // True if some filter matches a miscLabel, title, or school, or course
+      return this.filters.some(filter => {
+        return note.miscLabels.includes(filter)
+          || note.title.includes(filter)
+          || note.school.includes(filter)
+          || note.course.includes(filter)
+      });
+    }
   },
 }
 </script>
