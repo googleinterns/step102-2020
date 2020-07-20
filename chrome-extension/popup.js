@@ -68,7 +68,7 @@ function handleLogin() {
   chrome.identity.launchWebAuthFlow({
     url: url,
     interactive: true
-  }), function(redirectedTo) {
+  }, function(redirectedTo) {
     if(chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError);
     } else {
@@ -89,7 +89,7 @@ function handleLogin() {
           setAccountInfo();
         })
     }
-  }
+  })
   // chrome.identity.getAuthToken({interactive: true}, function(token) {
   //   if (chrome.runtime.lastError) {
   //     return;
@@ -144,15 +144,22 @@ function generateNote() {
  * it from the cache.
  */
 function logout() {
-  chrome.identity.getAuthToken({interactive: false}, function(token) {
-    const url = REVOKE_TOKEN_URL + token;
-    window.fetch(url);
-
-    chrome.identity.removeCachedAuthToken({token: token}, function() {
+  fetch(REVOKE_TOKEN_URL + accessToken)
+    .then(() => {
+      accessToken = '';
+      gapi.auth.setToken({ access_token: accessToken });
       loggedIn = false;
       setAccountInfo();
-    });
-  })
+    })
+  // chrome.identity.getAuthToken({interactive: false}, function(token) {
+  //   const url = REVOKE_TOKEN_URL + token;
+  //   window.fetch(url);
+
+  //   chrome.identity.removeCachedAuthToken({token: token}, function() {
+  //     loggedIn = false;
+  //     setAccountInfo();
+  //   });
+  // })
 }
 
 /**
