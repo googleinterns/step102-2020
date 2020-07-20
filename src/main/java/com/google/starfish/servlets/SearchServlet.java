@@ -65,7 +65,7 @@ public class SearchServlet extends HttpServlet {
   private String getSearchQuery(String school, String course) {
     String stmt = 
         "SELECT * "
-      + "FROM `starfish.notes` "
+      + "FROM `notes` "
       + "WHERE 1=1";
     if (school != null && !school.isEmpty()) {
       stmt += " AND `school`= '" + school + "'";
