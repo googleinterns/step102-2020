@@ -72,6 +72,7 @@ function login() {
     if(chrome.runtime.lastError) {
       console.log(chrome.runtime.lastError);
     } else {
+      // TODO: Make a POST request to user sign in servlet
       const response = redirectedTo.split('?code=', 2)[1];
       const code = response.split('&scope', 1)[0];
       const newUrl =
@@ -125,6 +126,7 @@ function generateNote() {
       name: docName,
     }
   }).then(function(response) {
+    // TODO: Make POST request to upload notes servlet
     const gNoteURL = GOOGLE_DOC_URL + response.result.id;
     loadingIcon.style.display = 'none';
     chrome.tabs.create({ url: gNoteURL });
