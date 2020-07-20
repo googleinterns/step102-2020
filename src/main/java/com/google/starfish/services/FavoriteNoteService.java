@@ -15,12 +15,14 @@ import com.google.starfish.models.Note;
  */
 public class FavoriteNoteService {
 
+  private String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
+
   /** Gets a favorite note by the compoud id */
   public ResultSet getRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT * "
-        + "FROM favorite_notes "
+        + "FROM " + FAVORITE_NOTES + " "
         + "WHERE `note_id`= ? AND "
         + "`user_id` = ? "
         + "LIMIT 1;";
@@ -38,7 +40,7 @@ public class FavoriteNoteService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "DELETE * "
-        + "FROM favorite_notes "
+        + "FROM " + FAVORITE_NOTES + " "
         + "WHERE `note_id`= ? AND "
         + "`user_id` = ? "
         + "LIMIT 1;";
@@ -58,7 +60,7 @@ public class FavoriteNoteService {
       try {
         conn.setAutoCommit(false);
         String stmt =
-            "INSERT INTO favorite_notes ( "
+            "INSERT INTO " + FAVORITE_NOTES + " ( "
                 + "note_id,"
                 + "user_id ) "
           + "VALUES ( "
@@ -94,7 +96,7 @@ public class FavoriteNoteService {
         + "FROM "
           + Table.NOTES.getSqlTable() + " AS a "
           + "INNER JOIN (SELECT * "
-                      + "FROM " + Table.FAVORITE_NOTES.getSqlTable() + " "
+                      + "FROM " + FAVORITE_NOTES + " "
                       + "WHERE user_id=?) "
           + "as b ON a.id=b.note_id;";
       try (PreparedStatement favNotesStmt = conn.prepareStatement(stmt)) {
@@ -136,7 +138,7 @@ public class FavoriteNoteService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT COUNT(*) AS num_favorites "
-        + "FROM " + Table.FAVORITE_NOTES.getSqlTable() + " "
+        + "FROM " + FAVORITE_NOTES + " "
         + "WHERE `note_id`=?;";
       try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
         selectStmt.setLong(1, noteId);

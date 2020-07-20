@@ -25,6 +25,8 @@ enum Type {
  */
 public class LabelService extends TableService {
 
+  private String LABELS = Table.LABELS.getSqlTable();
+
   public LabelService() {
     super(Table.LABELS);
   }
@@ -50,7 +52,7 @@ public class LabelService extends TableService {
       try {
         conn.setAutoCommit(false);
         String stmt =
-            "INSERT INTO labels ( "
+            "INSERT INTO " + LABELS + " ( "
                 + "title,"
                 + "type ) "
           + "VALUES ( "

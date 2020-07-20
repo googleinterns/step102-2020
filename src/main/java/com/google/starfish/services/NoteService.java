@@ -16,6 +16,7 @@ import com.google.starfish.models.Note;
 public class NoteService extends TableService {
 
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
+  private String NOTES = Table.NOTES.getSqlTable();
 
   public NoteService() {
     super(Table.NOTES);
@@ -26,7 +27,7 @@ public class NoteService extends TableService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT * "
-        + "FROM " + Table.NOTES.getSqlTable() + " "
+        + "FROM " + NOTES + " "
         + "WHERE author_id=?;";
       try (PreparedStatement upldNotesStmt = conn.prepareStatement(stmt)) {
         upldNotesStmt.setString(1, userId);

@@ -13,12 +13,14 @@ import java.util.ArrayList;
  */
 public class MiscNoteLabelService {
 
+  private String MISC_LABELS = Table.MISC_LABELS.getSqlTable();
+
   /** Gets misc note label by compound id */
   public ResultSet getRowByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT * "
-        + "FROM misc_note_labels "
+        + "FROM " + MISC_LABELS + " "
         + "WHERE `note_id`= ? AND "
         + "`label` = ? "
         + "LIMIT 1;";
@@ -36,7 +38,7 @@ public class MiscNoteLabelService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "DELETE * "
-        + "FROM misc_note_labels "
+        + "FROM " + MISC_LABELS + " "
         + "WHERE `note_id`= ? AND "
         + "`label` = ? "
         + "LIMIT 1;";
@@ -56,7 +58,7 @@ public class MiscNoteLabelService {
       try {
         conn.setAutoCommit(false);
         String stmt =
-            "INSERT INTO misc_note_labels ( "
+            "INSERT INTO " + MISC_LABELS +  " ( "
                 + "note_id,"
                 + "label ) "
           + "VALUES ( "
@@ -88,7 +90,7 @@ public class MiscNoteLabelService {
     try(Connection conn = pool.getConnection()) {
       String stmt =
           "SELECT label " 
-        + "FROM " + Table.MISC_LABELS.getSqlTable() + " " 
+        + "FROM " + MISC_LABELS + " " 
         + "WHERE `note_id`=?;";
       try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
         selectStmt.setLong(1, noteId);
