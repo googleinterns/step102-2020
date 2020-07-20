@@ -39,7 +39,8 @@ module.exports = {
       }
       else /* Form validated */ {
         this.error = "";
-        this.queryDatabase(this.school, this.course);
+        this.queryDatabase(this.school, this.course)
+          .catch(error => this.error = error);
       }
     },
     queryDatabase: function(school, course) {
