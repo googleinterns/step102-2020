@@ -16,6 +16,7 @@ import com.google.starfish.models.Note;
 public class NoteService extends TableService {
 
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
+  private MiscNoteLabelService miscNoteLabelService  = new MiscNoteLabelService();
   private String NOTES = Table.NOTES.getSqlTable();
 
   public NoteService() {
@@ -43,6 +44,7 @@ public class NoteService extends TableService {
           Date dateCreated = rs.getDate("date_created");
           long numDownloads = rs.getLong("num_downloads");
           long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, noteId);
+          String[] miscLabels = miscNoteLabelService.getMiscLabelsByNoteId(pool, noteId);
 
           Note thisNote = new Note.Builder()
                               .setId(noteId)
@@ -54,6 +56,7 @@ public class NoteService extends TableService {
                               .setDateCreated(dateCreated)
                               .setNumDownloads(numDownloads)
                               .setNumFavorites(numFavorites)
+                              .setMiscLabels(miscLabels)
                               .build();
           notes.add(thisNote);
         }
