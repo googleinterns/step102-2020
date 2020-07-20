@@ -24,7 +24,6 @@ module.exports = {
   mounted: function() {
     this.$on('open-preview', note => {
       this.noteToPreview = note;
-      console.log(this.noteToPreview);
     });
   }
 }
