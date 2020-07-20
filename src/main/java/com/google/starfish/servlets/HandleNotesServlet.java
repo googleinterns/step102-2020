@@ -123,7 +123,6 @@ public class HandleNotesServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       response.getWriter().println("INTERNAL SERVER ERROR: " + ex);
     }    
-    response.sendRedirect("/");
   }
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
