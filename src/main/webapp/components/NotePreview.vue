@@ -25,6 +25,10 @@
         </label-list>
 
         <iframe :src="src"></iframe>
+        <a href="/assets/notes.pdf" download>
+          <v-icon>mdi-download</v-icon>
+          Download
+        </a>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
