@@ -25,9 +25,8 @@ module.exports = {
       // Filter the notes that get shown based on filter provided by parent.
       if (this.filters && this.filters.length) {
         return this.notes.filter(this.noteFilter);
-      } else {
-        return this.notes;
       }
+      return this.notes;
     },
   },
   methods: {
