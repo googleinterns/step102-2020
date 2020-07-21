@@ -24,7 +24,7 @@
                     :can-modify="isFavorited">
         </label-list>
 
-        <iframe :src="src"></iframe>
+        <iframe :src="pdfSource"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -63,9 +63,6 @@
       dateString: function() {
         return this.dateCreated?.toDateString();
       },
-      src: function() {
-        return `/serve-notes?key=${this.pdfSource}`
-      }
     },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
