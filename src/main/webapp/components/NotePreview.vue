@@ -25,7 +25,7 @@
         </label-list>
 
         <iframe :src="src"></iframe>
-        <a href="/assets/notes.pdf" download>
+        <a href="src" download @click="increment">
           <v-icon>mdi-download</v-icon>
           Download
         </a>
@@ -41,6 +41,7 @@
       'label-list': httpVueLoader('/components/LabelList.vue')
     },
     props: {
+      id: Number,
       title: {
         type: String,
         default: function() {
@@ -56,6 +57,7 @@
       miscLabels: Array,
       isFavorited: Boolean,
       pdfSource: String,
+      sourceUrl: String
     },
     data: function() {
       return {
@@ -64,6 +66,7 @@
     },
     computed: {
       src: function() {
+        // TODO: Need to handle logic for if it is a pdf or Google Doc
         return `/serve-notes?key=${this.pdfSource}`;
       }
     },
@@ -71,6 +74,13 @@
       this.$parent.$on('open-preview', note => {
         this.showPreview = true;
       });
+    },
+    methods: {
+      increment: function() {
+        fetch('/download-note?note_id=' + this.id, {
+          method: 'POST'
+        })
+      }
     }
   }
 </script>
