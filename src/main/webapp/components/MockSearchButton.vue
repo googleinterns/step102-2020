@@ -28,8 +28,8 @@ module.exports = {
           school: "DEF",
           course: "MAC1147",
           miscLabels: ["B", "C"],
-          numDownloads: 123,
-          numFavorites: 456,
+          numDownloads: 789,
+          numFavorites: 012,
           isFavorited: false,
           pdfSource: "/assets/notes.pdf"
         },
@@ -41,8 +41,8 @@ module.exports = {
           school: "GHI",
           course: "ENC1101",
           miscLabels: ["A", "B", "C"],
-          numDownloads: 123,
-          numFavorites: 456,
+          numDownloads: 345,
+          numFavorites: 678,
           isFavorited: false,
           pdfSource: "/assets/notes.pdf"
         },
