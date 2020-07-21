@@ -23,11 +23,13 @@ module.exports = {
     filters: Array,
     compareFunc: Function,
     header: String,
+    maxAge: Number,
   },
   computed: {
     notes: function() {
       // Filter by date, matching terms, and sort with compareFunc
       return this.noteData
+        .filter(this.dateFilter)
         .filter(this.noteFilter)
         .sort(this.compareFunc);
     }
@@ -48,6 +50,12 @@ module.exports = {
           || note.course.includes(filter)
       });
     },
+    dateFilter: function(note) {
+      // If no age restriction, immediately pass filter.
+      if (!this.maxAge) return true;
+
+      // Pass if younger than maxAge.
+      return Date.now() - note.date < this.maxAge;
     }
   },
 }
