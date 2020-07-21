@@ -69,4 +69,17 @@ public class NoteService extends TableService {
                         .build();
     return note;
   }
+
+  public void incrementDownloadsByNoteId(DataSource pool, long noteId) throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "UPDATE " + NOTES + " "
+        + "SET num_downloads=num_downloads+1 "
+        + "WHERE id=?;";
+      try (PreparedStatement updateNotesStmt = conn.prepareStatement(stmt)) {
+        updateNotesStmt.setLong(1, noteId);
+        updateNotesStmt.execute();
+      }
+    }
+  }
 }
