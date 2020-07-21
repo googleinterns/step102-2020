@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.ArrayList;
+import com.google.starfish.services.TableService;
 
 /**
  * Service class for MiscNoteLabels Table
