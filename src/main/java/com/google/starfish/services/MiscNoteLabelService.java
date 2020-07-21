@@ -77,15 +77,11 @@ public class MiscNoteLabelService {
       try {
         conn.setAutoCommit(false);
         String stmt = 
-            "SELECT ?, COUNT(*) AS ? " 
+            "SELECT " + column1 + ", COUNT(*) AS " + column2 + " " 
           + "FROM " + MISC_LABELS + " "
-          + "GROUP BY ? "
-          + "ORDER BY ? DESC;";
+          + "GROUP BY " + column1 + " "
+          + "ORDER BY " + column2 + " DESC;";
         try (PreparedStatement labelStmt = conn.prepareStatement(stmt)) {
-          labelStmt.setString(1, column1);
-          labelStmt.setString(2, column2);
-          labelStmt.setString(3, column1);
-          labelStmt.setString(4, column2);
           ResultSet rs = labelStmt.executeQuery();
           conn.commit();
           while (rs.next()) {
