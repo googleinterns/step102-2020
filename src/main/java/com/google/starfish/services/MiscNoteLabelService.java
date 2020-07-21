@@ -88,9 +88,9 @@ public class MiscNoteLabelService {
           ResultSet rs = labelStmt.executeQuery();
           conn.commit();
           while (rs.next()) {
-            String label = rs.getString(column1);
-            labels.add(label);
+            labels.add(rs.getString(column1));
           }
+          rs.close();
           return labels.toArray(new String[0]);
         }
       } catch(SQLException ex) {
