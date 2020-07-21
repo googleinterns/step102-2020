@@ -60,7 +60,7 @@ public class LabelService extends TableService {
                 + "? ); ";
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           insertStmt.setString(1, label.toLowerCase().trim());
-          insertStmt.setString(1, type.getType());
+          insertStmt.setString(2, type.getType());
           insertStmt.execute();
           conn.commit();
         }
