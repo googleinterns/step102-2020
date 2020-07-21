@@ -82,4 +82,20 @@ public class NoteService extends TableService {
       }
     }
   }
+
+  public Note getNoteByNoteId(DataSource pool, long noteId) throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "SELECT * " 
+        + "FROM " + NOTES + " "
+        + "WHERE id=? " 
+        + "LIMIT 1;";
+      try(PreparedStatement getNotesStmt = conn.prepareStatement(stmt)) {
+        getNotesStmt.setLong(1, noteId);
+        ResultSet rs = getNotesStmt.executeQuery();
+        rs.next();
+        return constructNoteFromSqlResult(pool, rs);
+      }
+    }
+  }
 }
