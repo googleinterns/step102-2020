@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.util.Date;
 import com.google.starfish.services.FavoriteNoteService;
+import com.google.starfish.services.NoteService;
+import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class FavoriteNoteServlet extends HttpServlet {
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.insertFavoriteNote(pool, noteId, userId);
       Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
-      String userId = downloadedNote.getAuthorId();
+      String noteUploaderId = downloadedNote.getAuthorId();
       // TODO: After UserService is created, increment the prestige points of user who posted noteId
     } catch (SQLException ex) {
       System.err.print(ex);
@@ -64,7 +66,7 @@ public class FavoriteNoteServlet extends HttpServlet {
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.deleteRowByCompoundId(pool, noteId, userId);
       Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
-      String userId = downloadedNote.getAuthorId();
+      String noteUploaderId = downloadedNote.getAuthorId();
       // TODO: After UserService is created, decrement the prestige points of user who posted noteId
     } catch (SQLException ex) {
       System.err.print(ex);
