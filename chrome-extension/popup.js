@@ -84,7 +84,7 @@ function login() {
           '&client_secret=' + CLIENT_SECRET;
       getTokenEndpoint(newUrl)
         .then(tokenInfo => {
-          accessToken = tokenInfo.access_token;
+          accessToken = tokenInfo.id_token;
           gapi.auth.setToken({ access_token: accessToken });
           loggedIn = true;
           setAccountInfo();
