@@ -23,9 +23,9 @@
       <mock-search @searchresult="updateSearchResult"></mock-search>
       <note-grid v-slot="{ filters }">
         <note-grid-collection :note-data="searchResult"
-                              header="Most Downloaded"
+                              header="Most Favorited"
                               :filters="filters"
-                              :compare-func="descDownloads">
+                              :compare-func="descFavorites">
         </note-grid-collection>
         <note-grid-collection :note-data="searchResult"
                               header="Recently Posted"
@@ -63,8 +63,8 @@
       },
       data: {
         searchResult: [],
-        descDownloads: function(noteA, noteB) {
-          return noteB.numDownloads - noteA.numDownloads;
+        descFavorites: function(noteA, noteB) {
+          return noteB.numFavorites - noteA.numFavorites;
         },
         descDate: function(noteA, noteB) {
           return noteB.date - noteA.date;
