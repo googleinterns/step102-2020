@@ -20,6 +20,8 @@
 module.exports = {
   props: {
     value: Array,
+    school: String, // TODO: Modify SearchBar.vue to emit school and course to NoteGrid, and pass to FilterList
+    course: String,
   },
   data: function() {
     return {
@@ -40,5 +42,25 @@ module.exports = {
       }
     },
   },
+  methods: {
+    fetchSuggestedLabels: function() {
+      let url = new URL("/common-labels", window.location.href);
+      url.searchParams.set('school', this.school);
+      url.searchParams.set('course', this.course);
+
+      fetch(url)
+        .then(response => response.json())
+        .then(result => {
+          this.suggestedFilters = result;
+        })
+        .catch(error => {
+          console.error(`FetchError: Server failed to provide a result for `
+            + `school: ${this.school} and course: ${this.course}`);
+        });
+    }
+  },
+  mounted: function() {
+    this.fetchSuggestedLabels(); // TODO: Run this whenever school or course changes.
+  }
 }
 </script>
