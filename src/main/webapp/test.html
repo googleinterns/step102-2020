@@ -24,7 +24,7 @@
         <search-bar @searchresult="updateSearchResult"></search-bar>
         <mock-search @searchresult="updateSearchResult"></mock-search>
         <note-grid v-slot="{ filters }">
-          <note-grid-collection :notes="searchResult" :filters="filters" :sort-func="sortByRating"></note-grid-collection>
+          <note-grid-collection :notes="searchResult" :filters="filters" :compare-func="sortByDownloads"></note-grid-collection>
         </note-grid>
       </v-app>
     </div>

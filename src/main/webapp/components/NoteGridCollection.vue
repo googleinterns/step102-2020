@@ -19,7 +19,7 @@ module.exports = {
       required: true,
     },
     filters: Array,
-    sortFunc: Function,
+    compareFunc: Function,
   },
   computed: {
     activeNotes: function() {
@@ -31,7 +31,7 @@ module.exports = {
     },
     sortedNotes: function() {
       // Sort the currently active notes using sortFunc for comparisons.
-      return this.activeNotes.sort(this.sortFunc);
+      return this.activeNotes.sort(this.compareFunc);
     }
   },
   methods: {
