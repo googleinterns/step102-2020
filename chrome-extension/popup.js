@@ -6,6 +6,7 @@ const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
 const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
+const USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=';
 
 const CLIENT_ID = encodeURIComponent(keys.CLIENT_ID);
 const CLIENT_SECRET = encodeURIComponent(keys.CLIENT_SECRET);
@@ -28,6 +29,7 @@ const DISCOVERY_DOCS = [
 
 let loggedIn = false;
 let accessToken = '';
+let idToken = '';
 
 /**
  * Gets the script for Google APIs client library for browser-side
@@ -84,7 +86,8 @@ function login() {
           '&client_secret=' + CLIENT_SECRET;
       getTokenEndpoint(newUrl)
         .then(tokenInfo => {
-          accessToken = tokenInfo.id_token;
+          idToken = tokenInfo.id_token;
+          accessToken = tokenInfo.access_token;
           gapi.auth.setToken({ access_token: accessToken });
           loggedIn = true;
           setAccountInfo();
@@ -157,7 +160,10 @@ function logout() {
  */
 function setAccountInfo() {
   if(loggedIn) {
-    chrome.identity.getProfileUserInfo(userInfo => {
+    gapi.client.request({
+      path: USER_INFO_URL + accesToken
+    }).then(response => {
+      let userInfo = JSON.parse(response.body);
       document.getElementById('logout-btn').style.display = 'inline';
       document.getElementById('email').textContent = userInfo.email;
       document.getElementById('user-info').style.display = 'block';
