@@ -1,6 +1,7 @@
 <template>
   <div class="note-grid-collection">
     <note-grid-card v-for="(note, index) in sortedNotes"
+    <v-card-title>{{header}}</v-card-title>
                     :key="index"
                     v-bind="note"
                     @click="onClick(note)">
@@ -20,6 +21,7 @@ module.exports = {
     },
     filters: Array,
     compareFunc: Function,
+    header: String,
   },
   computed: {
     activeNotes: function() {
