@@ -44,7 +44,7 @@ module.exports = {
   },
   methods: {
     fetchSuggestedLabels: function() {
-      let url = new URL("/common-labels", window.location.href);
+      let url = new URL("/common-labels", window.location.href); // TODO: Create the servlet and rename "/common-labels"
       url.searchParams.set('school', this.school);
       url.searchParams.set('course', this.course);
 
