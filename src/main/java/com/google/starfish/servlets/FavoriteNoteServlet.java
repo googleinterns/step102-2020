@@ -19,7 +19,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Servlet that returns search results for notes based on school and course */
+/** Servlet that either adds or removes a row from the favorite notes table */
 @WebServlet("/favorite-note")  
 public class FavoriteNoteServlet extends HttpServlet {  
 
