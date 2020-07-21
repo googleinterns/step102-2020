@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;  
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
+import javax.sql.DataSource;
 import com.google.starfish.services.NoteService;
 
 /** Servlet that increments the number of downloads on a note. */
