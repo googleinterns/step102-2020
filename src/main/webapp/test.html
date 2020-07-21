@@ -24,7 +24,22 @@
         <search-bar @searchresult="updateSearchResult"></search-bar>
         <mock-search @searchresult="updateSearchResult"></mock-search>
         <note-grid v-slot="{ filters }">
-          <note-grid-collection :notes="searchResult" :filters="filters" :compare-func="sortByDownloads"></note-grid-collection>
+          <note-grid-collection :note-data="searchResult"
+                                header="Most Downloaded"
+                                :filters="filters"
+                                :compare-func="descDownloads">
+          </note-grid-collection>
+          <note-grid-collection :note-data="searchResult"
+                                header="Recently Posted"
+                                :filters="filters"
+                                :compare-func="descDate">
+          </note-grid-collection>
+          <note-grid-collection :note-data="searchResult"
+                                header="Hottest Notes"
+                                :filters="filters"
+                                :compare-func="descDownloads"
+                                :max-age="4 * 24 * 60 * 60 * 1000">
+          </note-grid-collection>          
         </note-grid>
       </v-app>
     </div>
@@ -50,8 +65,11 @@
         },
         data: {
           searchResult: [],
-          sortByDownloads: function(noteA, noteB) {
-            return noteA.numDownloads - noteB.numDownloads;
+          descDownloads: function(noteA, noteB) {
+            return noteB.numDownloads - noteA.numDownloads;
+          },
+          descDate: function(noteA, noteB) {
+            return noteB.date - noteA.date;
           }
         },
         methods: {
