@@ -67,6 +67,50 @@ public class MiscNoteLabelService {
     }
   }
 
+  /** Returns an array of the most commonly used Misc labels on Notes */
+  public String[] getMostUsedMiscLabels(DataSource pool) {
+    List<String> labels = new ArrayList<>();
+    String column1 = "label";
+    String column2 = "times_used";
+    try (Connection conn = pool.getConnection()) {
+      try {
+        conn.setAutoCommit(false);
+        String stmt = 
+            "SELECT ?, COUNT(*) AS ? " 
+          + "FROM " + MISC_LABELS + " "
+          + "GROUP BY ? "
+          + "ORDER BY ? DESC;";
+        try (PreparedStatement labelStmt = conn.prepareStatement(stmt)) {
+          labelStmt.setString(1, column1);
+          labelStmt.setString(2, column2);
+          labelStmt.setString(3, column1);
+          labelStmt.setString(4, column2);
+          ResultSet rs = labelStmt.executeQuery();
+          conn.commit();
+          while (rs.next()) {
+            String label = rs.getString(column1);
+            labels.add(label);
+          }
+          return labels.toArray(new String[0]);
+        }
+      } catch(SQLException ex) {
+        if (conn != null) {
+          try {
+            System.err.print("Transaction is being rolled back.");
+            conn.rollback();
+          } catch (SQLException excep) {
+            System.err.print(excep);
+            return null;
+          }
+        }
+        return null;
+      }
+    } catch (SQLException ex) {
+      System.err.print(ex);
+      return null;
+    }
+  }
+
    /** Gets the misc labels attached to the note with the given note id */
   public String[] getMiscLabelsByNoteId(DataSource pool, long noteId) throws SQLException {
     try(Connection conn = pool.getConnection()) {
