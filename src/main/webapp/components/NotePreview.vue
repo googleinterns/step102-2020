@@ -6,25 +6,25 @@
           {{title}}
         </v-card-title>
         <v-card-subtitle>
-          <em>{{author}}</em> - {{dateString}}
+          <em>{{author}}</em> - {{dateCreated}}
         </v-card-subtitle>
 
-        <v-badge :content="favoriteCount"
+        <v-badge :content="numFavorites"
                   class="ma-2">
           <v-icon>mdi-star</v-icon>
         </v-badge>
-        <v-badge :content="downloadCount"
+        <v-badge :content="numDownloads"
                   class="ma-2">
           <v-icon>mdi-download</v-icon>
         </v-badge>
 
         <label-list :school="school"
                     :course="course"
-                    :labels="labels"
+                    :labels="miscLabels"
                     :can-modify="isFavorited">
         </label-list>
 
-        <iframe :src="pdfSrc"></iframe>
+        <iframe :src="src"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -44,14 +44,14 @@
         }
       },
       author: String,
-      date: Date,
-      favoriteCount: Number,
-      downloadCount: Number,
-      school: Object,
-      course: Object,
-      labels: Array,
+      dateCreated: String,
+      numFavorites: Number,
+      numDownloads: Number,
+      school: String,
+      course: String,
+      miscLabels: Array,
       isFavorited: Boolean,
-      pdfSrc: String,
+      pdfSource: String,
     },
     data: function() {
       return {
@@ -59,9 +59,9 @@
       }
     },
     computed: {
-      dateString: function() {
-        return this.date?.toDateString();
-      },
+      src: function() {
+        return `/serve-notes?key=${this.pdfSource}`;
+      }
     },
     mounted: function() {
       this.$parent.$on('open-preview', note => {

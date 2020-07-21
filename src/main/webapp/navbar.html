@@ -1,25 +1,30 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/http-vue-loader"></script>
-  </head>
-  <body>
-    <div id="my-app">
-      <navigation :user="user"></navigation>
-    </div>
-    <script>
-      new Vue({
-        el: '#my-app',
-        components: {
-          'navigation': httpVueLoader('components/navbar.vue')
-        },
-        data: {
-          user: {
-            name: 'Bob the Builder',
-            points: 597
-          }
-        }
-      });
-    </script>
-  </body>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <navigation></navigation>
+    </v-app>
+  </div>
+
+  <!-- TODO: This is dev Version, switch to prod for deployment -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> 
+  <script src="https://unpkg.com/http-vue-loader"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      components: {
+        'navigation': httpVueLoader('/components/Navbar.vue')
+      },
+      vuetify: new Vuetify(),
+    })
+  </script>
+</body>
 </html>

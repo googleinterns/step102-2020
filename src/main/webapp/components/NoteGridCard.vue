@@ -1,0 +1,114 @@
+<template>
+  <div class="note-grid-card" @click="$emit('click')">
+    <div class="thumbnail" :style="thumbnail"></div>
+
+    <div class="metadata">
+      <div class="note-title">{{title}}</div>
+      <div class="info-row">
+        <p>{{school}} &bull; {{course}}</p>
+        <img src="assets/gdrive18x.webp">
+        {{dateCreated}}
+        <div class="rating-box">
+          {{numFavorites}}
+          <span class="star">&star;</span>          
+        </div>
+      </div>
+    </div>
+
+  </div>
+</template>
+
+<script>
+  module.exports = {
+    props: {
+      thumbnailSrc: String,
+      title: String,
+      dateCreated: String,
+      school: Object,
+      course: Object,
+      labels: Array,
+      numDownloads: Number,
+      numFavorites: Number,
+      isFavorited: Boolean
+    },
+    computed: {
+      thumbnail: function() {
+        // TODO: Generate a thumbnail of the pdf
+        let source = 'assets/notes.png';
+        return {backgroundImage:`url(${source})`};
+      }
+    },
+    methods: {
+      onClick: function() {
+        this.$emit('click');
+      }
+    }
+  }
+</script>
+
+<style scoped>
+  .note-grid-card {
+    border: 1px solid #dfe1e5;
+    border-radius: 3px;
+    width: 208px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    display: inline-block;
+  }
+
+  .note-grid-card:hover {
+    border: 2px solid #afdbdf;
+  }
+
+  .thumbnail {
+    position: relative;
+    background-size: 208px;
+    height: 180px;
+  }
+
+  .metadata {
+    position: relative;
+    border-top: 1px solid #dfe1e5;
+  }
+
+  .note-title {
+    text-align: center;
+    font-weight: bold;
+    margin: 2px;
+  }
+
+  .info-row {
+    text-align: center;
+  }
+
+  .info-row p {
+    margin: 3px 0;
+  }
+
+  .info-row img {
+    height: 18px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 2px solid #dfe1e5;
+    border-right: 2px solid #dfe1e5;
+  }
+
+  .rating-box {
+    display: inline-flex;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    height: 18px;
+    border-radius: 4px;
+    border-top: 2px solid #dfe1e5;
+    border-left: 2px solid #dfe1e5;
+  }
+
+  .star {
+    background-color: #aaa;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    font-size: 9pt;
+  }
+</style>

@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS labels (
 ); 
 
 CREATE TABLE IF NOT EXISTS users ( 
-  id INT PRIMARY KEY AUTO_INCREMENT, 
+  id VARCHAR(255) PRIMARY KEY AUTO_INCREMENT, 
   display_picture VARCHAR(255), 
   display_name VARCHAR(255), 
   date_joined DATE, 
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS notes (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  author_id INT NOT NULL,
+  author_id VARCHAR(255) NOT NULL,
   school VARCHAR(255) NOT NULL,
   course VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS notes (
   )
 );
 
-CREATE TABLE IF NOT EXISTS other_note_labels (
+CREATE TABLE IF NOT EXISTS misc_note_labels (
   note_id INT NOT NULL,
   label VARCHAR(255) NOT NULL,
   PRIMARY KEY (note_id, label),
@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS other_note_labels (
 );
 
 CREATE TABLE IF NOT EXISTS favorite_notes (
-  user_id INT NOT NULL,
+  user_id VARCHAR(255) NOT NULL,
   note_id INT NOT NULL,
   PRIMARY KEY (user_id, note_id),
   FOREIGN KEY (`user_id`)
