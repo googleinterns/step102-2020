@@ -23,6 +23,7 @@ import java.util.List;
 @WebServlet("/favorite-note")  
 public class FavoriteNoteServlet extends HttpServlet {  
 
+  private NoteService noteService = new NoteService();
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
   private final String COOKIE_NAME = "SFCookie";
 
@@ -40,6 +41,9 @@ public class FavoriteNoteServlet extends HttpServlet {
 
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.insertFavoriteNote(pool, noteId, userId);
+      Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
+      String userId = downloadedNote.getAuthorId();
+      // TODO: After UserService is created, increment the prestige points of user who posted noteId
     } catch (SQLException ex) {
       System.err.print(ex);
     }
@@ -59,6 +63,9 @@ public class FavoriteNoteServlet extends HttpServlet {
 
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.deleteRowByCompoundId(pool, noteId, userId);
+      Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
+      String userId = downloadedNote.getAuthorId();
+      // TODO: After UserService is created, decrement the prestige points of user who posted noteId
     } catch (SQLException ex) {
       System.err.print(ex);
     }
