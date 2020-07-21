@@ -55,7 +55,7 @@ public class HandleNotesServlet extends HttpServlet {
     String title = request.getParameter("title");
     String school = request.getParameter("school").toLowerCase();
     String course = request.getParameter("course").toLowerCase();
-    String[] miscLabels = request.getParameter("miscLabels").split(",");
+    String[] miscLabels = request.getParameterValues("miscLabels");
 
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 
@@ -93,9 +93,9 @@ public class HandleNotesServlet extends HttpServlet {
         noteStmt.setString(3, course);
         noteStmt.setString(4, title);
         if (sourceUrl == null) {
-          // If there was no sourceUrl, this is an uploaded pdf so
-          // set the sourceUrl to be the same as the pdfSource
-          noteStmt.setString(5, blobKey);
+          // If there was no sourceUrl, this is an uploaded pdf
+          // so set the source url to serve-notes path
+          noteStmt.setString(5, "/serve-notes?key=" + blobKey);
         } else {
           // If there is a sourceUrl on the request param, this is
           // a google doc set set the source url based on the passed param
@@ -105,7 +105,7 @@ public class HandleNotesServlet extends HttpServlet {
         // this will be null
         noteStmt.setString(6, blobKey);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
-        noteStmt.setLong(8, 0);
+        noteStmt.setLong(8, 0); // num_downloads
         int rowsAffected = noteStmt.executeUpdate();
         if (rowsAffected == 1) {
           long noteId = 0;
@@ -158,6 +158,7 @@ public class HandleNotesServlet extends HttpServlet {
     for (Cookie cookie : cookies) {
       if (COOKIE_NAME.equals(cookie.getName())) {
         sessionId = cookie.getValue();
+        break;
       }
     }
 
