@@ -138,10 +138,11 @@ function generateNote() {
       name: docName,
     }
   }).then(response => {
-    const gNoteURL = GOOGLE_DOC_URL + response.result.id;
-    compileNoteData(docName, gNoteUrl);
+    const docId = response.result.id;
+    const gNoteUrl = GOOGLE_DOC_URL + docId;
+    compileNoteData(docName, docId, gNoteUrl);
     loadingIcon.style.display = 'none';
-    chrome.tabs.create({ url: gNoteURL });
+    chrome.tabs.create({ url: gNoteUrl });
   }).catch(error => {
     loadingIcon.style.display = 'none';
     console.log('Error:', error);
@@ -149,8 +150,8 @@ function generateNote() {
 }
 
 /** Puts together the URL search params for posting the note */
-async function compileNoteData(title, docUrl) {
-  const pdfResponse = await getPDFLink();
+async function compileNoteData(title, docId, docUrl) {
+  const pdfResponse = await getPDFLink(docId);
   const pdfSource = pdfResponse.result.exportLinks['application/pdf'];
   const payload = {
     title: title,
@@ -166,7 +167,7 @@ async function compileNoteData(title, docUrl) {
 /** Retrieves PDF export link of Google Doc */
 function getPDFLink(docId) {
   return gapi.client.drive.files.get({
-    fileId: '1at_wZV-4ul2pV_VCkFu2oG9t0rhrzfEguZpt2rRzTs0',
+    fileId: docId,
     fields: 'exportLinks'
   });
 }
