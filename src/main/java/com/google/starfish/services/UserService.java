@@ -37,7 +37,6 @@ public class UserService extends TableService {
   /** Variably increase user points based on event */
   private boolean increasePoints(DataSource pool, String userId, Event event) {
     if (userId == null) return false;
-    long pointsModifier = getPointsModifier(event);
     try (Connection conn = pool.getConnection()) {
       try {
         conn.setAutoCommit(false);
@@ -46,6 +45,7 @@ public class UserService extends TableService {
                 + "SET points=points+? "
           + "WHERE id=?;";
         try (PreparedStatement updateStmt = conn.prepareStatement(stmt)) {
+          long pointsModifier = getPointsModifier(event);
           updateStmt.setLong(1, pointsModifier);
           updateStmt.setString(2, userId);
           boolean updated = updateStmt.execute();
