@@ -140,9 +140,11 @@ function generateNote() {
   }).then(response => {
     const docId = response.result.id;
     const gNoteUrl = GOOGLE_DOC_URL + docId;
-    compileNoteData(docName, docId, gNoteUrl);
-    loadingIcon.style.display = 'none';
-    chrome.tabs.create({ url: gNoteUrl });
+    compileNoteData(docName, docId, gNoteUrl)
+      .then(() => {
+        loadingIcon.style.display = 'none';
+        chrome.tabs.create({ url: gNoteUrl });
+      });
   }).catch(error => {
     loadingIcon.style.display = 'none';
     console.log('Error:', error);
@@ -151,17 +153,19 @@ function generateNote() {
 
 /** Puts together the URL search params for posting the note */
 async function compileNoteData(title, docId, docUrl) {
-  const pdfResponse = await getPDFLink(docId);
-  const pdfSource = pdfResponse.result.exportLinks['application/pdf'];
-  const payload = {
-    title: title,
-    school: 'Unaffiliated',
-    course: 'Unaffiliated',
-    sourceUrl: docUrl,
-    pdfSource: pdfSource
-  }
-  const noteData = new URLSearchParams(payload);
-  postNoteToDatabase(noteData);
+  getPDFLink(docId)
+    .then(response => {
+      const pdfSource = response.result.exportLinks['application/pdf'];
+      const payload = {
+        title: title,
+        school: 'Unaffiliated',
+        course: 'Unaffiliated',
+        sourceUrl: docUrl,
+        pdfSource: pdfSource
+      }
+      const noteData = new URLSearchParams(payload);
+      postNoteToDatabase(noteData);
+    })
 }
 
 /** Retrieves PDF export link of Google Doc */
