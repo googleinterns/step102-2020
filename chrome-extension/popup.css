@@ -61,6 +61,7 @@ button:hover {
 
 input {
   font-size: inherit;
+  margin: 5px 0;
 }
 
 #user-info {
