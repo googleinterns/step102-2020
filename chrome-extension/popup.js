@@ -178,11 +178,31 @@ async function compileNoteData(title, docId, docUrl, school, course) {
       }
       const noteData = new URLSearchParams(payload);
       postNoteToDatabase(noteData)
-        .then(() => {
-          setLoadingIcon(false);
-          chrome.tabs.create({ url: docUrl })
-        });
+        .then(updateGNoteTemplate(docId, docUrl));
     })
+}
+
+/** Replaces [DATE] fields in template with the current date */
+function updateGNoteTemplate(docId, docUrl) {
+  var updateObject = {
+      documentId: docId,
+      resource: {
+        requests: [{
+          replaceAllText: {
+            replaceText: getDate(),
+            containsText: {
+              text: "[DATE]",
+              matchCase: true
+            }
+          },
+        }],
+      },
+    };
+    gapi.client.docs.documents.batchUpdate(updateObject)
+      .then(() => { 
+        setLoadingIcon(false);
+        chrome.tabs.create({ url: docUrl })
+      });
 }
 
 /** Retrieves PDF export link of Google Doc */
