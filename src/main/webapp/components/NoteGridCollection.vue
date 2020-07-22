@@ -42,12 +42,14 @@ module.exports = {
       // If no filter or empty filter, immediately pass filter.
       if (!this.filters || !this.filters.length) return true;
 
-      // Pass if some filter matches a miscLabel, title, or school, or course
+      // Pass if some filter matches a miscLabel, title, school, or course
       return this.filters.some(filter => {
-        return note.miscLabels.includes(filter)
-          || note.title.includes(filter)
-          || note.school.includes(filter)
-          || note.course.includes(filter)
+        filter = filter.toLowerCase();
+        return note.miscLabels.some(label => label.toLowerCase() == filter)
+          || note.title.toLowerCase().includes(filter)
+          || note.school.toLowerCase().includes(filter)
+          || note.course.toLowerCase().includes(filter)
+        ;
       });
     },
     dateFilter: function(note) {
