@@ -69,7 +69,7 @@ public class MiscNoteLabelService {
   }
 
   /** Returns an array of the most commonly used Misc labels on Notes */
-  public String[] getMostUsedMiscLabels(DataSource pool) {
+  public String[] getMostUsedMiscLabels(DataSource pool /* TODO: , String school, String course */) {
     List<String> labels = new ArrayList<>();
     String column1 = "label";
     String column2 = "times_used";
@@ -79,6 +79,7 @@ public class MiscNoteLabelService {
         String stmt = 
             "SELECT " + column1 + ", COUNT(*) AS " + column2 + " " 
           + "FROM " + MISC_LABELS + " "
+          // TODO: Only consider common labels for given `school` and `course`
           + "GROUP BY " + column1 + " "
           + "ORDER BY " + column2 + " DESC;";
         try (PreparedStatement labelStmt = conn.prepareStatement(stmt)) {
