@@ -54,33 +54,25 @@ public class LabelService extends TableService {
   public HashMap<String, String[]> getAllSchoolAndCourseLabels(DataSource pool) {
     HashMap<String, String[]> organizedLabels = new HashMap<>();
     try (Connection conn = pool.getConnection()) {
-      List<String> schools = new ArrayList<>();
-      List<String> courses = new ArrayList<>();
       try {
         conn.setAutoCommit(false);
-        String stmt1 = 
+        String schoolsStmt = 
             "SELECT * " 
           + "FROM " + LABELS + " "
           + "WHERE type= \"" + Type.SCHOOL.getType() + "\"";
-        String stmt2 = 
+        String coursesStmt = 
             "SELECT * " 
           + "FROM " + LABELS + " "
           + "WHERE type= \"" + Type.COURSE.getType() + "\"";
-        try (PreparedStatement schoolStmt = conn.prepareStatement(stmt1); 
-            PreparedStatement courseStmt = conn.prepareStatement(stmt2)) {
+        try (PreparedStatement schoolStmt = conn.prepareStatement(schoolsStmt); 
+            PreparedStatement courseStmt = conn.prepareStatement(coursesStmt)) {
           ResultSet schoolResults = schoolStmt.executeQuery();
           ResultSet courseResults = courseStmt.executeQuery();
           conn.commit();
-          while (schoolResults.next()) {
-            String school = schoolResults.getString("title");
-            schools.add(school);
-          }
-          while (courseResults.next()) {
-            String course = courseResults.getString("title");
-            courses.add(course);
-          }
-          organizedLabels.put("schools", schools.toArray(new String[0]));
-          organizedLabels.put("courses", courses.toArray(new String[0]));
+          String[] schools = createStringArrayOutOfResultSet(schoolResults, "title");
+          String[] courses = createStringArrayOutOfResultSet(courseResults, "title");
+          organizedLabels.put("schools", schools);
+          organizedLabels.put("courses", courses);
           return organizedLabels;
         }
       } catch(SQLException ex) {
@@ -99,6 +91,15 @@ public class LabelService extends TableService {
       System.err.print(ex);
       return null;
     }
+  }
+
+  private String[] createStringArrayOutOfResultSet(ResultSet rs, String stringColumn) throws SQLException {
+    List<String> list = new ArrayList<>();
+    while (rs.next()) {
+      String thisResult = rs.getString(stringColumn);
+      list.add(thisResult);
+    }
+    return list.toArray(new String[0]);
   }
 
   private void insertLabel(DataSource pool, String label, Type type) {
