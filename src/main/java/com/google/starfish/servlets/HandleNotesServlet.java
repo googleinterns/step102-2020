@@ -85,27 +85,26 @@ public class HandleNotesServlet extends HttpServlet {
               + "?,"
               + "?,"
               + "?,"
-              + "? ); ";
+              + "0 ); ";
 
       try (PreparedStatement noteStmt = conn.prepareStatement(stmt, new String[] {"id"})) {
         noteStmt.setString(1, userId);
         noteStmt.setString(2, school);
         noteStmt.setString(3, course);
         noteStmt.setString(4, title);
-        if (sourceUrl == null) {
+        if (sourceUrl != null) {
+          // If there is a sourceUrl on the request param, this is
+          // a google doc set the source url based on the passed param
+          noteStmt.setString(5, sourceUrl);
+        } else {
           // If there was no sourceUrl, this is an uploaded pdf
           // so set the source url to serve-notes path
           noteStmt.setString(5, "/serve-notes?key=" + blobKey);
-        } else {
-          // If there is a sourceUrl on the request param, this is
-          // a google doc set set the source url based on the passed param
-          noteStmt.setString(5, sourceUrl);
         }
         // The blob key is nullable on the notes table so if this is a google doc
         // this will be null
         noteStmt.setString(6, blobKey);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
-        noteStmt.setLong(8, 0); // num_downloads
         int rowsAffected = noteStmt.executeUpdate();
         if (rowsAffected == 1) {
           long noteId = 0;
