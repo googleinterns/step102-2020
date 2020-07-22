@@ -25,6 +25,10 @@
         </label-list>
 
         <iframe :src="sourceUrl"></iframe>
+        <a :href="pdfSource" :download="title" @click="increment">
+          <v-icon>mdi-download</v-icon>
+          Download
+        </a>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -37,6 +41,7 @@
       'label-list': httpVueLoader('/components/LabelList.vue')
     },
     props: {
+      id: Number,
       title: {
         type: String,
         default: function() {
@@ -68,6 +73,13 @@
       this.$parent.$on('open-preview', note => {
         this.showPreview = true;
       });
+    },
+    methods: {
+      increment: function() {
+        fetch('/download-note?note_id=' + this.id, {
+          method: 'POST'
+        })
+      }
     }
   }
 </script>
