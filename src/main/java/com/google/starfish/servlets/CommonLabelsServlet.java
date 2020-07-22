@@ -19,7 +19,8 @@ public class CommonLabelsServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
-    String[] mostCommonLabels = miscNoteLabelService.getMostUsedMiscLabels(pool);
+    // TODO: Extract `school` and `course` params in query string
+    String[] mostCommonLabels = miscNoteLabelService.getMostUsedMiscLabels(pool /* TODO: , school, course */);
     String json = convertArrayToJSON(mostCommonLabels);
     res.setContentType("application/json");
     res.getWriter().println(json);
