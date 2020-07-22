@@ -123,4 +123,8 @@ public class Note {
     this.numFavorites = Objects.requireNonNull(numFavorites);
     this.miscLabels = miscLabels;
   }
+
+  public String getAuthorId() {
+    return this.authorId;
+  }
 }
