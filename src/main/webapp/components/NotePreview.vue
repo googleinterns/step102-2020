@@ -24,7 +24,7 @@
                     :can-modify="isFavorited">
         </label-list>
 
-        <iframe :src="src"></iframe>
+        <iframe :src="sourceUrl"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -52,6 +52,7 @@
       miscLabels: Array,
       isFavorited: Boolean,
       pdfSource: String,
+      sourceUrl: String
     },
     data: function() {
       return {
