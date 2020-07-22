@@ -103,7 +103,6 @@ function getTokenEndpoint(url) {
 
 /** Sends request to webapp's user registration servlet. */
 function registerUserOnWebapp(idToken) {
-  // TODO: Change URL to deployed website URL
   fetch(WEBAPP_URL + '/user-registration?idToken=' + idToken, {
     method: 'POST'
   }).then(() => {
@@ -124,28 +123,48 @@ function getDate() {
  * with the newly created Google Doc.
  */
 function generateNote() {
-  let loadingIcon = document.getElementById('loading');
-  loadingIcon.style.display = 'flex';
-  let docName = document.getElementById('doc-name-input').value.trim();
-  if(docName === '') {
-    docName = 'gNote ' + getDate();
-  }
+  postNoteToDatabase();
+  // let loadingIcon = document.getElementById('loading');
+  // loadingIcon.style.display = 'flex';
+  // let docName = document.getElementById('doc-name-input').value.trim();
+  // if(docName === '') {
+  //   docName = 'gNote ' + getDate();
+  // }
 
-  gapi.client.request({
-    path: COPY_FILE_URL,
+  // gapi.client.request({
+  //   path: COPY_FILE_URL,
+  //   method: 'POST',
+  //   params: {fileId: NOTES_TEMPLATE_DOC_ID},
+  //   body: {
+  //     name: docName,
+  //   }
+  // }).then(response => {
+  //   // TODO: Make POST request to upload notes servlet
+  //   const gNoteURL = GOOGLE_DOC_URL + response.result.id;
+  //   loadingIcon.style.display = 'none';
+  //   chrome.tabs.create({ url: gNoteURL });
+  // }).catch(error => {
+  //   loadingIcon.style.display = 'none';
+  //   console.log('Error:', error);
+  // })
+}
+
+/**
+ * Makes a request to the webapp's upload gnote servlet to add 
+ * the note to the database.
+ */
+function postNoteToDatabase() {
+  let payload = {
+    title: 'Title',
+    school: 'NYU',
+    course: 'CS4410',
+    sourceUrl: 'sourceurl',
+    pdfSource: 'pdfSource'
+  }
+  let data = new URLSearchParams(payload);
+  fetch(WEBAPP_URL + '/upload-gnote', {
     method: 'POST',
-    params: {fileId: NOTES_TEMPLATE_DOC_ID},
-    body: {
-      name: docName,
-    }
-  }).then(response => {
-    // TODO: Make POST request to upload notes servlet
-    const gNoteURL = GOOGLE_DOC_URL + response.result.id;
-    loadingIcon.style.display = 'none';
-    chrome.tabs.create({ url: gNoteURL });
-  }).catch(error => {
-    loadingIcon.style.display = 'none';
-    console.log('Error:', error);
+    body: data
   })
 }
 
