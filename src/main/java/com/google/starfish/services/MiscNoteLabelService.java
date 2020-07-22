@@ -5,42 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import java.sql.ResultSet;  
 import javax.sql.DataSource;
-<<<<<<< HEAD
-
-import com.mysql.cj.x.protobuf.MysqlxPrepare.Prepare;
-
-public class MiscNoteLabelService extends GenericService {
-  public ResultSet getByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
-    try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT * "
-        + "FROM starfish.misc_note_labels "
-        + "WHERE `note_id`= ? AND "
-        + "`label` = ? "
-        + "LIMIT 1;";
-      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
-        getStmt.setLong(1, noteId);
-        getStmt.setString(1, label);
-        ResultSet rs = getStmt.executeQuery();
-        return rs;
-      } 
-    }
-  }
-
-  public ResultSet deleteByCompoundId(DataSource pool, long noteId, String label) throws SQLException {
-    try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "DELETE * "
-        + "FROM starfish.misc_note_labels "
-        + "WHERE `note_id`= ? AND "
-        + "`label` = ? "
-        + "LIMIT 1;";
-      try (PreparedStatement getStmt = conn.prepareStatement(stmt)) {
-        getStmt.setLong(1, noteId);
-        getStmt.setString(1, label);
-        ResultSet rs = getStmt.executeQuery();
-        return rs;
-=======
 import java.util.List;
 import java.util.ArrayList;
 import com.google.starfish.services.TableService;
@@ -66,42 +30,26 @@ public class MiscNoteLabelService {
         deleteStmt.setString(2, label);
         boolean deleted = deleteStmt.execute();
         return deleted;
->>>>>>> master
       } 
     }
   }
 
-<<<<<<< HEAD
-  public void insertMiscNoteLabelById(DataSource pool, long noteId, String label) {
-=======
   /** Inserts a misc note label by note id and label title */
   public void insertMiscNoteLabel(DataSource pool, long noteId, String label) {
     if (label == null) return;
->>>>>>> master
     try (Connection conn = pool.getConnection()) {
       try {
         conn.setAutoCommit(false);
         String stmt =
-<<<<<<< HEAD
-            "INSERT INTO misc_note_labels ( "
-=======
             "INSERT INTO " + MISC_LABELS +  " ( "
->>>>>>> master
                 + "note_id,"
                 + "label ) "
           + "VALUES ( "
                 + "?,"
                 + "? ); ";
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
-<<<<<<< HEAD
-          label.toLowerCase().trim();
-          insertStmt.setLong(1, noteId);
-          insertStmt.setString(2, label);
-          System.out.println(insertStmt);
-=======
           insertStmt.setLong(1, noteId);
           insertStmt.setString(2, label.toLowerCase().trim());
->>>>>>> master
           insertStmt.execute();
           conn.commit();
         }
@@ -119,8 +67,6 @@ public class MiscNoteLabelService {
       System.err.print(ex);
     }
   }
-<<<<<<< HEAD
-=======
 
   /** Returns an array of the most commonly used Misc labels on Notes */
   public String[] getMostUsedMiscLabels(DataSource pool /* TODO: , String school, String course */) {
@@ -183,5 +129,4 @@ public class MiscNoteLabelService {
       }
     }
   }
->>>>>>> master
 }

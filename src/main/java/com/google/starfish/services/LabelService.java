@@ -3,68 +3,6 @@ package com.google.starfish.services;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;  
-<<<<<<< HEAD
-import java.sql.ResultSet;  
-import javax.sql.DataSource;
-
-public class LabelService extends GenericService {
-  public ResultSet getById(DataSource pool, long id) throws SQLException {
-    return super.getById(pool, id, Table.LABELS);
-  }
-
-  public boolean deleteById(DataSource pool, long id) throws SQLException {
-    return super.deleteById(pool, id, Table.LABELS);
-  }
-
-  public void insertSchoolLabel(DataSource pool, String school) {
-    try (Connection conn = pool.getConnection()) {
-      try {
-        conn.setAutoCommit(false);
-        String stmt =
-            "INSERT INTO labels ( "
-                + "title,"
-                + "type ) "
-          + "VALUES ( "
-                + "?,"
-                + "'School' ); ";
-        try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
-          school.toLowerCase().trim();
-          insertStmt.setString(1, school);
-          insertStmt.execute();
-          conn.commit();
-        }
-      } catch(SQLException ex) {
-        if (conn != null) {
-          try {
-            System.err.print("Transaction is being rolled back.");
-            conn.rollback();
-          } catch (SQLException excep) {
-            System.err.print(excep);
-          }
-        }
-      }
-    } catch (SQLException ex) {
-      System.err.print(ex);
-    }
-  }
-
-  public void insertCourseLabel(DataSource pool, String course) {
-    try (Connection conn = pool.getConnection()) {
-      try {
-        conn.setAutoCommit(false);
-        String stmt =
-            "INSERT INTO labels ( "
-                + "title,"
-                + "type ) "
-          + "VALUES ( "
-                + "?,"
-                + "'Course' ); ";
-        try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
-          course.toLowerCase().trim();
-          insertStmt.setString(1, course);
-          insertStmt.execute();
-          conn.commit();
-=======
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -136,7 +74,6 @@ public class LabelService extends TableService {
           organizedLabels.put("schools", schools);
           organizedLabels.put("courses", courses);
           return organizedLabels;
->>>>>>> master
         }
       } catch(SQLException ex) {
         if (conn != null) {
@@ -145,17 +82,6 @@ public class LabelService extends TableService {
             conn.rollback();
           } catch (SQLException excep) {
             System.err.print(excep);
-<<<<<<< HEAD
-          }
-        }
-      }
-    } catch (SQLException ex) {
-      System.err.print(ex);
-    }
-  }
-
-  public void insertMiscLabel(DataSource pool, String label) {
-=======
             return null;
           }
         }
@@ -178,31 +104,19 @@ public class LabelService extends TableService {
 
   private void insertLabel(DataSource pool, String label, Type type) {
     if (label == null || type == null) return;
->>>>>>> master
     try (Connection conn = pool.getConnection()) {
       try {
         conn.setAutoCommit(false);
         String stmt =
-<<<<<<< HEAD
-            "INSERT INTO labels ( "
-=======
             "INSERT INTO " + LABELS + " ( "
->>>>>>> master
                 + "title,"
                 + "type ) "
           + "VALUES ( "
                 + "?,"
-<<<<<<< HEAD
-                + "'Misc' ); ";
-        try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
-          label.toLowerCase().trim();
-          insertStmt.setString(1, label);
-=======
                 + "? ); ";
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           insertStmt.setString(1, label.toLowerCase().trim());
           insertStmt.setString(2, type.getType());
->>>>>>> master
           insertStmt.execute();
           conn.commit();
         }
