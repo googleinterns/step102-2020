@@ -123,48 +123,62 @@ function getDate() {
  * with the newly created Google Doc.
  */
 function generateNote() {
-  postNoteToDatabase();
-  // let loadingIcon = document.getElementById('loading');
-  // loadingIcon.style.display = 'flex';
-  // let docName = document.getElementById('doc-name-input').value.trim();
-  // if(docName === '') {
-  //   docName = 'gNote ' + getDate();
-  // }
+  let loadingIcon = document.getElementById('loading');
+  loadingIcon.style.display = 'flex';
+  let docName = document.getElementById('doc-name-input').value.trim();
+  if(docName === '') {
+    docName = 'gNote ' + getDate();
+  }
 
-  // gapi.client.request({
-  //   path: COPY_FILE_URL,
-  //   method: 'POST',
-  //   params: {fileId: NOTES_TEMPLATE_DOC_ID},
-  //   body: {
-  //     name: docName,
-  //   }
-  // }).then(response => {
-  //   // TODO: Make POST request to upload notes servlet
-  //   const gNoteURL = GOOGLE_DOC_URL + response.result.id;
-  //   loadingIcon.style.display = 'none';
-  //   chrome.tabs.create({ url: gNoteURL });
-  // }).catch(error => {
-  //   loadingIcon.style.display = 'none';
-  //   console.log('Error:', error);
-  // })
+  gapi.client.request({
+    path: COPY_FILE_URL,
+    method: 'POST',
+    params: {fileId: NOTES_TEMPLATE_DOC_ID},
+    body: {
+      name: docName,
+    }
+  }).then(response => {
+    const gNoteURL = GOOGLE_DOC_URL + response.result.id;
+    compileNoteData(docName, gNoteUrl);
+    loadingIcon.style.display = 'none';
+    chrome.tabs.create({ url: gNoteURL });
+  }).catch(error => {
+    loadingIcon.style.display = 'none';
+    console.log('Error:', error);
+  })
+}
+
+/** Puts together the URL search params for posting the note */
+async function compileNoteData(title, docUrl) {
+  const pdfResponse = await getPDFLink();
+  const pdfSource = pdfResponse.result.exportLinks['application/pdf'];
+  const payload = {
+    title: title,
+    school: 'Unaffiliated',
+    course: 'Unaffiliated',
+    sourceUrl: docUrl,
+    pdfSource: pdfSource
+  }
+  const noteData = new URLSearchParams(payload);
+  postNoteToDatabase(noteData);
+}
+
+/** Retrieves PDF export link of Google Doc */
+function getPDFLink(docId) {
+  return gapi.client.drive.files.get({
+    fileId: '1at_wZV-4ul2pV_VCkFu2oG9t0rhrzfEguZpt2rRzTs0',
+    fields: 'exportLinks'
+  });
 }
 
 /**
  * Makes a request to the webapp's upload gnote servlet to add 
  * the note to the database.
  */
-function postNoteToDatabase() {
-  let payload = {
-    title: 'Title',
-    school: 'NYU',
-    course: 'CS4410',
-    sourceUrl: 'sourceurl',
-    pdfSource: 'pdfSource'
-  }
-  let data = new URLSearchParams(payload);
+function postNoteToDatabase(noteData) {
   fetch(WEBAPP_URL + '/upload-gnote', {
     method: 'POST',
-    body: data
+    body: noteData
   })
 }
 
