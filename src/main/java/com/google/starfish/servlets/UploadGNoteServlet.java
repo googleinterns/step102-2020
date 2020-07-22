@@ -46,11 +46,7 @@ public class UploadGNoteServlet extends HttpServlet {
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 
     // Insert all labels before inserting note due to foreign key constraint
-    labelService.insertSchoolLabel(pool, school);
-    labelService.insertCourseLabel(pool, course);
-    // for (String miscLabel : miscLabels) {
-    //   labelService.insertMiscLabel(pool, miscLabel.toLowerCase());
-    // }
+    addLabels(pool, school, course);
     
     try (Connection conn = pool.getConnection()) {
       String stmt =
@@ -71,7 +67,7 @@ public class UploadGNoteServlet extends HttpServlet {
               + "?,"
               + "?,"
               + "?,"
-              + "? ); ";
+              + "0 ); ";
 
       try (PreparedStatement noteStmt = conn.prepareStatement(stmt, new String[] {"id"})) {
         noteStmt.setString(1, userId);
@@ -81,13 +77,18 @@ public class UploadGNoteServlet extends HttpServlet {
         noteStmt.setString(5, sourceUrl);
         noteStmt.setString(6, pdfSource);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
-        noteStmt.setLong(8, 0); // num_downloads
         noteStmt.executeUpdate();
       }
     } catch (SQLException ex) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       response.getWriter().println("INTERNAL SERVER ERROR: " + ex);
     }    
+  }
+
+  /** Inserts a school and course label to the database */
+  private void addLabels(DataSource pool, String school, String course) {
+    labelService.insertSchoolLabel(pool, school);
+    labelService.insertCourseLabel(pool, course);
   }
 
   /**
