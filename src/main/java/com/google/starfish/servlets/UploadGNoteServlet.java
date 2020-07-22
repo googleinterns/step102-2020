@@ -20,7 +20,10 @@ import java.sql.ResultSet;
 import java.sql.Date;
 import java.util.Calendar;
 
-/** Servlet to handle note uploading and adding associated labels to the database */
+/**
+ * Servlet to handle note uploading and adding associated labels to the database
+ * for gnotes from the chrome extension
+ */
 @WebServlet("/upload-gnote")
 public class UploadGNoteServlet extends HttpServlet {
 
