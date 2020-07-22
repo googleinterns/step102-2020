@@ -5,6 +5,8 @@ import com.google.appengine.api.blobstore.BlobInfoFactory;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.protos.cloud.sql.Client.SqlException;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -60,12 +62,7 @@ public class HandleNotesServlet extends HttpServlet {
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 
     // Insert all labels before inserting note due to foreign key constraint
-    labelService.insertSchoolLabel(pool, school);
-    labelService.insertCourseLabel(pool, course);
-    for (String miscLabel : miscLabels) {
-      labelService.insertMiscLabel(pool, miscLabel.toLowerCase());
-    }
-    
+    addLabels(pool, school, course, miscLabels);
     try (Connection conn = pool.getConnection()) {
       String stmt =
           "INSERT INTO notes ( "
@@ -92,30 +89,13 @@ public class HandleNotesServlet extends HttpServlet {
         noteStmt.setString(2, school);
         noteStmt.setString(3, course);
         noteStmt.setString(4, title);
-        if (sourceUrl != null) {
-          // If there is a sourceUrl on the request param, this is
-          // a google doc set the source url based on the passed param
-          noteStmt.setString(5, sourceUrl);
-        } else {
-          // If there was no sourceUrl, this is an uploaded pdf
-          // so set the source url to serve-notes path
-          noteStmt.setString(5, "/serve-notes?key=" + blobKey);
-        }
-        // The blob key is nullable on the notes table so if this is a google doc
-        // this will be null
+        noteStmt.setString(5, validateAndGetSourceUrl(sourceUrl, blobKey));
         noteStmt.setString(6, blobKey);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
         int rowsAffected = noteStmt.executeUpdate();
         if (rowsAffected == 1) {
-          long noteId = 0;
-          ResultSet rs = noteStmt.getGeneratedKeys();
-          if (rs.next()) {
-            noteId = rs.getLong(1);
-            // Associate misc labels to the newly added note
-            for (String miscLabel : miscLabels) {
-              miscNoteLabelService.insertMiscNoteLabel(pool, noteId, miscLabel);
-            }
-          } 
+          ResultSet generatedKeys = noteStmt.getGeneratedKeys();
+          addMiscLabelsToNewNote(pool, generatedKeys, miscLabels);
         }
       }
     } catch (SQLException ex) {
@@ -123,6 +103,39 @@ public class HandleNotesServlet extends HttpServlet {
       response.getWriter().println("INTERNAL SERVER ERROR: " + ex);
     }    
   }
+
+  /** Inserts a school, course, and array of misc labels to the database */
+  private void addLabels(DataSource pool, String school, String course, String[] miscLabels) {
+    labelService.insertSchoolLabel(pool, school);
+    labelService.insertCourseLabel(pool, course);
+    for (String miscLabel : miscLabels) {
+      labelService.insertMiscLabel(pool, miscLabel.toLowerCase());
+    }
+  }
+
+  /** Associates an array of misc labels with a newly added Note in the database */
+  private void addMiscLabelsToNewNote(DataSource pool, ResultSet generatedKeys, String[] miscLabels) throws SQLException {
+    if (generatedKeys.next()) {
+      long noteId = generatedKeys.getLong(1);
+      for (String miscLabel : miscLabels) {
+        miscNoteLabelService.insertMiscNoteLabel(pool, noteId, miscLabel);
+      }
+    }
+  }
+
+  /** Returns the appropriate source_url string for a note after determining whether 
+   *  the note is a Google Doc or a PDF
+   */
+  private String validateAndGetSourceUrl(String sourceUrl, String blobKey) {
+    if (sourceUrl != null) {
+      // If there is a sourceUrl on the request param, this is
+      // a google doc set the source url based on the passed param
+      return sourceUrl;
+    }
+    // If there was no sourceUrl, this is an uploaded pdf
+    // so set the source url to serve-notes path
+    return "/serve-notes?key=" + blobKey;
+    }
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileBlobKey(HttpServletRequest request, String formInputElementName) {
