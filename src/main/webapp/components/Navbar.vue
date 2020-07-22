@@ -30,7 +30,7 @@
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title>{{ user.name }}</v-list-item-title>
+                <v-list-item-title>{{ user.displayName }}</v-list-item-title>
                 <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -66,11 +66,7 @@ module.exports = {
       signedIn: false,
       clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
       googleAuth: null,
-      // TODO: Set user to null once testing is finished
-      user: {
-        name: 'Default Name',
-        points: 0
-      }
+      user: null
     }
   },
   methods: {
@@ -92,15 +88,19 @@ module.exports = {
       fetch('/user-registration?idToken=' + token + '&exp=' + expirationTime, {
         method: 'POST'
       }).then(response => {
-          this.signedIn = true;
-          // TODO: Send GET request to retrieve user data then set it
+          this.getUserInfo();
         })
         .catch(err => {
           console.log(err);
         })
     },
-    setUserInfo(userData) {
-      this.user = userData;
+    getUserInfo() {
+      fetch('/user-registration')
+        .then(response => response.json())
+        .then(userInfo => {
+          this.user = userInfo;
+          this.signedIn = true;
+        })
     },
     signIn() {
       this.googleAuth.signIn().then(() => {
@@ -117,7 +117,7 @@ module.exports = {
         }).then(response => {
           this.signedIn = false;
           this.showDropdown = false;
-          // TODO: Set user to null once servlets are completed
+          this.user = null;
         });
       })
     }
@@ -130,6 +130,7 @@ module.exports = {
   },
   watch: {
     user: function(userVal) {
+      console.log("user val changed");
       this.$emit('set-user', userVal);
     }
   }
