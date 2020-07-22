@@ -4,9 +4,9 @@
     <img src="/assets/starfish.png" id="logo">
     <div class="action-items" v-if="!signedIn">
       <v-btn color="primary"
-            dark
-            @click.stop="signIn"
-            id="signin-link">
+             dark
+             @click.stop="signIn"
+             id="signin-link">
         Sign Up/Login
       </v-btn>
     </div>
@@ -42,11 +42,9 @@
             <v-list-item @click="">
               <v-list-item-title>My Profile</v-list-item-title>
             </v-list-item>
-
             <v-list-item @click="">
               <v-list-item-title>Favorite Notes</v-list-item-title>
             </v-list-item>
-
             <v-list-item @click="signOut">
               <v-list-item-title>Logout</v-list-item-title>
             </v-list-item>            
@@ -60,7 +58,7 @@
 <script>
 module.exports = {
   components: {
-    'upload-form': httpVueLoader('/components/UploadForm.vue'),
+    'upload-form': httpVueLoader('/components/UploadForm.vue')
   },
   data: function() {
     return {
@@ -76,12 +74,6 @@ module.exports = {
     }
   },
   methods: {
-    hideDropdown() {
-      this.showDropdown = false;
-    },
-    toggleDropdown() {
-      this.showDropdown = !this.showDropdown;
-    },
     onGAPILoad() {
       gapi.load('auth2', this.initGoogleAuth);
     },
@@ -97,8 +89,8 @@ module.exports = {
       const authRes = this.googleAuth.currentUser.get().getAuthResponse();
       const token = authRes.id_token;
       const expirationTime = authRes.expires_at;
-      fetch('/user-signin?idToken=' + token + '&exp=' + expirationTime, {
-        method: "POST"
+      fetch('/user-registration?idToken=' + token + '&exp=' + expirationTime, {
+        method: 'POST'
       }).then(response => {
           this.signedIn = true;
           // TODO: Send GET request to retrieve user data then set it
@@ -145,16 +137,20 @@ module.exports = {
 </script>
 
 <style scoped>
+button {
+  margin: 0 10px;
+}
+
+button:focus {
+  outline: none;
+}
+
 .bold {
   font-weight: bold;
 }
 
 .navy-blue {
   background-color: #004aad;
-}
-
-.light-gray {
-  background-color: #f9f9f9;
 }
 
 .sticky {
@@ -183,14 +179,6 @@ module.exports = {
   margin: 0 10px 0 20px;
 }
 
-button {
-  margin: 0 10px;
-}
-
-button:focus {
-  outline: none;
-}
-
 #logo {
   height: 60%;
   padding: 0 0 5px 0;
@@ -204,69 +192,7 @@ button:focus {
   width: auto;
 }
 
-.vert-center {
-  height: 80px;
-  line-height: 80px;
-}
-
 #signin-link {
   margin-right: 30px;
-}
-
-.dropdown {
-  height: 100%;
-  overflow: hidden;
-  padding: 0 10px 0 20px;
-}
-
-.dropdown .dropdown-btn {
-  background-color: inherit;
-  border: none;
-  color: white;
-  font-size: 16px;
-  font-family: inherit;
-  height: 100%;
-  margin: 0;
-  outline: none;
-  width: 75px;
-}
-
-.dropdown .dropdown-btn:hover {
-  cursor: pointer;
-}
-
-.dropdown-btn img {
-  height: 65%;
-}
-
-.dropdown-content {
-  align-items: center;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  display: flex;
-  flex-direction: column;
-  height: 375px;
-  justify-content: center;
-  margin-right: 10px;
-  position: absolute;
-  right: 0;
-  width: 350px;
-  z-index: 1;
-}
-
-#dropdown-name {
-  font-size: 1.75rem;
-  margin: 25px 0 0 0;
-}
-
-#dropdown-points {
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.dropdown-content a {
-  color: #575757;
-  font-size: 1.25rem;
-  margin: 20px 0 -15px 0;
-  padding: 0;
 }
 </style>

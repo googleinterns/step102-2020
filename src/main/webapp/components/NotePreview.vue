@@ -56,7 +56,6 @@
     data: function() {
       return {
         showPreview: false,
-        /* pdfSrc: '/serve-notes?key=PTsH-P4GY_jlNY216et_Bg' */
       }
     },
     computed: {
