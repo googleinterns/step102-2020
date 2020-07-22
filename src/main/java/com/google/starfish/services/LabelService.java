@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 
 /** Enum that holds label types */
 enum Type {
@@ -46,6 +50,58 @@ public class LabelService extends TableService {
     insertLabel(pool, label, Type.MISC);
   }
 
+  /** Returns a map of all school and course labels in the database */
+  public HashMap<String, String[]> getAllSchoolAndCourseLabels(DataSource pool) {
+    HashMap<String, String[]> organizedLabels = new HashMap<>();
+    try (Connection conn = pool.getConnection()) {
+      try {
+        conn.setAutoCommit(false);
+        String schoolsStmt = 
+            "SELECT * " 
+          + "FROM " + LABELS + " "
+          + "WHERE type= \"" + Type.SCHOOL.getType() + "\"";
+        String coursesStmt = 
+            "SELECT * " 
+          + "FROM " + LABELS + " "
+          + "WHERE type= \"" + Type.COURSE.getType() + "\"";
+        try (PreparedStatement schoolStmt = conn.prepareStatement(schoolsStmt); 
+            PreparedStatement courseStmt = conn.prepareStatement(coursesStmt)) {
+          ResultSet schoolResults = schoolStmt.executeQuery();
+          ResultSet courseResults = courseStmt.executeQuery();
+          conn.commit();
+          String[] schools = createStringArrayOutOfResultSet(schoolResults, "title");
+          String[] courses = createStringArrayOutOfResultSet(courseResults, "title");
+          organizedLabels.put("schools", schools);
+          organizedLabels.put("courses", courses);
+          return organizedLabels;
+        }
+      } catch(SQLException ex) {
+        if (conn != null) {
+          try {
+            System.err.print("Transaction is being rolled back.");
+            conn.rollback();
+          } catch (SQLException excep) {
+            System.err.print(excep);
+            return null;
+          }
+        }
+        return null;
+      }
+    } catch (SQLException ex) {
+      System.err.print(ex);
+      return null;
+    }
+  }
+
+  private String[] createStringArrayOutOfResultSet(ResultSet rs, String stringColumn) throws SQLException {
+    List<String> list = new ArrayList<>();
+    while (rs.next()) {
+      String thisResult = rs.getString(stringColumn);
+      list.add(thisResult);
+    }
+    return list.toArray(new String[0]);
+  }
+
   private void insertLabel(DataSource pool, String label, Type type) {
     if (label == null || type == null) return;
     try (Connection conn = pool.getConnection()) {
@@ -60,7 +116,7 @@ public class LabelService extends TableService {
                 + "? ); ";
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           insertStmt.setString(1, label.toLowerCase().trim());
-          insertStmt.setString(1, type.getType());
+          insertStmt.setString(2, type.getType());
           insertStmt.execute();
           conn.commit();
         }

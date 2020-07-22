@@ -89,7 +89,7 @@ module.exports = {
       const authRes = this.googleAuth.currentUser.get().getAuthResponse();
       const token = authRes.id_token;
       const expirationTime = authRes.expires_at;
-      fetch('/user-signin?idToken=' + token + '&exp=' + expirationTime, {
+      fetch('/user-registration?idToken=' + token + '&exp=' + expirationTime, {
         method: 'POST'
       }).then(response => {
           this.signedIn = true;
