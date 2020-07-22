@@ -50,9 +50,15 @@
       },
       toggleFavorite: function() {
         let method = this.favorited ? 'DELETE' : 'POST';
-        this.favorited = !this.favorited;
         fetch('/favorite-note?note_id=' + this.id, {
           method: method
+        }).then(response => {
+          if(response.status === 403) {
+            alert("Please sign in to favorite this note.");
+          }
+          else {
+            this.favorited = !this.favorited;
+          }
         })
       }
     }
