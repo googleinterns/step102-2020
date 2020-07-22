@@ -7,6 +7,8 @@ const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
 const USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=';
+// TODO: Change WEBAPP_URL from local URL to deployed website URL
+const WEBAPP_URL = 'https://8080-cacf7a03-5e11-4b90-94f2-e81659d32917.us-east1.cloudshell.dev';
 
 const CLIENT_ID = encodeURIComponent(keys.CLIENT_ID);
 const CLIENT_SECRET = encodeURIComponent(keys.CLIENT_SECRET);
@@ -86,7 +88,7 @@ function login() {
       getTokenEndpoint(newUrl)
         .then(tokenInfo => {
           accessToken = tokenInfo.access_token;
-          registerUserOnDatabase(tokenInfo.id_token);
+          registerUserOnWebapp(tokenInfo.id_token);
         })
     }
   })
@@ -100,9 +102,9 @@ function getTokenEndpoint(url) {
 }
 
 /** Sends request to webapp's user registration servlet. */
-function registerUserOnDatabase(idToken) {
+function registerUserOnWebapp(idToken) {
   // TODO: Change URL to deployed website URL
-  fetch('https://8080-cacf7a03-5e11-4b90-94f2-e81659d32917.us-east1.cloudshell.dev/user-registration?idToken=' + idToken, {
+  fetch(WEBAPP_URL + '/user-registration?idToken=' + idToken, {
     method: 'POST'
   }).then(() => {
     gapi.auth.setToken({ access_token: accessToken });
@@ -148,17 +150,27 @@ function generateNote() {
 }
 
 /**
- * Logs out the user by revoking their authentication token and resetting
- * gapi's auth token.
+ * Logs out the user by revoking their authentication token and making a
+ * request to the webapp.
  */
 function logout() {
   fetch(REVOKE_TOKEN_URL + accessToken)
-    .then(() => {
-      accessToken = '';
-      gapi.auth.setToken({ access_token: accessToken });
-      loggedIn = false;
-      setAccountInfo();
-    })
+    .then(logoutUserOnWebapp);
+}
+
+/**
+ * Sends request to webapp's user logout servlet and resets the gapi
+ * auth token.
+ */
+function logoutUserOnWebapp() {
+  fetch(WEBAPP_URL + '/user-logout', {
+    method: 'POST'
+  }).then(() => {
+    accessToken = '';
+    gapi.auth.setToken({ access_token: accessToken });
+    loggedIn = false;
+    setAccountInfo();
+  })
 }
 
 /**
