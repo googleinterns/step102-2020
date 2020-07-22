@@ -134,10 +134,7 @@ function setLoadingIcon(show) {
  */
 function generateNote() {
   setLoadingIcon(true);
-  let docName = document.getElementById('doc-name-input').value.trim();
-  if(docName === '') {
-    docName = 'gNote ' + getDate();
-  }
+  const [docName, school, course] = retrieveParams();
 
   gapi.client.request({
     path: COPY_FILE_URL,
@@ -149,22 +146,33 @@ function generateNote() {
   }).then(response => {
     const docId = response.result.id;
     const gNoteUrl = GOOGLE_DOC_URL + docId;
-    compileNoteData(docName, docId, gNoteUrl)
+    compileNoteData(docName, docId, gNoteUrl, school, course);
   }).catch(error => {
     setLoadingIcon(false);
     console.log('Error:', error);
   })
 }
 
+/** Retrieves input values and sets them if they are blank */
+function retrieveParams() {
+  let docName = document.getElementById('doc-name-input').value.trim();
+  if(docName === '') docName = 'gNote ' + getDate();
+  let school = document.getElementById('school-input').value.trim();
+  if(school === '') school = 'Unaffiliated';
+  let course = document.getElementById('course-input').value.trim();
+  if(course === '') course = 'Unaffiliated';
+  return [docName, school, course];
+}
+
 /** Puts together the URL search params for posting the note */
-async function compileNoteData(title, docId, docUrl) {
+async function compileNoteData(title, docId, docUrl, school, course) {
   getPDFLink(docId)
     .then(response => {
       const pdfSource = response.result.exportLinks['application/pdf'];
       const payload = {
         title: title,
-        school: 'Unaffiliated',
-        course: 'Unaffiliated',
+        school: school,
+        course: course,
         sourceUrl: docUrl,
         pdfSource: pdfSource
       }
