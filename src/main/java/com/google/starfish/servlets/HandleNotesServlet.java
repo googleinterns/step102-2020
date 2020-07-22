@@ -53,6 +53,8 @@ public class HandleNotesServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
       return;
     }
+    
+    blobKey = "/serve-notes?key=" + blobKey;
 
     String title = request.getParameter("title");
     String school = request.getParameter("school").toLowerCase();
@@ -134,8 +136,8 @@ public class HandleNotesServlet extends HttpServlet {
     }
     // If there was no sourceUrl, this is an uploaded pdf
     // so set the source url to serve-notes path
-    return "/serve-notes?key=" + blobKey;
-    }
+    return blobKey;
+  }
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileBlobKey(HttpServletRequest request, String formInputElementName) {
