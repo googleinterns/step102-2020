@@ -1,6 +1,8 @@
 <template>
   <div class="note-grid-collection">
-    <note-grid-card v-for="(note, index) in sortedNotes"
+    <v-card-title>{{header}}</v-card-title>
+
+    <note-grid-card v-for="(note, index) in notes"
                     :key="index"
                     v-bind="note"
                     @click="onClick(note)">
@@ -14,24 +16,22 @@ module.exports = {
     'note-grid-card': httpVueLoader('/components/NoteGridCard.vue'),
   },
   props: {
-    notes: {
+    noteData: {
       type: Array,
       required: true,
     },
     filters: Array,
     compareFunc: Function,
+    header: String,
+    maxAge: Number,
   },
   computed: {
-    activeNotes: function() {
-      // Filter the notes that get shown based on filter provided by parent.
-      if (this.filters && this.filters.length) {
-        return this.notes.filter(this.noteFilter);
-      }
-      return this.notes;
-    },
-    sortedNotes: function() {
-      // Sort the currently active notes using sortFunc for comparisons.
-      return this.activeNotes.sort(this.compareFunc);
+    notes: function() {
+      // Filter by date, matching terms, and sort with compareFunc
+      return this.noteData
+        .filter(this.dateFilter)
+        .filter(this.noteFilter)
+        .sort(this.compareFunc);
     }
   },
   methods: {
@@ -39,13 +39,25 @@ module.exports = {
       this.$parent.$emit('open-preview', note)
     },
     noteFilter: function(note) {
-      // True if some filter matches a miscLabel, title, or school, or course
+      // If no filter or empty filter, immediately pass filter.
+      if (!this.filters || !this.filters.length) return true;
+
+      // Pass if some filter matches a miscLabel, title, school, or course
       return this.filters.some(filter => {
-        return note.miscLabels.includes(filter)
-          || note.title.includes(filter)
-          || note.school.includes(filter)
-          || note.course.includes(filter)
+        filter = filter.toLowerCase();
+        return note.miscLabels.some(label => label.toLowerCase() == filter)
+          || note.title.toLowerCase().includes(filter)
+          || note.school.toLowerCase().includes(filter)
+          || note.course.toLowerCase().includes(filter)
+        ;
       });
+    },
+    dateFilter: function(note) {
+      // If no age restriction, immediately pass filter.
+      if (!this.maxAge) return true;
+
+      // Pass if younger than maxAge.
+      return Date.now() - note.date < this.maxAge;
     }
   },
 }
