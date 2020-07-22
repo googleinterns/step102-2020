@@ -6,7 +6,7 @@ import java.util.Objects;
 /** Represents a user */
 public class User {
 
-  private long id;
+  private String id;
   private String displayPicture;
   private String displayName;
   private Date dateJoined;
@@ -14,23 +14,23 @@ public class User {
   private long points;
   private String school;
   // Array of noteIds that have have been favorited by the user
-  private long[] favoriteNotes;
+  private Note[] favoriteNotes;
   // Array of noteIds that have have been uploaded by the user
-  private long[] uploadedNotes;
+  private Note[] uploadedNotes;
 
   public static class Builder {
 
-    private long id;
+    private String id;
     private String displayPicture;
     private String displayName;
     private Date dateJoined;
     private String email;
     private long points;
     private String school;
-    private long[] favoriteNotes;
-    private long[] uploadedNotes;
+    private Note[] favoriteNotes;
+    private Note[] uploadedNotes;
 
-    public Builder setId(long id) {
+    public Builder setId(String id) {
       this.id = id;
       return this;
     }
@@ -61,12 +61,12 @@ public class User {
       return this;
     } 
 
-    public Builder setOptionalFavoriteNotes(long[] favoriteNotes) {
+    public Builder setOptionalFavoriteNotes(Note[] favoriteNotes) {
       this.favoriteNotes = favoriteNotes;
       return this;
     }
 
-    public Builder setOptionalUploadedNotes(long[] uploadedNotes) {
+    public Builder setOptionalUploadedNotes(Note[] uploadedNotes) {
       this.uploadedNotes = uploadedNotes;
       return this;
     }
@@ -85,15 +85,15 @@ public class User {
   }
 
   /** Default constructor that throws null exception if NOT NULL fields are null */
-  public User(long id, 
+  public User(String id, 
               String displayPicture, 
               String displayName, 
               Date dateJoined, 
               String email, 
               long points, 
               String school, 
-              long[] favoriteNotes,
-              long[] uploadedNotes
+              Note[] favoriteNotes,
+              Note[] uploadedNotes
   ) {
 
     this.id = Objects.requireNonNull(id);

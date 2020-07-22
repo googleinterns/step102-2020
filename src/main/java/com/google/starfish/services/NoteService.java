@@ -5,59 +5,68 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import java.sql.ResultSet;  
 import javax.sql.DataSource;
+import java.util.List;
+import java.util.Date;
 import java.util.ArrayList;
+import com.google.starfish.models.Note;
 
 /**
- * Service class for Notes that allows retrieval of values stored as
- * instance variables on the Note class that aren't stored on the 
- * notes table in sql
- *
+ * Service class for Notes Table
  */
-public class NoteService extends GenericService {
+public class NoteService extends TableService {
 
-  public ResultSet getById(DataSource pool, long id) throws SQLException {
-    return super.getById(pool, id, Table.NOTES);
+  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
+  private MiscNoteLabelService miscNoteLabelService  = new MiscNoteLabelService();
+  private String NOTES = Table.NOTES.getSqlTable();
+
+  public NoteService() {
+    super(Table.NOTES);
   }
 
-  public boolean deleteById(DataSource pool, long id) throws SQLException {
-    return super.deleteById(pool, id, Table.NOTES);
-  }
-
-  /** Gets the number of times a note has been favorited by note id */
-  public long getNumFavoritesById(DataSource pool, long noteId) throws SQLException {
+  public Note[] getUploadedNotesByUserId(DataSource pool, String userId) throws SQLException {
+    List<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = 
-          "SELECT COUNT(*) AS num_favorites "
-        + "FROM " + Table.FAVORITE_NOTES.getSqlTable() + " "
-        + "WHERE `note_id`=?;";
-      try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
-        selectStmt.setLong(1, noteId);
-        ResultSet rs = selectStmt.executeQuery();
-        rs.next();
-        long numFavorites = rs.getLong("num_favorites");
+          "SELECT * "
+        + "FROM " + NOTES + " "
+        + "WHERE author_id=?;";
+      try (PreparedStatement upldNotesStmt = conn.prepareStatement(stmt)) {
+        upldNotesStmt.setString(1, userId);
+        ResultSet rs = upldNotesStmt.executeQuery();
+        while (rs.next()) {
+          notes.add(constructNoteFromSqlResult(pool, rs));
+        }
         rs.close();
-        return numFavorites;
+        return notes.toArray(new Note[0]);
       }
     }
   }
 
-  /** Gets the misc labels attached to the note with the given note id */
-  public String[] getMiscLabelsById(DataSource pool, long noteId) throws SQLException {
-    try(Connection conn = pool.getConnection()) {
-      String stmt =
-          "SELECT label " 
-        + "FROM " + Table.MISC_LABELS.getSqlTable() + " " 
-        + "WHERE `note_id`=?;";
-      try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
-        selectStmt.setLong(1, noteId);
-        ResultSet rs = selectStmt.executeQuery();
-        ArrayList<String> labels = new ArrayList<>();
-        while(rs.next()) {
-          labels.add(rs.getString("label"));
-        }
-        rs.close();
-        return labels.toArray(new String[labels.size()]);
-      }
-    }
+  private Note constructNoteFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
+    long noteId = rs.getLong("id");
+    String authorId = rs.getString("author_id");
+    String school = rs.getString("school");
+    String course = rs.getString("course");
+    String title = rs.getString("title");
+    String sourceUrl = rs.getString("title");
+    String pdfSource = rs.getString("pdf_source");
+    Date dateCreated = rs.getDate("date_created");
+    long numDownloads = rs.getLong("num_downloads");
+    long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, noteId);
+    String[] miscLabels = miscNoteLabelService.getMiscLabelsByNoteId(pool, noteId);
+
+    Note note = new Note.Builder()
+                        .setId(noteId)
+                        .setAuthorId(authorId)
+                        .setRequiredLabels(school, course)
+                        .setNoteTitle(title)
+                        .setSourceUrl(sourceUrl)
+                        .setOptionalPdfSource(pdfSource)
+                        .setDateCreated(dateCreated)
+                        .setNumDownloads(numDownloads)
+                        .setNumFavorites(numFavorites)
+                        .setMiscLabels(miscLabels)
+                        .build();
+    return note;
   }
 }

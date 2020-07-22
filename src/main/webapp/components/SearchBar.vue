@@ -50,7 +50,6 @@ module.exports = {
       fetch(url)
         .then(response => response.json())
         .then(result => {
-          console.log(result);
           this.$emit('searchresult', result);
         })
         .catch(error => {

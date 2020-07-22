@@ -51,7 +51,7 @@
       course: String,
       miscLabels: Array,
       isFavorited: Boolean,
-      pdfSource: String, 
+      pdfSource: String,
     },
     data: function() {
       return {

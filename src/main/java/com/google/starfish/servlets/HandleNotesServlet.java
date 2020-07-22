@@ -1,4 +1,4 @@
-package com.google.starfish.servlets;
+package com.google.servlets;
 
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
@@ -17,35 +17,18 @@ import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;  
 import javax.servlet.http.Cookie;  
-import com.google.starfish.services.NoteService;
-import com.google.starfish.services.LabelService;
-import com.google.starfish.services.MiscNoteLabelService;
-import javax.sql.DataSource;
-import java.sql.Connection;  
-import java.sql.SQLException;  
-import java.sql.PreparedStatement;
-import java.sql.Types;  
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.Date;
-import java.util.Calendar;
-
 
 @WebServlet("/handle-notes")
 public class HandleNotesServlet extends HttpServlet {
 
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
   private final String COOKIE_NAME = "SFCookie";
-  private NoteService noteService = new NoteService();
-  private LabelService labelService = new LabelService();
-  private MiscNoteLabelService miscNoteLabelService = new MiscNoteLabelService();
   
   @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     
     if(!validateUser(request)) {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -56,85 +39,20 @@ public class HandleNotesServlet extends HttpServlet {
     String userId = (String) activeSession.getAttribute("user_id");
 
     String blobKey = getUploadedFileBlobKey(request, "file");
-    if (blobKey == null) {
+    if(blobKey == null) {
       response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
       return;
     }
-    String title = request.getParameter("title");
+    String title = request.getParameter("title").toLowerCase();
     String school = request.getParameter("school").toLowerCase();
     String course = request.getParameter("course").toLowerCase();
     String[] miscLabels = request.getParameter("miscLabels").split(",");
 
-    DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
+    // TODO: Put labels into database
 
-    labelService.insertSchoolLabel(pool, school);
-    labelService.insertCourseLabel(pool, course);
-    for (String miscLabel : miscLabels) {
-      miscLabel.toLowerCase();
-      labelService.insertMiscLabel(pool, miscLabel);
-    }
-    
-    try (Connection conn = pool.getConnection()) {
-      String stmt =
-          "INSERT INTO notes ( "
-              + "author_id,"
-              + "school,"
-              + "course,"
-              + "title,"
-              + "source_url,"
-              + "pdf_source,"
-              + "date_created,"
-              + "num_downloads ) "
-        + "VALUES ( "
-              + "?,"
-              + "?,"
-              + "?,"
-              + "?,"
-              + "?,"
-              + "?,"
-              + "?,"
-              + "? ); ";
+    // TODO: Put note into database
 
-      try (PreparedStatement noteStmt = conn.prepareStatement(stmt, new String[] {"id"})) {
-        noteStmt.setString(1, userId);
-        noteStmt.setString(2, school);
-        noteStmt.setString(3, course);
-        noteStmt.setString(4, title);
-        noteStmt.setString(5, blobKey);
-        noteStmt.setString(6, blobKey);
-        noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
-        noteStmt.setLong(8, 0);
-        System.out.println(noteStmt);
-        System.out.println("Posting note");
-        int rowsAffected = noteStmt.executeUpdate();
-        System.out.println("Done posting note");
-        if (rowsAffected == 1) {
-          long noteId = 0;
-          ResultSet rs = noteStmt.getGeneratedKeys();
-          if (rs.next()) {
-            noteId = rs.getLong(1);
-            System.out.println("NoteId: " + noteId);
-
-            // Use label services to insert all new labels into the database
-            // labelService.insertSchoolLabel(pool, school);
-            // labelService.insertCourseLabel(pool, course);
-            for (String miscLabel : miscLabels) {
-              System.out.println("Note Id being inserted into misc_notes: " + noteId);
-              System.out.println("Label being inserted into misc_notes: " + miscLabel);
-              miscNoteLabelService.insertMiscNoteLabelById(pool, noteId, miscLabel);
-            }
-          } 
-        }
-      }
-    } catch (SQLException ex) {
-      // LOGGER.log(Level.WARNING, "Error while speaking to database:", ex);
-      // Set an error code of 500 if the server can't connect to the database
-      response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-      response.getWriter().println("INTERNAL SERVER ERROR: " + ex);
-    } catch (Throwable e) {
-      e.printStackTrace();
-    }
-    response.sendRedirect("/");
+    response.setStatus(HttpServletResponse.SC_OK);
   }
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
@@ -147,7 +65,7 @@ public class HandleNotesServlet extends HttpServlet {
       return null;
     }
 
-    // Form only contains a single file input, so get the first index.
+    // Form only contains a single file input, so get the first index
     BlobKey blobKey = blobKeys.get(0);
 
     // User submitted empty file
@@ -170,6 +88,7 @@ public class HandleNotesServlet extends HttpServlet {
     for (Cookie cookie : cookies) {
       if (COOKIE_NAME.equals(cookie.getName())) {
         sessionId = cookie.getValue();
+        break;
       }
     }
 

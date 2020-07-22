@@ -2,9 +2,9 @@
   <v-dialog v-model="form">
     <template v-slot:activator="{ on, attrs }">
       <v-btn color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on">
+             dark
+             v-bind="attrs"
+             v-on="on">
         Post A Note
       </v-btn>
     </template>
@@ -80,10 +80,10 @@ module.exports = {
       course: "Unaffiliated",
       commonCourses: ['CIS4301', 'ENC1101', 'PHY2049'], // Sample data
       miscLabels: null,
-      commonLabels: ['Hard', 'Professor X', 'Test Prep'], // TODO: Turn into objects so a header can be included.
-                                                          // TODO: fetch commonLabels based on school and course
+      // TODO: Add header to describe the type of labels being displayed
+      // TODO: fetch commonLabels based on school and course
+      commonLabels: ['Hard', 'Professor X', 'Test Prep'], 
       noDataHtml: "No matching results. Type and press <kbd>enter</kbd> to create a new one",
-      // TODO: Add rules for form validation
     }
   },
   watch: {
@@ -98,6 +98,7 @@ module.exports = {
     },
   },
   methods: {
+    // TODO: Add form validation
     nextTick: function(f) {
       // Avoids race conditions with function f
       setTimeout(f, 0);

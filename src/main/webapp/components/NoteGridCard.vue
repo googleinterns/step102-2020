@@ -23,7 +23,7 @@
     props: {
       thumbnailSrc: String,
       title: String,
-      date: Date,
+      dateCreated: String,
       school: String,
       course: String,
       labels: Array,
@@ -33,12 +33,13 @@
     },
     computed: {
       thumbnail: function() {
+        // TODO: Generate a thumbnail of the pdf
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
       },
       dateString: function() {
-        if(this.date) {
-          return this.date.toDateString();
+        if(this.dateCreated) {
+          return this.dateCreated.toDateString();
         }
         return "";
       }
