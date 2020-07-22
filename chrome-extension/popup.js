@@ -44,6 +44,7 @@ window.onload = function() {
   document.getElementById('generate-note-btn').onclick = generateNote;
   document.getElementById('logout-btn').onclick = logout;
   document.getElementById('login-btn').onclick = login;
+  document.getElementById('browser-btn').onclick = openBrowser;
   document.getElementById('doc-name-input').value = 'gNote ' + getDate();
 }
 
@@ -272,4 +273,8 @@ function setAccountInfo() {
     document.getElementById('login-btn').style.display = 'inline';
     document.getElementById('generate-note-btn').disabled = true;
   }
+}
+
+function openBrowser() {
+  chrome.tabs.create({ url: WEBAPP_URL });
 }
