@@ -29,7 +29,6 @@ const DISCOVERY_DOCS = [
 
 let loggedIn = false;
 let accessToken = '';
-let idToken = '';
 
 /**
  * Gets the script for Google APIs client library for browser-side
@@ -86,11 +85,8 @@ function login() {
           '&client_secret=' + CLIENT_SECRET;
       getTokenEndpoint(newUrl)
         .then(tokenInfo => {
-          idToken = tokenInfo.id_token;
           accessToken = tokenInfo.access_token;
-          gapi.auth.setToken({ access_token: accessToken });
-          loggedIn = true;
-          setAccountInfo();
+          registerUserOnDatabase(tokenInfo.id_token);
         })
     }
   })
@@ -101,6 +97,18 @@ function getTokenEndpoint(url) {
   return fetch(url, {
     method: 'POST'
   }).then(response => response.json());
+}
+
+/** Sends request to webapp's user registration servlet. */
+function registerUserOnDatabase(idToken) {
+  // TODO: Change URL to deployed website URL
+  fetch('https://8080-cacf7a03-5e11-4b90-94f2-e81659d32917.us-east1.cloudshell.dev/user-registration?idToken=' + idToken, {
+    method: 'POST'
+  }).then(() => {
+    gapi.auth.setToken({ access_token: accessToken });
+    loggedIn = true;
+    setAccountInfo();
+  });
 }
 
 /** Returns formatted string of today's date. */
@@ -161,7 +169,7 @@ function logout() {
 function setAccountInfo() {
   if(loggedIn) {
     gapi.client.request({
-      path: USER_INFO_URL + accesToken
+      path: USER_INFO_URL + accessToken
     }).then(response => {
       let userInfo = JSON.parse(response.body);
       document.getElementById('logout-btn').style.display = 'inline';
