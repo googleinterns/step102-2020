@@ -40,14 +40,8 @@ public class UploadGNoteServlet extends HttpServlet {
     String title = request.getParameter("title");
     String school = request.getParameter("school").toLowerCase();
     String course = request.getParameter("course").toLowerCase();
-    // String[] miscLabels = request.getParameterValues("miscLabels");
     String sourceUrl = request.getParameter("sourceUrl");
     String pdfSource = request.getParameter("pdfSource");
-    System.out.println(title);
-    System.out.println(school);
-    System.out.println(course);
-    System.out.println(sourceUrl);
-    System.out.println(pdfSource);
 
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 
@@ -88,18 +82,7 @@ public class UploadGNoteServlet extends HttpServlet {
         noteStmt.setString(6, pdfSource);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
         noteStmt.setLong(8, 0); // num_downloads
-        int rowsAffected = noteStmt.executeUpdate();
-        if (rowsAffected == 1) {
-          long noteId = 0;
-          ResultSet rs = noteStmt.getGeneratedKeys();
-          // if (rs.next()) {
-          //   noteId = rs.getLong(1);
-          //   // Associate misc labels to the newly added note
-          //   for (String miscLabel : miscLabels) {
-          //     miscNoteLabelService.insertMiscNoteLabel(pool, noteId, miscLabel);
-          //   }
-          // } 
-        }
+        noteStmt.executeUpdate();
       }
     } catch (SQLException ex) {
       response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
