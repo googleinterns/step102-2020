@@ -14,7 +14,7 @@ public final class UserTest {
   @Test
   public void constructorTestWithRequiredParams() {
     user = new User.Builder()
-                   .setId(1)
+                   .setId("1")
                    .setEmail("usertester@test.com")
                    .setPoints(0)
                    .build();
@@ -23,15 +23,26 @@ public final class UserTest {
 
   @Test
   public void constructorTestWithRequiredAndOptionalParams() {
-    user = new User.Builder()
+    Note note = new Note.Builder()
                    .setId(1)
+                   .setAuthorId("3")
+                   .setNoteTitle("Test Note")
+                   .setSourceUrl("https://test.com")
+                   .setRequiredLabels("Western University", "SE2203")
+                   .setDateCreated(Calendar.getInstance().getTime())
+                   .setNumDownloads(156)
+                   .setNumFavorites(143)
+                   .build();
+
+    user = new User.Builder()
+                   .setId("1")
                    .setEmail("usertester@test.com")
                    .setPoints(0)
                    .setDateJoined(Calendar.getInstance().getTime())
                    .setOptionalSchool("Western University")
                    .setOptionalDisplayProperties("https://testurl.com", "Xkid321")
-                   .setOptionalFavoriteNotes(new long[] {1, 2, 3, 4})
-                   .setOptionalUploadedNotes(new long[] {1, 2, 3, 4})
+                   .setOptionalFavoriteNotes(new Note[] {note})
+                   .setOptionalUploadedNotes(new Note[] {note})
                    .build();
     Assert.assertNotNull(user);
   }
