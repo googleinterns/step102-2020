@@ -119,12 +119,21 @@ function getDate() {
 }
 
 /**
+ * Controls display of loading icon. If show is true,
+ * loading icon will be displayed. Otherwise, hides it.
+ */
+function setLoadingIcon(show) {
+  const loadingIcon = document.getElementById('loading');
+  if(show) loadingIcon.style.display = 'flex';
+  else loadingIcon.style.display = 'none';
+}
+
+/**
  * Generates a copy of the notes template and opens a new tab
  * with the newly created Google Doc.
  */
 function generateNote() {
-  let loadingIcon = document.getElementById('loading');
-  loadingIcon.style.display = 'flex';
+  setLoadingIcon(true);
   let docName = document.getElementById('doc-name-input').value.trim();
   if(docName === '') {
     docName = 'gNote ' + getDate();
@@ -141,12 +150,8 @@ function generateNote() {
     const docId = response.result.id;
     const gNoteUrl = GOOGLE_DOC_URL + docId;
     compileNoteData(docName, docId, gNoteUrl)
-      .then(() => {
-        loadingIcon.style.display = 'none';
-        chrome.tabs.create({ url: gNoteUrl });
-      });
   }).catch(error => {
-    loadingIcon.style.display = 'none';
+    setLoadingIcon(false);
     console.log('Error:', error);
   })
 }
@@ -164,7 +169,11 @@ async function compileNoteData(title, docId, docUrl) {
         pdfSource: pdfSource
       }
       const noteData = new URLSearchParams(payload);
-      postNoteToDatabase(noteData);
+      postNoteToDatabase(noteData)
+        .then(() => {
+          setLoadingIcon(false);
+          chrome.tabs.create({ url: docUrl })
+        });
     })
 }
 
@@ -181,7 +190,7 @@ function getPDFLink(docId) {
  * the note to the database.
  */
 function postNoteToDatabase(noteData) {
-  fetch(WEBAPP_URL + '/upload-gnote', {
+  return fetch(WEBAPP_URL + '/upload-gnote', {
     method: 'POST',
     body: noteData
   })
