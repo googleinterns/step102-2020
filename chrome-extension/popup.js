@@ -72,7 +72,7 @@ function login() {
     interactive: true
   }, redirectedTo => {
     if(chrome.runtime.lastError) {
-      console.log(chrome.runtime.lastError);
+      return;
     } else {
       // TODO: Make a POST request to user sign in servlet
       const response = redirectedTo.split('?code=', 2)[1];
