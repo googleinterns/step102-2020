@@ -28,7 +28,7 @@
                         v-model="school"
                         ref="school"
                         clearable chips
-                        :items="commonSchools">
+                        :items="registeredSchools">
               <template v-slot:no-data>
                 <span v-html="noDataHtml"></span>
               </template>
@@ -38,7 +38,7 @@
                         v-model="course"
                         ref="course"
                         clearable chips
-                        :items="commonCourses">
+                        :items="registeredCourses">
               <template v-slot:no-data>
                 <span v-html="noDataHtml"></span>
               </template>
@@ -76,13 +76,12 @@ module.exports = {
       previewUrl: null,
       title: null,
       school: "Unaffiliated",
-      commonSchools: ['UF', 'MIT', 'NYU', 'UCLA'], // Sample data
+      registeredSchools: [],
       course: "Unaffiliated",
-      commonCourses: ['CIS4301', 'ENC1101', 'PHY2049'], // Sample data
+      registeredCourses: [],
       miscLabels: null,
-      // TODO: Add header to describe the type of labels being displayed
-      // TODO: fetch commonLabels based on school and course
-      commonLabels: ['Hard', 'Professor X', 'Test Prep'], 
+      // TODO: Add header to indicate combobox results are common labels for given school and course
+      commonLabels: ['Hard', 'Professor X', 'Test Prep'], // Sample Data
       noDataHtml: "No matching results. Type and press <kbd>enter</kbd> to create a new one",
     }
   },
@@ -142,7 +141,13 @@ module.exports = {
     fetch('/blobstore-upload-url')
       .then(response => response.text())
       .then(url => this.uploadUrl = url);
-    // TODO: Fetch the most common schools and courses
+    fetch('/get-school-and-course-labels')
+      .then(response => response.json())
+      .then(object => {
+        this.registeredSchools = object.schools;
+        this.registeredCourses = object.courses;
+      });
+    // TODO: Fetch common labels
   }
 }
 </script>
