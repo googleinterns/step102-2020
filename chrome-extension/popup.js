@@ -207,7 +207,7 @@ function updateGNoteTemplate(docId, docUrl) {
 }
 
 /** Add global permissions to Google Doc so anyone can view it */
-function addGlobalPermissions() {
+function addGlobalPermissions(docId) {
   return gapi.client.request({
     path: FILE_PERMISSIONS_URL,
     method: 'POST',
