@@ -42,7 +42,7 @@ public class UserService extends TableService {
         conn.setAutoCommit(false);
         String stmt =
             "UPDATE " + USERS + " "
-                + "SET points=points+? "
+          + "SET points=points+? "
           + "WHERE id=?;";
         try (PreparedStatement updateStmt = conn.prepareStatement(stmt)) {
           long pointsModifier = getPointsModifier(event);
