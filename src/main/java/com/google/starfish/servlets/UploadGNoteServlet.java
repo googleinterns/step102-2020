@@ -72,7 +72,7 @@ public class UploadGNoteServlet extends HttpServlet {
               + "?,"
               + "0 ); ";
 
-      try (PreparedStatement noteStmt = conn.prepareStatement(stmt, new String[] {"id"})) {
+      try (PreparedStatement noteStmt = conn.prepareStatement(stmt)) {
         noteStmt.setString(1, userId);
         noteStmt.setString(2, school);
         noteStmt.setString(3, course);
