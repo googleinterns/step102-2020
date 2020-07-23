@@ -1,9 +1,9 @@
 body {
   font-family: 'Roboto';
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin: 0;
   position: relative;
-  width: 300px;
+  width: 325px;
 }
 
 .bold {
@@ -15,8 +15,8 @@ nav {
   background-color: #004aad;
   color: white;
   display: flex;
-  font-size: 1.75rem;
-  height: 55px;
+  font-size: 2.25rem;
+  height: 60px;
   top: 0;
   width: 100%;
 }
@@ -47,7 +47,7 @@ section {
 }
 
 .heading {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   margin: 5px 0;
 }
 
@@ -63,6 +63,7 @@ button:hover {
 input {
   font-size: inherit;
   margin: 5px 0;
+  width: 275px;
 }
 
 #user-info {
