@@ -7,6 +7,7 @@
     
     <!-- Component that sets filters for search results -->
     <filter-list v-model="filters"></filter-list>
+    <!-- TODO: Add filters for age -->
 
     <!-- Slot for all the <note-grid-collection> components -->
     <slot :filters="filters"></slot>
@@ -23,7 +24,8 @@ module.exports = {
     return {
       isFavorited: true,
       noteToPreview: {},
-      filters: [],
+      filters: [], // Rename to distinguish from below
+      // TODO: Add filters for age
     }
   },
   mounted: function() {
