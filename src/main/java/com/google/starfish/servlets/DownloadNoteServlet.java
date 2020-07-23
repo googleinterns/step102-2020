@@ -30,8 +30,8 @@ public class DownloadNoteServlet extends HttpServlet {
     try (Connection conn = pool.getConnection()) {
       noteService.incrementDownloadsByNoteId(pool, noteId);
       Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
-      String userId = downloadedNote.getAuthorId();
-      userService.increasePointsOnDownload(pool, userId);
+      String authorId = downloadedNote.getAuthorId();
+      userService.increasePointsOnDownload(pool, authorId);
     } catch (SQLException ex) {
       System.err.print(ex);
     }
