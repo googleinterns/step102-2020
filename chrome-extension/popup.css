@@ -41,7 +41,7 @@ section {
   align-items: flex-start;
   background-color: #f9f9f9;
   border: 1px solid #969696;
-  border-radius: 5px;
+  border-radius: 8px;
   box-shadow: 0 0 5px 2px #d1d1d1;
   display: flex;
   flex-direction: column;
@@ -68,14 +68,14 @@ input {
   border-radius: 8px;
   font-family: inherit;
   font-size: inherit;
-  margin: 5px 0;
+  margin: 0 0 5px 0;
   padding: 7px;
   width: 285px;
 }
 
 input:focus {
-  outline: rgba(0, 74, 173);
   box-shadow: 0 0 3px 2px rgba(0, 74, 173, 0.4);
+  outline: rgba(0, 74, 173);
 }
 
 #user-info {
@@ -101,6 +101,10 @@ input:focus {
   height: 30%;
 }
 
+#generate-note-btn {
+  align-self: flex-end;
+}
+
 #footer {
   flex-direction: row;
   margin: 0;
@@ -113,10 +117,11 @@ input:focus {
 .link {
   background-color: inherit;
   border: none;
-  font-size: inherit;
+  font-size: 1rem;
   margin: 0 0 5px 0;
   outline: none;
   padding: 0 10px;
+  text-decoration: underline;
 }
 
 .link:hover {
