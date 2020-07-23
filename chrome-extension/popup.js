@@ -124,8 +124,7 @@ function getDate() {
  */
 function setLoadingIcon(show) {
   const loadingIcon = document.getElementById('loading');
-  if(show) loadingIcon.style.display = 'flex';
-  else loadingIcon.style.display = 'none';
+  loadingIcon.style.display = (show ? 'flex' : 'none');
 }
 
 /**
@@ -199,7 +198,7 @@ function updateGNoteTemplate(docId, docUrl) {
     },
   };
   gapi.client.docs.documents.batchUpdate(updateObject)
-    .then(addGlobalPermissions(docId))
+    .then(() => addGlobalPermissions(docId))
     .then(() => {
       setLoadingIcon(false);
       chrome.tabs.create({ url: docUrl });
