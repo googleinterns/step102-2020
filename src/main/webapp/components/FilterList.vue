@@ -37,6 +37,7 @@ module.exports = {
         this.$emit('input', filters)
       }
     },
+  },
   watch: {
     school: function() {
       this.fetchSuggestedLabels();
@@ -44,7 +45,6 @@ module.exports = {
     course: function() {
       this.fetchSuggestedLabels();
     }
-  }
   },
   methods: {
     fetchSuggestedLabels: function() {
