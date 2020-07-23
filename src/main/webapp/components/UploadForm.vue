@@ -80,8 +80,8 @@ module.exports = {
       course: "Unaffiliated",
       registeredCourses: [],
       miscLabels: null,
-      // TODO: Add header to indicate combobox results are common labels for given school and course
-      commonLabels: ['Hard', 'Professor X', 'Test Prep'], // Sample Data
+      // TODO: Add header object to commonLabels array to indicate combobox results are common labels for given school and course
+      commonLabels: [],
       noDataHtml: "No matching results. Type and press <kbd>enter</kbd> to create a new one",
     }
   },
@@ -141,13 +141,19 @@ module.exports = {
     fetch('/blobstore-upload-url')
       .then(response => response.text())
       .then(url => this.uploadUrl = url);
+    // Get list of all schools and courses in DB
     fetch('/get-school-and-course-labels')
       .then(response => response.json())
       .then(object => {
         this.registeredSchools = object.schools;
         this.registeredCourses = object.courses;
       });
-    // TODO: Fetch common labels
+    // Get list of all common misc labels
+    fetch('/common-labels')
+      .then(response => response.json())
+      .then(miscLabels  => {
+        this.commonLabels = miscLabels;
+      });
   }
 }
 </script>
