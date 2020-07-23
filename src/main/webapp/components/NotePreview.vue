@@ -13,10 +13,12 @@
                   class="ma-2">
           <v-icon>mdi-star</v-icon>
         </v-badge>
-        <v-badge :content="numDownloads"
-                  class="ma-2">
-          <v-icon>mdi-download</v-icon>
-        </v-badge>
+        <a :href="pdfSource" :download="title" @click="increment">
+          <v-badge :content="numDownloads"
+                    class="ma-2">
+            <v-icon>mdi-download</v-icon>
+          </v-badge>
+        </a>
 
         <label-list :school="school"
                     :course="course"
@@ -25,10 +27,6 @@
         </label-list>
 
         <iframe :src="sourceUrl"></iframe>
-        <a :href="pdfSource" :download="title" @click="increment">
-          <v-icon>mdi-download</v-icon>
-          Download
-        </a>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
