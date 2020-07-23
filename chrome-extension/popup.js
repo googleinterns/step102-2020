@@ -76,7 +76,6 @@ function login() {
     if(chrome.runtime.lastError) {
       return;
     } else {
-      // TODO: Make a POST request to user sign in servlet
       const response = redirectedTo.split('?code=', 2)[1];
       const code = response.split('&scope', 1)[0];
       const newUrl =
@@ -151,7 +150,7 @@ function generateNote() {
   }).catch(error => {
     setLoadingIcon(false);
     console.log('Error:', error);
-  })
+  });
 }
 
 /** Retrieves input values and sets them if they are blank */
@@ -176,11 +175,11 @@ async function compileNoteData(title, docId, docUrl, school, course) {
         course: course,
         sourceUrl: docUrl,
         pdfSource: pdfSource
-      }
+      };
       const noteData = new URLSearchParams(payload);
       postNoteToDatabase(noteData)
         .then(updateGNoteTemplate(docId, docUrl));
-    })
+    });
 }
 
 /** Replaces [DATE] fields in template with the current date */
@@ -202,7 +201,7 @@ function updateGNoteTemplate(docId, docUrl) {
     gapi.client.docs.documents.batchUpdate(updateObject)
       .then(() => { 
         setLoadingIcon(false);
-        chrome.tabs.create({ url: docUrl })
+        chrome.tabs.create({ url: docUrl });
       });
 }
 
@@ -222,7 +221,7 @@ function postNoteToDatabase(noteData) {
   return fetch(WEBAPP_URL + '/upload-gnote', {
     method: 'POST',
     body: noteData
-  })
+  });
 }
 
 /**
@@ -246,7 +245,7 @@ function logoutUserOnWebapp() {
     gapi.auth.setToken({ access_token: accessToken });
     loggedIn = false;
     setAccountInfo();
-  })
+  });
 }
 
 /**
