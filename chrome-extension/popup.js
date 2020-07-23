@@ -4,9 +4,9 @@ const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
 
 const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
 const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
+const FILE_PERMISSIONS_URL ='https://www.googleapis.com/drive/v3/files/fileId/permissions';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
-const USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=';
 // TODO: Change WEBAPP_URL from local URL to deployed website URL
 const WEBAPP_URL = 'https://8080-cacf7a03-5e11-4b90-94f2-e81659d32917.us-east1.cloudshell.dev';
 
@@ -185,24 +185,38 @@ async function compileNoteData(title, docId, docUrl, school, course) {
 /** Replaces [DATE] fields in template with the current date */
 function updateGNoteTemplate(docId, docUrl) {
   var updateObject = {
-      documentId: docId,
-      resource: {
-        requests: [{
-          replaceAllText: {
-            replaceText: getDate(),
-            containsText: {
-              text: "[DATE]",
-              matchCase: true
-            }
-          },
-        }],
-      },
-    };
-    gapi.client.docs.documents.batchUpdate(updateObject)
-      .then(() => { 
-        setLoadingIcon(false);
-        chrome.tabs.create({ url: docUrl });
-      });
+    documentId: docId,
+    resource: {
+      requests: [{
+        replaceAllText: {
+          replaceText: getDate(),
+          containsText: {
+            text: "[DATE]",
+            matchCase: true
+          }
+        },
+      }],
+    },
+  };
+  gapi.client.docs.documents.batchUpdate(updateObject)
+    .then(addGlobalPermissions(docId))
+    .then(() => {
+      setLoadingIcon(false);
+      chrome.tabs.create({ url: docUrl });
+    });
+}
+
+/** Add global permissions to Google Doc so anyone can view it */
+function addGlobalPermissions() {
+  return gapi.client.request({
+    path: FILE_PERMISSIONS_URL,
+    method: 'POST',
+    params: { fileId: docId },
+    body: {
+      role: 'reader',
+      type: 'anyone'
+    }
+  });
 }
 
 /** Retrieves PDF export link of Google Doc */
