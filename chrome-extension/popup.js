@@ -124,7 +124,7 @@ function getDate() {
  */
 function setLoadingIcon(show) {
   const loadingIcon = document.getElementById('loading');
-  loadingIcon.style.display = (show ? 'flex' : 'none');
+  loadingIcon.style.display = show ? 'flex' : 'none';
 }
 
 /**
