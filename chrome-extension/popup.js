@@ -256,15 +256,16 @@ function logoutUserOnWebapp() {
 function setAccountInfo() {
   if(loggedIn) {
     gapi.client.request({
-      path: USER_INFO_URL + accessToken
-    }).then(response => {
-      let userInfo = JSON.parse(response.body);
-      document.getElementById('logout-btn').style.display = 'inline';
-      document.getElementById('email').textContent = userInfo.email;
-      document.getElementById('user-info').style.display = 'block';
-      document.getElementById('login-btn').style.display = 'none';
-      document.getElementById('generate-note-btn').disabled = false;
-    });
+      path: WEBAPP_URL + '/user-registration',
+      method: 'GET'
+    }).then(response => response.json())
+      .then(userInfo => {
+        document.getElementById('logout-btn').style.display = 'inline';
+        document.getElementById('email').textContent = userInfo.email;
+        document.getElementById('user-info').style.display = 'block';
+        document.getElementById('login-btn').style.display = 'none';
+        document.getElementById('generate-note-btn').disabled = false;
+      });
   } else {
     document.getElementById('logout-btn').style.display = 'none';
     document.getElementById('email').textContent = '';
