@@ -255,10 +255,8 @@ function logoutUserOnWebapp() {
  */
 function setAccountInfo() {
   if(loggedIn) {
-    gapi.client.request({
-      path: WEBAPP_URL + '/user-registration',
-      method: 'GET'
-    }).then(response => response.json())
+    fetch(WEBAPP_URL + '/user-registration')
+      .then(response => response.json())
       .then(userInfo => {
         document.getElementById('logout-btn').style.display = 'inline';
         document.getElementById('email').textContent = userInfo.email;
