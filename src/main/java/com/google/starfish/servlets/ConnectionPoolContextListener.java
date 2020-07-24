@@ -143,6 +143,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
           "CREATE TABLE IF NOT EXISTS favorite_notes ( "
               + "user_id VARCHAR(255) NOT NULL,"
               + "note_id INT NOT NULL,"
+              + "date DATE,"
               + "PRIMARY KEY (user_id, note_id),"
               + "FOREIGN KEY (`user_id`)"
                   + "REFERENCES `users` (`id`)"
