@@ -1,7 +1,8 @@
 <template>
-  <div>
+  <div style="height:80px">
     <v-app-bar height="80px"
-               color="blue darken-4">
+               color="blue darken-4"
+               fixed>
 
       <a href="/" class="bold" id="title">starfish</a>
       <img src="/assets/starfish.png" id="logo">
