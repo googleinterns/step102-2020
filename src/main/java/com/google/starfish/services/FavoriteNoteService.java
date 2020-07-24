@@ -150,7 +150,6 @@ public class FavoriteNoteService {
   /** Gets trending notes based on number of favorites in a given timespan */
   private Note[] getTrendingNotes(DataSource pool, Recency recency) throws SQLException {
     Date date = getDateBasedOnRecency(recency);
-    System.out.println(date);
     List<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = 
