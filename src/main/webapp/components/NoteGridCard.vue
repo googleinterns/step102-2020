@@ -1,5 +1,5 @@
 <template>
-  <div class="note-grid-card" @click="$emit('click')">
+  <v-card class="note-grid-card" @click="$emit('click')">
     <div class="thumbnail" :style="thumbnail"></div>
 
     <div class="metadata">
@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>

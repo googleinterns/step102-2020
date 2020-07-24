@@ -1,5 +1,5 @@
 <template>
-  <div id="note-grid">
+  <v-container id="note-grid">
     <!-- A single preview component that shows the noteToPreview-->
     <note-preview v-bind="noteToPreview"
                   :is-favorited="isFavorited">
@@ -11,7 +11,7 @@
 
     <!-- Slot for all the <note-grid-collection> components -->
     <slot :filters="filters"></slot>
-  </div>
+  </v-container>
 </template>
 
 <script>
