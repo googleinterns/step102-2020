@@ -32,6 +32,39 @@ public class FavoriteNoteServlet extends HttpServlet {
   private final String COOKIE_NAME = "SFCookie";
 
   @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
+    res.setContentType("application/json")
+    if(!validateUser(req)) {
+      res.getWriter().println(false);
+      return;
+    }
+    HttpSession activeSession = req.getSession(false);
+    String userId = (String) activeSession.getAttribute("user_id");
+    Long noteId = Long.valueOf(req.getParameter("note_id"));
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+
+    try(Connection conn = pool.getConnection()) {
+      String stmt =
+          "SELECT EXISTS "
+        + "(SELECT * "
+        + "FROM favorite_notes "
+        + "WHERE user_id=? "
+        + "AND note_id=?);";
+
+      try (PreparedStatement favStmt = conn.prepareStatement(stmt)) {
+        favStmt.setString(1, userId);
+        favStmt.setLong(2, noteId);
+        ResultSet rs = favStmt.executeQuery();
+        rs.next();
+        System.out.println(rs.getBoolean(1));
+        res.getWriter().println(rs.getBoolean(1));
+      }
+    } catch (SQLException ex) {
+      System.err.print(ex);
+    }
+  }
+
+  @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     if(!validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
