@@ -4,17 +4,18 @@
 
     <div class="metadata">
       <div class="note-title">{{title}}</div>
+
       <div class="info-row">
         <p>{{school}} &bull; {{course}}</p>
+
         <img src="assets/gdrive.webp">
-        {{dateString}}
+        {{dateCreated}}
         <div class="rating-box">
           {{numFavorites}}
           <span class="star">&star;</span>          
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -37,12 +38,6 @@
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
       },
-      dateString: function() {
-        if(this.dateCreated) {
-          return this.dateCreated.toDateString();
-        }
-        return "";
-      }
     },
     methods: {
       onClick: function() {
