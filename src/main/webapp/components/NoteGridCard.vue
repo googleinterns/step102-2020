@@ -7,7 +7,7 @@
       <div class="info-row">
         <p>{{school}} &bull; {{course}}</p>
         <img src="assets/gdrive.webp">
-        {{dateCreated}}
+        {{dateString}}
         <div class="rating-box">
           {{numFavorites}}
           <span class="star">&star;</span>          
@@ -36,6 +36,12 @@
         // TODO: Generate a thumbnail of the pdf
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
+      },
+      dateString: function() {
+        if(this.dateCreated) {
+          return this.dateCreated.toDateString();
+        }
+        return "";
       }
     },
     methods: {

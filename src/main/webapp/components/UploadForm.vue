@@ -132,10 +132,10 @@ module.exports = {
     },
     reset: function() {
       this.$refs.form.reset()
-    }, 
+    },
     closeForm: function() {
       this.form = false;
-    }
+    },
   },
   mounted: function() {
     // Get new upload url for the form
