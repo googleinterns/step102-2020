@@ -10,7 +10,8 @@
         </v-card-subtitle>
 
         <v-badge :content="numFavorites"
-                  class="ma-2">
+                  class="ma-2"
+                  @click.native="toggleFavorite">
           <v-icon>mdi-star</v-icon>
         </v-badge>
         <a :href="pdfSource" :download="title" @click="increment">
@@ -60,6 +61,7 @@
     data: function() {
       return {
         showPreview: false,
+        favorited: this.isFavorited
       }
     },
     computed: {
@@ -76,6 +78,19 @@
       increment: function() {
         fetch('/download-note?note_id=' + this.id, {
           method: 'POST'
+        })
+      },
+      toggleFavorite: function() {
+        let method = this.favorited ? 'DELETE' : 'POST';
+        fetch('/favorite-note?note_id=' + this.id, {
+          method: method
+        }).then(response => {
+          if(response.status === 403) {
+            alert("Please sign in to favorite this note.");
+          }
+          else {
+            this.favorited = !this.favorited;
+          }
         })
       }
     }
