@@ -130,8 +130,7 @@ module.exports = {
   },
   watch: {
     user: function(userVal) {
-      console.log("user val changed");
-      this.$emit('set-user', userVal);
+      this.$emit('setuser', userVal);
     }
   }
 }
