@@ -58,11 +58,6 @@
         showPreview: false,
       }
     },
-    computed: {
-      dateString: function() {
-        return this.dateCreated?.toDateString();
-      },
-    },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
         this.showPreview = true;

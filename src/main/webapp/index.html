@@ -1,41 +1,12 @@
-<!-- 
-  This is a template for any html file that may be made for this project. 
-  It already incorporates some of the external libraries (namely Vue, VueLoader, and Vuetify)
-  That are used by most assets in this project.
-  All comments can and should be removed.
--->
 <!DOCTYPE html>
 <!-- Bunch of Stylesheets for Vuetify -->
 <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-<!-- Necessary for vue to work, but id can be anything as long as reflected in script below -->
+
 <div id="app">
-  <!-- Necessary for vuetify to work -->
-  <v-app>
-    <navbar></navbar>
-    <search-bar @searchresult="updateSearchResult"></search-bar>
-    <mock-search @searchresult="updateSearchResult"></mock-search>
-    <note-grid v-slot="{ filters }">
-      <note-grid-collection :note-data="searchResult"
-                            header="Most Favorited"
-                            :filters="filters"
-                            :compare-func="descFavorites">
-      </note-grid-collection>
-      <note-grid-collection :note-data="searchResult"
-                            header="Recently Posted"
-                            :filters="filters"
-                            :compare-func="descDate">
-      </note-grid-collection>
-      <note-grid-collection :note-data="searchResult"
-                            header="Hottest Notes"
-                            :filters="filters"
-                            :compare-func="descFavorites"
-                            :max-age="4 * 24 * 60 * 60 * 1000">
-      </note-grid-collection>          
-    </note-grid>
-  </v-app>
+    <search-page></search-page>
 </div>
 
 <!-- Vue -->
@@ -49,27 +20,8 @@
   new Vue({
     el: '#app',
     vuetify: new Vuetify(),
-    // Example for how to load component <sample-component>
     components: {
-      'navbar': httpVueLoader('/components/Navbar.vue'),
-      'search-bar': httpVueLoader('/components/SearchBar.vue'),
-      'note-grid': httpVueLoader('/components/NoteGrid.vue'),
-      'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
-      'mock-search': httpVueLoader('/components/MockSearchButton.vue'),
+      'search-page': httpVueLoader('/views/SearchPage.vue'),
     },
-    data: {
-      searchResult: [],
-      descFavorites: function(noteA, noteB) {
-        return noteB.numFavorites - noteA.numFavorites;
-      },
-      descDate: function(noteA, noteB) {
-        return noteB.date - noteA.date;
-      }
-    },
-    methods: {
-      updateSearchResult: function(result) {
-        this.searchResult = result;
-      },
-    }
   })
 </script>
