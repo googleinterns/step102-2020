@@ -25,11 +25,7 @@ module.exports = {
   },
   data: function() {
     return {
-      suggestedFilters: [
-        "MAC",
-        "ENC",
-        "COP",
-      ]
+      suggestedFilters: []
     }
   },
   computed: {
@@ -42,9 +38,17 @@ module.exports = {
       }
     },
   },
+  watch: {
+    school: function() {
+      this.fetchSuggestedLabels();
+    },
+    course: function() {
+      this.fetchSuggestedLabels();
+    }
+  },
   methods: {
     fetchSuggestedLabels: function() {
-      let url = new URL("/common-labels", window.location.href); // TODO: Create the servlet and rename "/common-labels"
+      let url = new URL("/common-labels", window.location.href);
       url.searchParams.set('school', this.school);
       url.searchParams.set('course', this.course);
 
@@ -59,8 +63,5 @@ module.exports = {
         });
     }
   },
-  mounted: function() {
-    this.fetchSuggestedLabels(); // TODO: Run this whenever school or course changes.
-  }
 }
 </script>
