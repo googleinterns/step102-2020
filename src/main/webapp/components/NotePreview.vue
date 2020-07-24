@@ -10,10 +10,10 @@
         </v-card-subtitle>
 
         <a href="#" @click="toggleFavorite">
-        <v-badge class="ma-2">
-          <template v-slot:badge>{{numFavorites}}</template>
-          <v-icon>mdi-star</v-icon>
-        </v-badge>
+          <v-badge class="ma-2">
+            <template v-slot:badge>{{numFavorites}}</template>
+            <v-icon>mdi-star</v-icon>
+          </v-badge>
         </a>
         <a :href="pdfSource" :download="title" @click="increment">
           <v-badge class="ma-2">
