@@ -174,7 +174,6 @@ public class FavoriteNoteService {
         return notes.toArray(new Note[0]);
       }
     }
-
   }
 
   /** Gets the date based on recency */
