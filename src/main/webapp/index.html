@@ -1,73 +1,75 @@
+<!-- 
+  This is a template for any html file that may be made for this project. 
+  It already incorporates some of the external libraries (namely Vue, VueLoader, and Vuetify)
+  That are used by most assets in this project.
+  All comments can and should be removed.
+-->
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Starfish</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="edit-profile.css">
-    <script src="edit-profile.js"></script>
-    <link rel="stylesheet" href="styles/landingpage.css">
-    <script src="script.js"></script>
-  </head>
-  <body>
-    <div id="nav"></div>
-    <div id="nav-over">
-      <a href="index.html"><span id="title">starfish</span></a>
-      <div id="action-items">
-        <a href="upload-form.html"><span id="post-action">PostANote</span></a>
-        <div class="dropdown">
-          <button class="btn dropdown-toggle" type="button" id="dropdown-button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img src="profile-pic.png" id="profile-button-img">
-          </button>
-          <div class="dropdown-menu dropdown-menu-right" id="dropdown-menu" aria-labelledby="dropdown-button">
-            <img src="profile-pic.png" height="200px"/>
-            <p id="dropdown-name">Bob the Builder</p>
-            <p id="dropdown-points">597 points</p>
-            <a class="link" href="/profile.html">My Profile</a> 
-            <a class="link" href="#">Favorite Notes</a>
-            <a class="link" href="#">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- <nav class="zone blue sticky"> -->
-    <!--   <ul class="main-nav"> -->
-    <!--     <li> -->
-    <!--       <a href="">starfish</a> -->
-    <!--     </li> -->
-    <!--     <div class="push"> -->
-    <!--       <li> -->
-    <!--         <a href="">PostANote</a> -->
-    <!--       </li> -->
-    <!--       <li> -->
-    <!--         <a href=""><img id="user-profile" src="assets/user.svg"></a> -->
-    <!--       </li> -->
-    <!--     </div> -->
-    <!--   </ul> -->
-    <!-- </nav> -->
-    <main class="blue">
-      <h1 class="title">starfish</h1>
-      <h3 class="subtitle">Share and find the best course notes. Completely free.</h3>
-      <form target="_blank">
-        <label for="topic">Find by Topic:</label><br>
-        <input type="text" name="topic"><br>
-        <div class="inline">
-          <span class="inline-form-el">
-            <label for="school">School:</label><br>
-            <input type="text" name="school"><br>
-          </span>
-          <span class="inline-form-el">
-            <label for="course">Course:</label><br>
-            <input type="text" name="course"><br>
-          </span>
-        </div>
-        <input type="submit" value="Submit" onclick="window.location.href='./searchresults.html'">
-      </form>
-      <img id="laptop" src="assets/laptop-min.png">
-    </main>
-  </body>
-</html>
+<!-- Bunch of Stylesheets for Vuetify -->
+<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+<!-- Necessary for vue to work, but id can be anything as long as reflected in script below -->
+<div id="app">
+  <!-- Necessary for vuetify to work -->
+  <v-app>
+    <navbar></navbar>
+    <search-bar @searchresult="updateSearchResult"></search-bar>
+    <mock-search @searchresult="updateSearchResult"></mock-search>
+    <note-grid v-slot="{ filters }">
+      <note-grid-collection :note-data="searchResult"
+                            header="Most Favorited"
+                            :filters="filters"
+                            :compare-func="descFavorites">
+      </note-grid-collection>
+      <note-grid-collection :note-data="searchResult"
+                            header="Recently Posted"
+                            :filters="filters"
+                            :compare-func="descDate">
+      </note-grid-collection>
+      <note-grid-collection :note-data="searchResult"
+                            header="Hottest Notes"
+                            :filters="filters"
+                            :compare-func="descFavorites"
+                            :max-age="4 * 24 * 60 * 60 * 1000">
+      </note-grid-collection>          
+    </note-grid>
+  </v-app>
+</div>
+
+<!-- Vue -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> <!-- TODO: This is dev Version, switch to prod for deployment -->
+<!-- HTTP Vue Loader -->
+<script src="https://unpkg.com/http-vue-loader"></script>
+<!-- Vuetify -->
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<!-- Declares the Vue instance-->
+<script>
+  new Vue({
+    el: '#app',
+    vuetify: new Vuetify(),
+    // Example for how to load component <sample-component>
+    components: {
+      'navbar': httpVueLoader('/components/Navbar.vue'),
+      'search-bar': httpVueLoader('/components/SearchBar.vue'),
+      'note-grid': httpVueLoader('/components/NoteGrid.vue'),
+      'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
+      'mock-search': httpVueLoader('/components/MockSearchButton.vue'),
+    },
+    data: {
+      searchResult: [],
+      descFavorites: function(noteA, noteB) {
+        return noteB.numFavorites - noteA.numFavorites;
+      },
+      descDate: function(noteA, noteB) {
+        return noteB.date - noteA.date;
+      }
+    },
+    methods: {
+      updateSearchResult: function(result) {
+        this.searchResult = result;
+      },
+    }
+  })
+</script>
