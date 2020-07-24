@@ -56,7 +56,6 @@ public class FavoriteNoteServlet extends HttpServlet {
         favStmt.setLong(2, noteId);
         ResultSet rs = favStmt.executeQuery();
         rs.next();
-        System.out.println(rs.getBoolean(1));
         res.getWriter().println(rs.getBoolean(1));
       }
     } catch (SQLException ex) {
