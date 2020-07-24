@@ -53,6 +53,8 @@ public class HandleNotesServlet extends HttpServlet {
       response.setStatus(HttpServletResponse.SC_NOT_ACCEPTABLE);
       return;
     }
+    
+    String pdfSource = "/serve-notes?key=" + blobKey;
 
     String title = request.getParameter("title");
     String school = request.getParameter("school").toLowerCase();
@@ -89,8 +91,8 @@ public class HandleNotesServlet extends HttpServlet {
         noteStmt.setString(2, school);
         noteStmt.setString(3, course);
         noteStmt.setString(4, title);
-        noteStmt.setString(5, validateAndGetSourceUrl(sourceUrl, blobKey));
-        noteStmt.setString(6, blobKey);
+        noteStmt.setString(5, validateAndGetSourceUrl(sourceUrl, pdfSource));
+        noteStmt.setString(6, pdfSource);
         noteStmt.setDate(7, new Date(Calendar.getInstance().getTimeInMillis()));
         int rowsAffected = noteStmt.executeUpdate();
         if (rowsAffected == 1) {
@@ -126,7 +128,7 @@ public class HandleNotesServlet extends HttpServlet {
   /** Returns the appropriate source_url string for a note after determining whether 
    *  the note is a Google Doc or a PDF
    */
-  private String validateAndGetSourceUrl(String sourceUrl, String blobKey) {
+  private String validateAndGetSourceUrl(String sourceUrl, String pdfSource) {
     if (sourceUrl != null) {
       // If there is a sourceUrl on the request param, this is
       // a google doc set the source url based on the passed param
@@ -134,8 +136,8 @@ public class HandleNotesServlet extends HttpServlet {
     }
     // If there was no sourceUrl, this is an uploaded pdf
     // so set the source url to serve-notes path
-    return "/serve-notes?key=" + blobKey;
-    }
+    return pdfSource;
+  }
 
   /** Returns a blob key for the uploaded file, or null if the user didn't upload a file. */
   private String getUploadedFileBlobKey(HttpServletRequest request, String formInputElementName) {

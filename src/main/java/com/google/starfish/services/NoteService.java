@@ -69,4 +69,33 @@ public class NoteService extends TableService {
                         .build();
     return note;
   }
+
+  public void incrementDownloadsByNoteId(DataSource pool, long noteId) throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "UPDATE " + NOTES + " "
+        + "SET num_downloads=num_downloads+1 "
+        + "WHERE id=?;";
+      try (PreparedStatement updateNotesStmt = conn.prepareStatement(stmt)) {
+        updateNotesStmt.setLong(1, noteId);
+        updateNotesStmt.execute();
+      }
+    }
+  }
+
+  public Note getNoteByNoteId(DataSource pool, long noteId) throws SQLException {
+    try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "SELECT * " 
+        + "FROM " + NOTES + " "
+        + "WHERE id=? " 
+        + "LIMIT 1;";
+      try(PreparedStatement getNotesStmt = conn.prepareStatement(stmt)) {
+        getNotesStmt.setLong(1, noteId);
+        ResultSet rs = getNotesStmt.executeQuery();
+        rs.next();
+        return constructNoteFromSqlResult(pool, rs);
+      }
+    }
+  }
 }

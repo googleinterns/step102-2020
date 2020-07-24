@@ -86,7 +86,7 @@ public class SearchServlet extends HttpServlet {
       String school = rs.getString("school");
       String course = rs.getString("course");
       String title = rs.getString("title");
-      String sourceUrl = rs.getString("title");
+      String sourceUrl = rs.getString("source_url");
       String pdfSource = rs.getString("pdf_source");
       Date dateCreated = rs.getDate("date_created");
       long numDownloads = rs.getLong("num_downloads");
