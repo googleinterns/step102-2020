@@ -71,6 +71,9 @@
     },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
+        if(this.id) {
+          this.setFavorite();
+        }
         this.showPreview = true;
       });
     },
@@ -87,23 +90,27 @@
             const method = this.favorited ? 'DELETE' : 'POST';
             fetch('/favorite-note?note_id=' + this.id, {
               method: method
-            }).then(() => {
-              this.favorited = !this.favorited;
+            }).then(response => {
+              if(response.status === 403) alert('Please sign in to favorite this note.');
+              else this.favorited = !this.favorited;
             })
           })
       },
       getFavorited: function() {
         return fetch('/favorite-note?note_id=' + this.id)
           .then(response => response.json());
+      },
+      setFavorite: function() {
+        this.getFavorited()
+          .then(isFavorited => {
+            this.favorited = isFavorited;
+          });
       }
     },
     watch: {
       id: function(noteId) {
         if(noteId) {
-          this.getFavorited()
-            .then(isFavorited => {
-              this.favorited = isFavorited;
-            });
+          this.setFavorite();
         }
       },
       favorited: function(favoriteStatus) {
