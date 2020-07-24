@@ -16,6 +16,7 @@ import javax.sql.DataSource;
 import java.util.Date;
 import com.google.starfish.services.FavoriteNoteService;
 import com.google.starfish.services.NoteService;
+import com.google.starfish.services.UserService;
 import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
@@ -62,13 +63,13 @@ public class FavoriteNoteServlet extends HttpServlet {
     HttpSession activeSession = req.getSession(false);
     String userId = (String) activeSession.getAttribute("user_id");
     Long noteId = Long.valueOf(req.getParameter("note_id"));
-    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
 
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.deleteRowByCompoundId(pool, noteId, userId);
       Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
       String authorId = downloadedNote.getAuthorId();
-      // TODO: After UserService is created, decrement the prestige points of user who posted noteId
+      userService.decreasePointsOnUnfavorite(pool, authorId);
     } catch (SQLException ex) {
       System.err.print(ex);
     }
