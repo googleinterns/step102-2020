@@ -77,8 +77,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.insertFavoriteNote(pool, noteId, userId);
-      Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
-      String authorId = downloadedNote.getAuthorId();
+      String authorId = noteService.getNoteByNoteId(pool, noteId).getAuthorId();
       userService.increasePointsOnFavorite(pool, authorId);
     } catch (SQLException ex) {
       System.err.print(ex);
@@ -99,8 +98,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
     try (Connection conn = pool.getConnection()) {
       favoriteNoteService.deleteRowByCompoundId(pool, noteId, userId);
-      Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
-      String authorId = downloadedNote.getAuthorId();
+      String authorId = noteService.getNoteByNoteId(pool, noteId).getAuthorId();
       userService.decreasePointsOnUnfavorite(pool, authorId);
     } catch (SQLException ex) {
       System.err.print(ex);
