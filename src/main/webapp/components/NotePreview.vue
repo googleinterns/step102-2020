@@ -13,10 +13,12 @@
                   class="ma-2">
           <v-icon>mdi-star</v-icon>
         </v-badge>
-        <v-badge :content="numDownloads"
-                  class="ma-2">
-          <v-icon>mdi-download</v-icon>
-        </v-badge>
+        <a :href="pdfSource" :download="title" @click="increment">
+          <v-badge :content="numDownloads"
+                    class="ma-2">
+            <v-icon>mdi-download</v-icon>
+          </v-badge>
+        </a>
 
         <label-list :school="school"
                     :course="course"
@@ -24,7 +26,7 @@
                     :can-modify="isFavorited">
         </label-list>
 
-        <iframe :src="src"></iframe>
+        <iframe :src="sourceUrl"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -37,6 +39,7 @@
       'label-list': httpVueLoader('/components/LabelList.vue')
     },
     props: {
+      id: Number,
       title: {
         type: String,
         default: function() {
@@ -52,6 +55,7 @@
       miscLabels: Array,
       isFavorited: Boolean,
       pdfSource: String,
+      sourceUrl: String
     },
     data: function() {
       return {
@@ -67,6 +71,13 @@
       this.$parent.$on('open-preview', note => {
         this.showPreview = true;
       });
+    },
+    methods: {
+      increment: function() {
+        fetch('/download-note?note_id=' + this.id, {
+          method: 'POST'
+        })
+      }
     }
   }
 </script>
