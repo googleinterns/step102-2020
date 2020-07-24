@@ -33,7 +33,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
-    res.setContentType("application/json")
+    res.setContentType("application/json");
     if(!validateUser(req)) {
       res.getWriter().println(false);
       return;
