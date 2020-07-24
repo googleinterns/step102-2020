@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import com.google.starfish.models.Note;
 
+/** Enum to hold possible recency to get trending notes */
 enum Recency {
   TODAY, 
   THIS_WEEK, 
@@ -126,30 +127,36 @@ public class FavoriteNoteService {
     }
   }
 
+  /** Gets trending notes today */
   public Note[] getTrendingNotesToday(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.TODAY);
   }
 
+  /** Gets trending notes this week */
   public Note[] getTrendingNotesThisWeek(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.THIS_WEEK);
   }
 
+  /** Gets trending notes this month */
   public Note[] getTrendingNotesThisMonth(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.THIS_MONTH);
   }
 
+  /** Gets all-time trending notes */
   public Note[] getTrendingNotesAllTime(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.ALL_TIME);
   }
 
+  /** Gets trending notes based on number of favorites in a given timespan */
   private Note[] getTrendingNotes(DataSource pool, Recency recency) throws SQLException {
     Date date = getDateBasedOnRecency(recency);
+    System.out.println(date);
     List<Note> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT * "
         + "FROM " 
-          + NOTES + "AS a "
+          + NOTES + " AS a "
           + "INNER JOIN (SELECT note_id, COUNT(*) AS count "
                       + "FROM " + FAVORITE_NOTES + " "
                       + "WHERE date >= ? " 
@@ -170,6 +177,7 @@ public class FavoriteNoteService {
 
   }
 
+  /** Gets the date based on recency */
   private Date getDateBasedOnRecency(Recency recency) {
     Date date;
     Calendar calendar = Calendar.getInstance();
@@ -186,6 +194,7 @@ public class FavoriteNoteService {
         date = new Date(calendar.getTimeInMillis());
         break;
       case ALL_TIME:
+        // No note should ever be favorited more than 100 years ago (for now...)
         calendar.add(Calendar.YEAR, -100);
         date = new Date(calendar.getTimeInMillis());
         break;
