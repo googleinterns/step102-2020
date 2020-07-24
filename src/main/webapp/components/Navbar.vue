@@ -1,58 +1,66 @@
 <template>
-  <nav class="navy-blue sticky nav-bar">
-    <a href="index.html" class="bold" id="title">starfish</a>
-    <img src="/assets/starfish.png" id="logo">
-    <div class="action-items" v-if="!signedIn">
+  <div>
+    <v-app-bar height="80px"
+               color="blue darken-4">
+
+      <a href="/" class="bold" id="title">starfish</a>
+      <img src="/assets/starfish.png" id="logo">
+
+      <v-spacer></v-spacer>
+
       <v-btn color="primary"
              dark
              @click.stop="signIn"
-             id="signin-link">
+             id="signin-link"
+             v-if="!signedIn">
         Sign Up/Login
       </v-btn>
-    </div>
-    <div class="action-items" v-if="signedIn">
-      <upload-form id="post-note"></upload-form>
-      <!-- User dropdown menu -->
-      <v-menu v-model="showDropdown" :offset-y="true">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs"
-                 v-on="on">
-            <v-avatar>
-              <v-icon>mdi-account-circle</v-icon>
-            </v-avatar>
-          </v-btn>
-        </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-list-item-avatar>
+
+      <div v-if="signedIn">
+        <upload-form id="post-note"></upload-form>
+        <!-- User dropdown menu -->
+        <v-menu v-model="showDropdown" :offset-y="true">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs"
+                   v-on="on">
+              <v-avatar>
                 <v-icon>mdi-account-circle</v-icon>
-              </v-list-item-avatar>
+              </v-avatar>
+            </v-btn>
+          </template>
 
-              <v-list-item-content>
-                <v-list-item-title>{{ user.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+          <v-card>
+            <v-list>
+              <v-list-item>
+                <v-list-item-avatar>
+                  <v-icon>mdi-account-circle</v-icon>
+                </v-list-item-avatar>
 
-          <v-divider></v-divider>
+                <v-list-item-content>
+                  <v-list-item-title>{{ user.name }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
 
-          <v-list>
-            <v-list-item @click="">
-              <v-list-item-title>My Profile</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="">
-              <v-list-item-title>Favorite Notes</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="signOut">
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>            
-          </v-list>
-        </v-card>
-      </v-menu>
-    </div> 
-  </nav>
+            <v-divider></v-divider>
+
+            <v-list>
+              <v-list-item @click="">
+                <v-list-item-title>My Profile</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="">
+                <v-list-item-title>Favorite Notes</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="signOut">
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>            
+            </v-list>
+          </v-card>
+        </v-menu>
+      </div> 
+    </v-app-bar>
+  </div>
 </template>
 
 <script>
@@ -149,50 +157,15 @@ button:focus {
   font-weight: bold;
 }
 
-.navy-blue {
-  background-color: #004aad;
-}
-
-.sticky {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-}
-
-.nav-bar {
-  align-items: center;
-  display: flex;
-  font-family: 'Roboto';
-  height: 80px;
-}
-
-.nav-bar a {
-  float: left;
-  font-size: 1.75em;
+#title {
+  font-size: 3em;
   color: white;
+  margin: 0 0 0 10px;
   text-decoration: none;
 }
 
-#title {
-  font-size: 2.75em;
-  margin: 0 10px 0 20px;
-}
-
 #logo {
-  height: 60%;
-  padding: 0 0 5px 0;
-}
-
-.action-items {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  margin-left: auto;
-  width: auto;
-}
-
-#signin-link {
-  margin-right: 30px;
+  height: 85%;
+  margin: 0 0 5px 10px;
 }
 </style>
