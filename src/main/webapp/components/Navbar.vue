@@ -39,7 +39,7 @@
           <v-divider></v-divider>
 
           <v-list>
-            <v-list-item @click="">
+            <v-list-item @click="goToProfile">
               <v-list-item-title>My Profile</v-list-item-title>
             </v-list-item>
             <v-list-item @click="">
@@ -102,6 +102,9 @@ module.exports = {
           this.signedIn = true;
         })
     },
+    goToProfile() {
+      window.location.href = "/my-profile.html";
+    },
     signIn() {
       this.googleAuth.signIn().then(() => {
         this.registerUser();
@@ -130,9 +133,11 @@ module.exports = {
   },
   watch: {
     user: function(userVal) {
-      console.log("user val changed");
       this.$emit('set-user', userVal);
-    }
+    },
+    signedIn: function(signedInVal) {
+      this.$emit('signed-in', signedInVal);
+    },
   }
 }
 </script>
