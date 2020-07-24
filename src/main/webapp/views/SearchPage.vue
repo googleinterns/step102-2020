@@ -48,7 +48,7 @@ module.exports = {
         return noteB.numFavorites - noteA.numFavorites;
       },
       descDate: function(noteA, noteB) {
-        return noteB.date - noteA.date;
+        return Date.parse(noteB.dateCreated) - Date.parse(noteA.dateCreated);
       }
     }
   },
