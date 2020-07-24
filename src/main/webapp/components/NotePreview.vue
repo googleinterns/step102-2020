@@ -9,14 +9,15 @@
           <em>{{author}}</em> - {{dateCreated}}
         </v-card-subtitle>
 
-        <v-badge :content="numFavorites"
-                  class="ma-2"
-                  @click.native="toggleFavorite">
+        <a href="#" @click="toggleFavorite">
+        <v-badge class="ma-2">
+          <template v-slot:badge>{{numFavorites}}</template>
           <v-icon>mdi-star</v-icon>
         </v-badge>
+        </a>
         <a :href="pdfSource" :download="title" @click="increment">
-          <v-badge :content="numDownloads"
-                    class="ma-2">
+          <v-badge class="ma-2">
+            <template v-slot:badge>{{numDownloads}}</template>
             <v-icon>mdi-download</v-icon>
           </v-badge>
         </a>
