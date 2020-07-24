@@ -8,7 +8,6 @@ import java.sql.Date;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Calendar;
 import com.google.starfish.models.Note;
 
