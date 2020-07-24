@@ -154,12 +154,12 @@ function generateNote() {
 
 /** Retrieves input values and sets them if they are blank */
 function retrieveParams() {
-  let docName = document.getElementById('doc-name-input').value.trim();
-  if(docName === '') docName = 'gNote ' + getDate();
-  let school = document.getElementById('school-input').value.trim();
-  if(school === '') school = 'Unaffiliated';
-  let course = document.getElementById('course-input').value.trim();
-  if(course === '') course = 'Unaffiliated';
+  const docName = document.getElementById('doc-name-input').value.trim() ||
+      'gNote ' + getDate();
+  const school = document.getElementById('school-input').value.trim() ||
+      'Unaffiliated';
+  const course = document.getElementById('course-input').value.trim() ||
+      'Unaffiliated';
   return [docName, school, course];
 }
 
@@ -200,9 +200,9 @@ function updateGNoteTemplate(docId, docUrl) {
   gapi.client.docs.documents.batchUpdate(updateObject)
     .then(() => addGlobalPermissions(docId))
     .then(() => {
-      setLoadingIcon(false);
       chrome.tabs.create({ url: docUrl });
-    });
+    })
+    .finally(setLoadingIcon(false));
 }
 
 /** Add global permissions to Google Doc so anyone can view it */
