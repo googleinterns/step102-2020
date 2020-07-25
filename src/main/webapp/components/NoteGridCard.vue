@@ -1,22 +1,24 @@
 <template>
-  <v-card class="note-grid-card" @click="$emit('click')">
-    <div class="thumbnail" :style="thumbnail"></div>
+  <v-col>
+    <v-card class="note-grid-card" @click="$emit('click')">
+      <div class="thumbnail" :style="thumbnail"></div>
 
-    <div class="metadata">
-      <div class="note-title">{{title}}</div>
+      <div class="metadata">
+        <div class="note-title">{{title}}</div>
 
-      <div class="info-row">
-        <p>{{school}} &bull; {{course}}</p>
+        <div class="info-row">
+          <p>{{school}} &bull; {{course}}</p>
 
-        <img src="assets/gdrive.webp">
-        {{dateCreated}}
-        <div class="rating-box">
-          {{numFavorites}}
-          <span class="star">&star;</span>          
+          <img src="assets/pdf.webp">
+          {{dateCreated}}
+          <div class="rating-box">
+            {{numFavorites}}
+            <span class="star">&star;</span>          
+          </div>
         </div>
       </div>
-    </div>
-  </v-card>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
@@ -47,7 +49,8 @@
   }
 </script>
 
-<style scoped>
+<style>
+/*
   .note-grid-card {
     border: 1px solid #dfe1e5;
     border-radius: 3px;
@@ -60,13 +63,13 @@
   .note-grid-card:hover {
     border: 2px solid #afdbdf;
   }
-
+*/
   .thumbnail {
     position: relative;
     background-size: 208px;
     height: 180px;
   }
-
+/*
   .metadata {
     position: relative;
     border-top: 1px solid #dfe1e5;
@@ -112,4 +115,5 @@
     border-bottom-right-radius: 4px;
     font-size: 9pt;
   }
+*/
 </style>
