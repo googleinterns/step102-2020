@@ -4,11 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import java.sql.ResultSet;  
+import java.sql.Date;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import com.google.starfish.models.Note;
+
+/** Enum to hold possible recency to get trending notes */
+enum Recency {
+  TODAY, 
+  THIS_WEEK, 
+  THIS_MONTH, 
+  ALL_TIME;
+}
 
 /**
  * Service class for FavoriteNotes Table
@@ -46,13 +55,16 @@ public class FavoriteNoteService {
         String stmt =
             "INSERT INTO " + FAVORITE_NOTES + " ( "
                 + "note_id,"
-                + "user_id ) "
+                + "user_id,"
+                + "date ) "
           + "VALUES ( "
+                + "?,"
                 + "?,"
                 + "? ); ";
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           insertStmt.setLong(1, noteId);
           insertStmt.setString(2, userId);
+          insertStmt.setDate(3, new Date(Calendar.getInstance().getTimeInMillis()));
           insertStmt.execute();
           conn.commit();
         }
@@ -113,6 +125,81 @@ public class FavoriteNoteService {
         return numFavorites;
       }
     }
+  }
+
+  /** Gets trending notes today */
+  public Note[] getTrendingNotesToday(DataSource pool) throws SQLException {
+    return getTrendingNotes(pool, Recency.TODAY);
+  }
+
+  /** Gets trending notes this week */
+  public Note[] getTrendingNotesThisWeek(DataSource pool) throws SQLException {
+    return getTrendingNotes(pool, Recency.THIS_WEEK);
+  }
+
+  /** Gets trending notes this month */
+  public Note[] getTrendingNotesThisMonth(DataSource pool) throws SQLException {
+    return getTrendingNotes(pool, Recency.THIS_MONTH);
+  }
+
+  /** Gets all-time trending notes */
+  public Note[] getTrendingNotesAllTime(DataSource pool) throws SQLException {
+    return getTrendingNotes(pool, Recency.ALL_TIME);
+  }
+
+  /** Gets trending notes based on number of favorites in a given timespan */
+  private Note[] getTrendingNotes(DataSource pool, Recency recency) throws SQLException {
+    Date date = getDateBasedOnRecency(recency);
+    List<Note> notes = new ArrayList<>();
+    try (Connection conn = pool.getConnection()) {
+      String stmt = 
+          "SELECT * "
+        + "FROM " 
+          + NOTES + " AS a "
+          + "INNER JOIN (SELECT note_id, COUNT(*) AS count "
+                      + "FROM " + FAVORITE_NOTES + " "
+                      + "WHERE date >= ? " 
+                      + "GROUP BY note_id) " 
+          + "AS b ON a.id=b.note_id "
+          + "ORDER BY count DESC;";
+      try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
+        selectStmt.setDate(1, date);
+        ResultSet rs = selectStmt.executeQuery();
+        while (rs.next()) {
+          Note thisNote = constructNoteFromSqlResult(pool, rs);
+          notes.add(thisNote);
+        }
+        rs.close();
+        return notes.toArray(new Note[0]);
+      }
+    }
+  }
+
+  /** Gets the date based on recency */
+  private Date getDateBasedOnRecency(Recency recency) {
+    Date date;
+    Calendar calendar = Calendar.getInstance();
+    switch(recency) {
+      case TODAY:
+        date = new Date(calendar.getTimeInMillis());
+        break;
+      case THIS_WEEK:
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        date = new Date(calendar.getTimeInMillis());
+        break;
+      case THIS_MONTH:
+        calendar.add(Calendar.DAY_OF_MONTH, -30);
+        date = new Date(calendar.getTimeInMillis());
+        break;
+      case ALL_TIME:
+        // No note should ever be favorited more than 100 years ago (for now...)
+        calendar.add(Calendar.YEAR, -100);
+        date = new Date(calendar.getTimeInMillis());
+        break;
+      default:
+        date = new Date(calendar.getTimeInMillis());
+    }
+    return date;
   }
 
   private Note constructNoteFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
