@@ -26,7 +26,11 @@
                     :can-modify="isFavorited">
         </label-list>
 
-        <iframe :src="sourceUrl"></iframe>
+        <iframe :src="pdfSource"></iframe>
+        <a href="src" download @click="increment">
+          <v-icon>mdi-download</v-icon>
+          Download
+        </a>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -60,6 +64,12 @@
     data: function() {
       return {
         showPreview: false,
+      }
+    },
+    computed: {
+      src: function() {
+        // TODO: Need to handle logic for if it is a pdf or Google Doc
+        return `/serve-notes?key=${this.pdfSource}`;
       }
     },
     mounted: function() {

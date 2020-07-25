@@ -23,7 +23,7 @@ public class FavoriteNoteService {
   public boolean deleteRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
-          "DELETE * "
+          "DELETE "
         + "FROM " + FAVORITE_NOTES + " "
         + "WHERE `note_id`= ? AND "
         + "`user_id` = ? "

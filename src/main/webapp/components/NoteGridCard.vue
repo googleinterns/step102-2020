@@ -13,7 +13,7 @@
           {{dateCreated}}
           <div class="rating-box">
             {{numFavorites}}
-            <span class="star">&star;</span>          
+            <span class="star" @click.stop="toggleFavorite">&star;</span>          
           </div>
         </div>
       </div>
@@ -25,6 +25,7 @@
   module.exports = {
     props: {
       thumbnailSrc: String,
+      id: Number,
       title: String,
       dateCreated: String,
       school: String,
@@ -33,6 +34,11 @@
       numDownloads: Number,
       numFavorites: Number,
       isFavorited: Boolean
+    },
+    data: function() {
+      return {
+        favorited: this.isFavorited
+      }
     },
     computed: {
       thumbnail: function() {
@@ -44,6 +50,13 @@
     methods: {
       onClick: function() {
         this.$emit('click');
+      },
+      toggleFavorite: function() {
+        let method = this.favorited ? 'DELETE' : 'POST';
+        this.favorited = !this.favorited;
+        fetch('/favorite-note?note_id=' + this.id, {
+          method: method
+        })
       }
     }
   }
