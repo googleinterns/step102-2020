@@ -2,7 +2,10 @@
   <v-col>
     <v-card class="note-grid-card" @click="$emit('click')"
             width="208px">
-      <div class="thumbnail" :style="thumbnail"></div>
+      <v-img :src="thumbnailSrc"
+             height="180px"
+             position="top">
+      </v-img>
 
       <div class="metadata">
         <div class="note-title">{{title}}</div>
@@ -77,13 +80,7 @@
   .note-grid-card:hover {
     border: 2px solid #afdbdf;
   }
-*/
-  .thumbnail {
-    position: relative;
-    background-size: 208px;
-    height: 180px;
-  }
-/*
+
   .metadata {
     position: relative;
     border-top: 1px solid #dfe1e5;
