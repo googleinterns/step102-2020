@@ -1,16 +1,16 @@
 <template>
   <div class="note-grid-collection">
     <v-row v-if="noteData.length">
-    <v-card-title>{{header}}</v-card-title>
+      <v-card-title>{{header}}</v-card-title>
     </v-row>
 
-    <v-row>
-    <note-grid-card v-for="(note, index) in notes"
-                    :key="index"
-                    v-bind="note"
-                    @click="onClick(note)">
-    </note-grid-card>
-    </v-row>
+    <v-slide-group>
+      <note-grid-card v-for="(note, index) in notes"
+                      :key="index"
+                      v-bind="note"
+                      @click="onClick(note)">
+      </note-grid-card>
+    </v-slide-group>
   </div>
 </template>
 
