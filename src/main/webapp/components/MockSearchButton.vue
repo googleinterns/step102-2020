@@ -1,3 +1,6 @@
+<!--
+  This component is used for testing.
+-->
 <template>
   <v-btn @click="loadMock">Load Mock Search Results</v-btn>
 </template>
