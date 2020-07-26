@@ -1,15 +1,21 @@
 <template>
-  <div class="note-grid-collection">
+  <div>
     <v-row v-if="noteData.length">
       <v-card-title>{{header}}</v-card-title>
     </v-row>
 
-    <v-slide-group show-arrows>
-      <note-grid-card v-for="(note, index) in notes"
-                      :key="index"
-                      v-bind="note"
-                      @click="onClick(note)">
-      </note-grid-card>
+    <v-slide-group v-model="selected" 
+                   show-arrows
+                   center-active>
+      <v-slide-item v-for="(note, index) in notes"
+                        :key="index"
+                        v-slot="{ toggle }">
+        <div> <!-- This div supresses "multiple nodes" warning -->
+          <note-grid-card v-bind="note"
+                          @click="onClick(toggle, note)">
+          </note-grid-card>
+        </div>
+      </v-slide-item>
     </v-slide-group>
   </div>
 </template>
@@ -29,18 +35,26 @@ module.exports = {
     header: String,
     maxAge: Number,
   },
+  data: function() {
+    return {
+      selected: null,
+    }
+  },
   computed: {
     notes: function() {
+      // When the rendered notes change, move slide-group back to start.
+      this.selected = 0;
       // Filter by date, matching terms, and sort with compareFunc
       return this.noteData
         .filter(this.dateFilter)
         .filter(this.noteFilter)
         .sort(this.compareFunc);
-    }
+    },
   },
   methods: {
-    onClick: function(note) {
-      this.$parent.$emit('open-preview', note)
+    onClick: function(toggleFunc, note) {
+      toggleFunc();
+      this.$parent.$emit('open-preview', note);
     },
     noteFilter: function(note) {
       // If no filter or empty filter, immediately pass filter.
