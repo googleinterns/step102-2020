@@ -1,6 +1,7 @@
 <template>
   <v-col>
-    <v-card class="note-grid-card" @click="$emit('click')">
+    <v-card class="note-grid-card" @click="$emit('click')"
+            width="208px">
       <div class="thumbnail" :style="thumbnail"></div>
 
       <div class="metadata">
