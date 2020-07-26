@@ -4,7 +4,7 @@
       <v-card-title>{{header}}</v-card-title>
     </v-row>
 
-    <v-slide-group>
+    <v-slide-group show-arrows>
       <note-grid-card v-for="(note, index) in notes"
                       :key="index"
                       v-bind="note"
