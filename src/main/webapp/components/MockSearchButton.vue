@@ -117,7 +117,7 @@ module.exports = {
         {
           thumbnailSrc: "/assets/notes.png",
           author: "Andres H.",
-          title: "ABC set of notes",
+          title: "A really long title on the card that should test overfill handling",
           dateCreated: new Date(Date.now() - 1000 * 60 * 60 * 24 * 6).toDateString(),
           school: "GHI",
           course: "ENC1101",
@@ -132,7 +132,7 @@ module.exports = {
           author: "Andres H.",
           title: "ABC set of notes",
           dateCreated: new Date(Date.now() - 1000 * 60 * 60 * 24 * 6).toDateString(),
-          school: "GHI",
+          school: "A really long school name to test overfill handling",
           course: "ENC1101",
           miscLabels: ["A", "B", "C"],
           numDownloads: 345,
