@@ -6,22 +6,23 @@ import java.util.Date;
 import java.util.Calendar;
 
 public class CommonOperations {
+  private static Constants constants = new Constants();
   // Order matters when deleting from tables
   public static final Operation DELETE_ALL =
-    deleteAllFrom(Constants.FAVORITE_NOTES, Constants.MISC_LABELS, Constants.NOTES, Constants.USERS, Constants.LABELS);
+    deleteAllFrom(constants.FAVORITE_NOTES, constants.MISC_LABELS, constants.NOTES, constants.USERS, constants.LABELS);
 
   // Before every test, we will insert one user and their school as a label to serve as a reference
   public static final Operation INSERT_REFERENCE_DATA =
     sequenceOf(
-        insertInto(Constants.LABELS)
+        insertInto(constants.LABELS)
             .columns("title", "type")
-            .values(Constants.REFERENCE_SCHOOL, "School")
+            .values(constants.REFERENCE_SCHOOL, "School")
             .build(),
-        insertInto(Constants.LABELS)
+        insertInto(constants.LABELS)
             .columns("title", "type")
-            .values(Constants.REFERENCE_COURSE, "Course")
+            .values(constants.REFERENCE_COURSE, "Course")
             .build(),
-        insertInto(Constants.USERS)
+        insertInto(constants.USERS)
             .columns(
               "id", 
               "display_picture",
@@ -31,12 +32,12 @@ public class CommonOperations {
               "points",
               "school")
             .values(
-              Constants.REFERENCE_USER_ID,
+              constants.REFERENCE_USER_ID,
               "test.url",
               "Aradhya",
               new Date(Calendar.getInstance().getTimeInMillis()),
               "thisisntmyrealemail@gmail.com",
               0,
-              Constants.REFERENCE_SCHOOL)
+              constants.REFERENCE_SCHOOL)
             .build());
 }
