@@ -1,5 +1,5 @@
 <template>
-  <div style="height:80px">
+  <div id="navbar-container">
     <v-app-bar height="80px"
                color="blue darken-4"
                fixed>
@@ -156,6 +156,10 @@ button:focus {
 
 .bold {
   font-weight: bold;
+}
+
+#navbar-container {
+  height: 80px;
 }
 
 #title {
