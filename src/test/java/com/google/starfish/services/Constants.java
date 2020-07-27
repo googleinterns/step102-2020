@@ -5,21 +5,21 @@ import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
 public class Constants {
-  public static final String LABELS = Table.LABELS.getSqlTable();
-  public static final String USERS = Table.USERS.getSqlTable();
-  public static final String NOTES = Table.NOTES.getSqlTable();
-  public static final String MISC_LABELS = Table.MISC_LABELS.getSqlTable();
-  public static final String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
-  public static final String REFERENCE_USER_ID = "1";
-  public static final String REFERENCE_SCHOOL = "the university of western ontario";
-  public static final String REFERENCE_COURSE = "se2203";
+  public final String LABELS = Table.LABELS.getSqlTable();
+  public final String USERS = Table.USERS.getSqlTable();
+  public final String NOTES = Table.NOTES.getSqlTable();
+  public final String MISC_LABELS = Table.MISC_LABELS.getSqlTable();
+  public final String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
+  public final String REFERENCE_USER_ID = "1";
+  public final String REFERENCE_SCHOOL = "the university of western ontario";
+  public final String REFERENCE_COURSE = "se2203";
   public static final DataSource pool = createConnectionPool();
 
-  private static final String CLOUD_SQL_CONNECTION_NAME = System.getenv("CLOUD_SQL_CONNECTION_NAME");
-  private static final String TEST_DB_USER = System.getenv("TEST_DB_USER");
-  private static final String TEST_DB_PASS = System.getenv("TEST_DB_PASS");
-  private static final String TEST_DB_NAME = System.getenv("TEST_DB_NAME");
-
+  private static final String CLOUD_SQL_CONNECTION_NAME = "step102-2020:us-central1:step102-2020-mysql";
+  private static final String TEST_DB_USER = "mastersf";
+  private static final String TEST_DB_PASS = "starfish";
+  private static final String TEST_DB_NAME = "starfish_test";
+    
   private static final int MILLISECONDS_IN_SECOND = 1000;
   private static final int SECONDS_IN_MINUTE = MILLISECONDS_IN_SECOND * 60;
 
