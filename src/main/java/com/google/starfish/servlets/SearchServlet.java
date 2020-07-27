@@ -1,29 +1,20 @@
 package com.google.starfish.servlets;  
 
 import java.io.IOException;  
-import java.sql.Connection;  
 import java.sql.SQLException;  
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.servlet.ServletException;  
 import javax.servlet.annotation.WebServlet;  
 import javax.servlet.http.HttpServlet;  
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
-import java.util.Date;
-import com.google.starfish.services.NoteService;
 import com.google.starfish.services.FavoriteNoteService;
-import com.google.starfish.models.Note;
 import com.google.gson.Gson;
-import java.util.ArrayList;
-import java.util.List;
 
 /** Servlet that returns search results for notes based on school and course */
 @WebServlet("/search")  
 public class SearchServlet extends HttpServlet {  
 
-  private NoteService noteService = new NoteService();
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
 
   @Override
@@ -32,80 +23,29 @@ public class SearchServlet extends HttpServlet {
 
     String reqSchool = trimAndLowerCaseString(req.getParameter("school"));
     String reqCourse = trimAndLowerCaseString(req.getParameter("course"));
-
-    try (Connection conn = pool.getConnection()) {
-      try {
-        conn.setAutoCommit(false);
-        String stmt = getSearchQuery(reqSchool, reqCourse);
-        try (PreparedStatement getNotesStatement = conn.prepareStatement(stmt)) {
-          ResultSet rs = getNotesStatement.executeQuery();
-          conn.commit();
-
-          List<Note> notes = buildNotesFromQueryResult(pool, rs);
-          String json = convertListToJson(notes);
-          res.setContentType("application/json");
-          res.getWriter().println(json);
-        } 
-      } catch (SQLException ex) {
-          if (conn != null) {
-            try {
-              System.err.print("Transaction is being rolled back.");
-              conn.rollback();
-            } catch (SQLException excep) {
-              System.err.print(excep);
-            }
-          }
-        }
-      } catch (SQLException ex) {
-        System.err.print(ex);
+    String timespan = trimAndLowerCaseString("timespan");
+    try {
+      Object[][] trendingNotes = null;
+      switch(timespan) {
+        case "today":
+          trendingNotes = favoriteNoteService.getTrendingNotesTodayBySchoolOrCourse(pool, reqSchool, reqCourse);
+          break;
+        case "this-week":
+          trendingNotes = favoriteNoteService.getTrendingNotesThisWeekBySchoolOrCourse(pool, reqSchool, reqCourse);
+          break;
+        case "this-month":
+          trendingNotes = favoriteNoteService.getTrendingNotesThisMonthBySchoolOrCourse(pool, reqSchool, reqCourse);
+          break;
+        default:
+          // Default to returning trending notes all-time
+          trendingNotes = favoriteNoteService.getTrendingNotesAllTimeBySchoolOrCourse(pool, reqSchool, reqCourse);
       }
+      String json = convert2DArrayToJSON(trendingNotes);
+      res.setContentType("application/json");
+      res.getWriter().println(json);
+    } catch(SQLException ex) {
+      ex.printStackTrace();
     }
-
-  /** Dynamically generates sql query statement for note search */
-  private String getSearchQuery(String school, String course) {
-    String stmt = 
-        "SELECT * "
-      + "FROM `notes` "
-      + "WHERE 1=1";
-    if (school != null && !school.isEmpty()) {
-      stmt += " AND `school`= '" + school + "'";
-    }
-    if (course != null && !course.isEmpty()) {
-      stmt += " AND `course`= '" + course + "'";
-    }
-    stmt += ";";
-    return stmt;
-  }
-
-  /** Creates a list of note objects based on the result set of a search query in the DB */
-  private List<Note> buildNotesFromQueryResult(DataSource pool, ResultSet rs) throws SQLException {
-    List<Note> notes = new ArrayList<>();
-    while (rs.next()) {
-      long noteId = rs.getLong("id");
-      String authorId = rs.getString("author_id");
-      String school = rs.getString("school");
-      String course = rs.getString("course");
-      String title = rs.getString("title");
-      String sourceUrl = rs.getString("source_url");
-      String pdfSource = rs.getString("pdf_source");
-      Date dateCreated = rs.getDate("date_created");
-      long numDownloads = rs.getLong("num_downloads");
-      long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, noteId);
-
-      Note thisNote = new Note.Builder()
-                          .setId(noteId)
-                          .setAuthorId(authorId)
-                          .setRequiredLabels(school, course)
-                          .setNoteTitle(title)
-                          .setSourceUrl(sourceUrl)
-                          .setOptionalPdfSource(pdfSource)
-                          .setDateCreated(dateCreated)
-                          .setNumDownloads(numDownloads)
-                          .setNumFavorites(numFavorites)
-                          .build();
-      notes.add(thisNote);
-    }
-    return notes;
   }
 
   /** If a string is not null, trims whitespace and makes it all lower case */
@@ -114,9 +54,9 @@ public class SearchServlet extends HttpServlet {
     return string.toLowerCase().trim();
   }
 
-  /** Converts an array list to JSON */
-  private String convertListToJson(List<Note> notes) {
+  /** Converts a notes array to JSON */
+  private String convert2DArrayToJSON(Object[][] arr) {
     Gson gson = new Gson();
-    return gson.toJson(notes);
+    return gson.toJson(arr);
   }
 }  
