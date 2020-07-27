@@ -5,6 +5,7 @@
       <v-img :src="thumbnailSrc"
              height="180px"
              position="top">
+        <v-icon>{{ isGNote ? "mdi-google-drive" : "mdi-pdf-box" }}</v-icon>             
       </v-img>
 
       <div class="metadata">
@@ -13,7 +14,6 @@
         <div class="info-row">
           <p>{{school}} &bull; {{course}}</p>
 
-          <img src="assets/pdf.webp">
           {{dateCreated}}
           <div class="rating-box">
             {{numFavorites}}
@@ -37,11 +37,12 @@
       labels: Array,
       numDownloads: Number,
       numFavorites: Number,
-      isFavorited: Boolean
+      isFavorited: Boolean,
     },
     data: function() {
       return {
-        favorited: this.isFavorited
+        favorited: this.isFavorited,
+        isGNote: true,
       }
     },
     computed: {
