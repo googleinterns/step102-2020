@@ -7,8 +7,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.starfish.models.User;
 import com.google.starfish.models.Note;
-import com.google.starfish.services.NoteService;
-import com.google.starfish.services.FavoriteNoteService;
+import com.google.starfish.services.UserService;
 import com.google.gson.Gson;
 import java.io.IOException;  
 import java.sql.Connection;  
@@ -38,8 +37,7 @@ public class UserRegistrationServlet extends HttpServlet {
   private static final Logger LOGGER = Logger.getLogger(UserRegistrationServlet.class.getName());
   private static final String CLIENT_ID = System.getenv("CLIENT_ID");
   private final String COOKIE_NAME = "SFCookie";
-  private NoteService noteService = new NoteService();
-  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
+  private UserService userService = new UserService();
 
   @Override 
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -63,21 +61,10 @@ public class UserRegistrationServlet extends HttpServlet {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
     
     try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT * "
-        + "FROM users "
-        + "WHERE id=? "
-        + "LIMIT 1;";
-
-      try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
-        userStmt.setString(1, userId);
-        ResultSet rs = userStmt.executeQuery();
-        rs.next();
-        User user = constructUserFromSqlResult(pool, rs);
-        String json = convertObjectToJSON(user);
-        res.setContentType("application/json");
-        res.getWriter().println(json);
-      }
+      User user = userService.getUserById(pool, userId);
+      String json = convertObjectToJSON(user);
+      res.setContentType("application/json");
+      res.getWriter().println(json);
     } catch (SQLException ex) {
       LOGGER.log(Level.WARNING, "Error while speaking to database:", ex);
       // Set an error code of 500 if the server can't connect to the database
@@ -163,30 +150,6 @@ public class UserRegistrationServlet extends HttpServlet {
     } catch (GeneralSecurityException ex) {
       LOGGER.log(Level.WARNING, "Error while attempting to validate user token.", ex);
     }
-  }
-
-  private User constructUserFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
-    String userId = rs.getString("id");
-    String displayPicture = rs.getString("display_picture");
-    String displayName = rs.getString("display_name");
-    Date dateJoined = rs.getDate("date_joined");
-    String email = rs.getString("email");
-    long points = rs.getLong("points");
-    String school = rs.getString("school");
-    Note[] favoriteNotes = favoriteNoteService.getFavoriteNotesByUserId(pool, userId);
-    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, userId);
-
-    User user = new User.Builder()
-                        .setId(userId)
-                        .setOptionalDisplayProperties(displayPicture, displayName)
-                        .setDateJoined(dateJoined)
-                        .setEmail(email)
-                        .setPoints(points)
-                        .setOptionalSchool(school)
-                        .setOptionalFavoriteNotes(favoriteNotes)
-                        .setOptionalUploadedNotes(uploadedNotes)
-                        .build();
-    return user;
   }
 
   private boolean checkIfUserExists(Connection conn, String userId) throws SQLException {

@@ -4,6 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.util.Date;
+import com.google.starfish.models.User;
+import com.google.starfish.models.Note;
 
 enum Event {
   FAVORITE, DOWNLOAD
@@ -14,6 +18,8 @@ enum Event {
  */
 public class UserService extends TableService {
 
+  private NoteService noteService = new NoteService();
+  private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
   private String USERS = Table.USERS.getSqlTable();
 
   // Points modifiers for different events
@@ -42,7 +48,7 @@ public class UserService extends TableService {
         conn.setAutoCommit(false);
         String stmt =
             "UPDATE " + USERS + " "
-                + "SET points=points+? "
+          + "SET points=points+? "
           + "WHERE id=?;";
         try (PreparedStatement updateStmt = conn.prepareStatement(stmt)) {
           long pointsModifier = getPointsModifier(event);
@@ -84,5 +90,46 @@ public class UserService extends TableService {
         pointsModifier = FAVORITE_POINTS_MODIFIER;
     }
     return pointsModifier;
+  }
+
+  public User getUserById(DataSource pool, String userId) throws SQLException {
+     try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "SELECT * "
+        + "FROM users "
+        + "WHERE id=? "
+        + "LIMIT 1;";
+
+      try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
+        userStmt.setString(1, userId);
+        ResultSet rs = userStmt.executeQuery();
+        rs.next();
+        return constructUserFromSqlResult(pool, rs);
+      }
+     }
+  }
+
+  private User constructUserFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
+    String userId = rs.getString("id");
+    String displayPicture = rs.getString("display_picture");
+    String displayName = rs.getString("display_name");
+    Date dateJoined = rs.getDate("date_joined");
+    String email = rs.getString("email");
+    long points = rs.getLong("points");
+    String school = rs.getString("school");
+    Note[] favoriteNotes = favoriteNoteService.getFavoriteNotesByUserId(pool, userId);
+    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, userId);
+
+    User user = new User.Builder()
+                        .setId(userId)
+                        .setOptionalDisplayProperties(displayPicture, displayName)
+                        .setDateJoined(dateJoined)
+                        .setEmail(email)
+                        .setPoints(points)
+                        .setOptionalSchool(school)
+                        .setOptionalFavoriteNotes(favoriteNotes)
+                        .setOptionalUploadedNotes(uploadedNotes)
+                        .build();
+    return user;
   }
 }
