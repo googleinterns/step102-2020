@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 enum Event {
-  FAVORITE, DOWNLOAD
+  FAVORITE, DOWNLOAD, UNFAVORITE
 }
 
 /**
@@ -26,23 +26,28 @@ public class UserService extends TableService {
 
   /** Increase user points when a user's note gets favorited */
   public boolean increasePointsOnFavorite(DataSource pool, String userId) {
-    return increasePoints(pool, userId, Event.FAVORITE);
+    return modifyPoints(pool, userId, Event.FAVORITE);
   }
 
   /** Increase user points when a user's note gets downloaded */
   public boolean increasePointsOnDownload(DataSource pool, String userId) {
-    return increasePoints(pool, userId, Event.DOWNLOAD);
+    return modifyPoints(pool, userId, Event.DOWNLOAD);
   }
 
-  /** Variably increase user points based on event */
-  private boolean increasePoints(DataSource pool, String userId, Event event) {
+  /** Decrease user points when a user's note gets unfavorited */
+  public boolean decreasePointsOnUnfavorite(DataSource pool, String userId) {
+    return modifyPoints(pool, userId, Event.UNFAVORITE);
+  }
+
+  /** Variably modify user points based on event */
+  private boolean modifyPoints(DataSource pool, String userId, Event event) {
     if (userId == null) return false;
     try (Connection conn = pool.getConnection()) {
       try {
         conn.setAutoCommit(false);
         String stmt =
             "UPDATE " + USERS + " "
-                + "SET points=points+? "
+          + "SET points=points+? "
           + "WHERE id=?;";
         try (PreparedStatement updateStmt = conn.prepareStatement(stmt)) {
           long pointsModifier = getPointsModifier(event);
@@ -79,6 +84,9 @@ public class UserService extends TableService {
         break;
       case DOWNLOAD:
         pointsModifier = DOWNLOAD_POINTS_MODIFIER;
+        break;
+      case UNFAVORITE: 
+        pointsModifier = -1 * FAVORITE_POINTS_MODIFIER;
         break;
       default:
         pointsModifier = FAVORITE_POINTS_MODIFIER;
