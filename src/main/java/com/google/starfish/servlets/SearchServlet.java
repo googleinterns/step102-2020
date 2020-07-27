@@ -54,7 +54,7 @@ public class SearchServlet extends HttpServlet {
     return string.toLowerCase().trim();
   }
 
-  /** Converts a notes array to JSON */
+  /** Converts a 2D array to JSON */
   private String convert2DArrayToJSON(Object[][] arr) {
     Gson gson = new Gson();
     return gson.toJson(arr);
