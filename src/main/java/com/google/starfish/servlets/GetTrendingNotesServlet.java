@@ -26,7 +26,7 @@ public class GetTrendingNotesServlet extends HttpServlet {
     // Default timespan is all-time
     if (timespan == null) timespan = "all-time";
     try {
-      Note[] trendingNotes = null;
+      Object[][] trendingNotes = null;
       switch(timespan) {
         case "today":
           trendingNotes = favoriteNoteService.getTrendingNotesToday(pool);
@@ -41,7 +41,7 @@ public class GetTrendingNotesServlet extends HttpServlet {
           // Default to returning trending notes all-time
           trendingNotes = favoriteNoteService.getTrendingNotesAllTime(pool);
       }
-      String json = convertArrayToJson(trendingNotes);
+      String json = convert2DArrayToJSON(trendingNotes);
       res.setContentType("application/json");
       res.getWriter().println(json);
     } catch(SQLException ex) {
@@ -56,8 +56,8 @@ public class GetTrendingNotesServlet extends HttpServlet {
   }
 
   /** Converts a notes array to JSON */
-  private String convertArrayToJson(Note[] notes) {
+  private String convert2DArrayToJSON(Object[][] arr) {
     Gson gson = new Gson();
-    return gson.toJson(notes);
+    return gson.toJson(arr);
   }
 }  
