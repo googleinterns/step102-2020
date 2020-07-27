@@ -26,6 +26,7 @@ public class FavoriteNoteService {
 
   private String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
   private String NOTES = Table.NOTES.getSqlTable();
+  private String NUM_FAVORITES_IN_TIMESPAN_ID = "count";
   private MiscNoteLabelService miscNoteLabelService = new MiscNoteLabelService(); 
 
   /** Deletes a favorite note by the compound id */
@@ -128,51 +129,111 @@ public class FavoriteNoteService {
   }
 
   /** Gets trending notes today */
-  public Note[] getTrendingNotesToday(DataSource pool) throws SQLException {
+  public Object[][] getTrendingNotesToday(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.TODAY);
   }
 
   /** Gets trending notes this week */
-  public Note[] getTrendingNotesThisWeek(DataSource pool) throws SQLException {
+  public Object[][] getTrendingNotesThisWeek(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.THIS_WEEK);
   }
 
   /** Gets trending notes this month */
-  public Note[] getTrendingNotesThisMonth(DataSource pool) throws SQLException {
+  public Object[][] getTrendingNotesThisMonth(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.THIS_MONTH);
   }
 
   /** Gets all-time trending notes */
-  public Note[] getTrendingNotesAllTime(DataSource pool) throws SQLException {
+  public Object[][] getTrendingNotesAllTime(DataSource pool) throws SQLException {
     return getTrendingNotes(pool, Recency.ALL_TIME);
   }
 
-  /** Gets trending notes based on number of favorites in a given timespan */
-  private Note[] getTrendingNotes(DataSource pool, Recency recency) throws SQLException {
+  /** Gets trending notes today filtered by school or course */
+  public Object[][] getTrendingNotesTodayBySchoolOrCourse(DataSource pool, String school, String course) throws SQLException {
+    return getTrendingNotesBySchoolOrCourse(pool, Recency.TODAY, school, course);
+  }
+
+  /** Gets trending notes this week filtered by school or course */
+  public Object[][] getTrendingNotesThisWeekBySchoolOrCourse(DataSource pool, String school, String course) throws SQLException {
+    return getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_WEEK, school, course);
+  }
+
+  /** Gets trending notes this month filtered by school or course */
+  public Object[][] getTrendingNotesThisMonthBySchoolOrCourse(DataSource pool, String school, String course) throws SQLException {
+    return getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_MONTH, school, course);
+  }
+
+  /** Gets all-time trending notes filtered by school or course */
+  public Object[][] getTrendingNotesAllTimeBySchoolOrCourse(DataSource pool, String school, String course) throws SQLException {
+    return getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, school, course);
+  }
+
+  /** Gets trending notes based on number of favorites in a given timespan, filtered by school and/or course */
+  private Object[][] getTrendingNotesBySchoolOrCourse(DataSource pool, Recency recency, String school, String course) throws SQLException {
+    String filterStmt = getStatementToFilterBySchoolOrCourse(school, course);
     Date date = getDateBasedOnRecency(recency);
-    List<Note> notes = new ArrayList<>();
+    List<Object> notes = new ArrayList<>();
     try (Connection conn = pool.getConnection()) {
-      String stmt = 
-          "SELECT * "
-        + "FROM " 
-          + NOTES + " AS a "
-          + "INNER JOIN (SELECT note_id, COUNT(*) AS count "
-                      + "FROM " + FAVORITE_NOTES + " "
-                      + "WHERE date >= ? " 
-                      + "GROUP BY note_id) " 
-          + "AS b ON a.id=b.note_id "
-          + "ORDER BY count DESC;";
+      String stmt = getTrendingNotesStatement(filterStmt);
       try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
         selectStmt.setDate(1, date);
         ResultSet rs = selectStmt.executeQuery();
         while (rs.next()) {
           Note thisNote = constructNoteFromSqlResult(pool, rs);
-          notes.add(thisNote);
+          Long numFavoritesInTimespan = rs.getLong(NUM_FAVORITES_IN_TIMESPAN_ID);
+          notes.add(new Object[] {thisNote, numFavoritesInTimespan});
         }
         rs.close();
-        return notes.toArray(new Note[0]);
+        return notes.toArray(new Object[0][0]);
       }
     }
+  }
+
+  /** Gets a sql where clause that filters by school or course if school or course is not null */
+  private String getStatementToFilterBySchoolOrCourse(String school, String course) {
+    String filterStmt = "WHERE 1=1 ";
+    if (school != null && !school.isEmpty()) {
+      filterStmt += "AND `school`= '" + school + "' ";
+    }
+    if (course != null && !course.isEmpty()) {
+      filterStmt += "AND `course`= '" + course + "' ";
+    }
+    return filterStmt;
+  }
+
+  /** Gets trending notes based on number of favorites in a given timespan */
+  private Object[][] getTrendingNotes(DataSource pool, Recency recency) throws SQLException {
+    Date date = getDateBasedOnRecency(recency);
+    List<Object> notes = new ArrayList<>();
+    try (Connection conn = pool.getConnection()) {
+      String stmt = getTrendingNotesStatement(null);
+      try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
+        selectStmt.setDate(1, date);
+        ResultSet rs = selectStmt.executeQuery();
+        while (rs.next()) {
+          Note thisNote = constructNoteFromSqlResult(pool, rs);
+          Long numFavoritesInTimespan = rs.getLong(NUM_FAVORITES_IN_TIMESPAN_ID);
+          notes.add(new Object[] {thisNote, numFavoritesInTimespan});
+        }
+        rs.close();
+        return notes.toArray(new Object[0][0]);
+      }
+    }
+  }
+
+  /** Gets the sql query to return trending notes possibly filtered by school and/or course */
+  private String getTrendingNotesStatement(String schoolAndCourseFilter) {
+    String stmt = 
+        "SELECT * "
+      + "FROM " + NOTES + " AS a "
+        + "INNER JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
+                    + "FROM " + FAVORITE_NOTES + " "
+                    + "WHERE date >= ? " 
+                    + "GROUP BY note_id) AS b " 
+      + "ON a.id=b.note_id ";
+    if (schoolAndCourseFilter != null) stmt += schoolAndCourseFilter;
+    stmt += "ORDER BY count DESC;";
+    return stmt;
   }
 
   /** Gets the date based on recency */
