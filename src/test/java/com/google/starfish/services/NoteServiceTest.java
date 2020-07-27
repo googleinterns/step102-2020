@@ -8,11 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
-import java.sql.ResultSet;
 import javax.sql.DataSource;
 import static com.ninja_squad.dbsetup.Operations.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import com.ninja_squad.dbsetup.DbSetup;
 import com.ninja_squad.dbsetup.destination.DataSourceDestination;
@@ -21,8 +19,9 @@ import com.ninja_squad.dbsetup.operation.Operation;
 @RunWith(JUnit4.class)
 public final class NoteServiceTest {
 
+  private Constants constants = new Constants();
   private DataSource pool = Constants.pool;
-  private String NOTES = Constants.NOTES;
+  private String NOTES = constants.NOTES;
   private NoteService noteService = new NoteService();
 
   @Before
@@ -44,9 +43,9 @@ public final class NoteServiceTest {
                   "num_downloads")
                 .values(
                   1,
-                  Constants.REFERENCE_USER_ID,
-                  Constants.REFERENCE_SCHOOL,
-                  Constants.REFERENCE_COURSE,
+                  constants.REFERENCE_USER_ID,
+                  constants.REFERENCE_SCHOOL,
+                  constants.REFERENCE_COURSE,
                   "The Best Notes Ever",
                   "test.url",
                   "pdftest.url",
@@ -54,9 +53,9 @@ public final class NoteServiceTest {
                   0)
                 .values(
                   2,
-                  Constants.REFERENCE_USER_ID,
-                  Constants.REFERENCE_SCHOOL,
-                  Constants.REFERENCE_COURSE,
+                  constants.REFERENCE_USER_ID,
+                  constants.REFERENCE_SCHOOL,
+                  constants.REFERENCE_COURSE,
                   "The Second Best Notes Ever",
                   "test.url",
                   "pdftest.url",
@@ -64,9 +63,9 @@ public final class NoteServiceTest {
                   0)
                 .values(
                   3,
-                  Constants.REFERENCE_USER_ID,
-                  Constants.REFERENCE_SCHOOL,
-                  Constants.REFERENCE_COURSE,
+                  constants.REFERENCE_USER_ID,
+                  constants.REFERENCE_SCHOOL,
+                  constants.REFERENCE_COURSE,
                   "The Third Best Notes Ever",
                   "test.url",
                   "pdftest.url",
@@ -79,30 +78,20 @@ public final class NoteServiceTest {
 
   @Test
   public void testGettingUploadedNotesByUserId() throws SQLException {
-    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, Constants.REFERENCE_USER_ID);
+    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, constants.REFERENCE_USER_ID);
     assertEquals(uploadedNotes.length, 3);
   }
 
   @Test
   public void testIncrementingDownloadsByNoteId() throws SQLException {
-    String numDownloadsId = "num_downloads";
-
-    ResultSet noteBeforeOperation = noteService.getRowById(pool, 1);
-    noteBeforeOperation.next();
-    long numDownloadsBeforeOperation = noteBeforeOperation.getLong(numDownloadsId);
+    Note noteBeforeOperation = noteService.getNoteByNoteId(pool, 1);
+    long numDownloadsBeforeOperation = noteBeforeOperation.getNumDownloads();
 
     noteService.incrementDownloadsByNoteId(pool, 1);
 
-    ResultSet noteAfterOperation = noteService.getRowById(pool, 1);
-    noteAfterOperation.next();
-    long numDownloadsAfterOperation = noteAfterOperation.getLong(numDownloadsId);
+    Note noteAfterOperation = noteService.getNoteByNoteId(pool, 1);
+    long numDownloadsAfterOperation = noteAfterOperation.getNumDownloads();
 
     assertEquals(numDownloadsBeforeOperation + 1, numDownloadsAfterOperation);
-  }
-
-  @Test
-  public void testGetNoteByNoteId() throws SQLException {
-    Note note = noteService.getNoteByNoteId(pool, 3);
-    assertNotNull(note);
   }
 }
