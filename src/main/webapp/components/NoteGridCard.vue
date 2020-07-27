@@ -4,8 +4,10 @@
 
     <div class="metadata">
       <div class="note-title">{{title}}</div>
+
       <div class="info-row">
         <p>{{school}} &bull; {{course}}</p>
+
         <img src="assets/gdrive.webp">
         {{dateCreated}}
         <div class="rating-box">
@@ -14,7 +16,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -36,7 +37,7 @@
         // TODO: Generate a thumbnail of the pdf
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
-      }
+      },
     },
     methods: {
       onClick: function() {

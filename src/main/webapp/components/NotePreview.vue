@@ -64,11 +64,6 @@
         iconColor: 'undefined',
       }
     },
-    computed: {
-      src: function() {
-        return `/serve-notes?key=${this.pdfSource}`;
-      }
-    },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
         if(this.id) {

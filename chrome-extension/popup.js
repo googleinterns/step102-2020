@@ -4,9 +4,11 @@ const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
 
 const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
 const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
+const FILE_PERMISSIONS_URL ='https://www.googleapis.com/drive/v3/files/fileId/permissions';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
-const USER_INFO_URL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=';
+// TODO: Change WEBAPP_URL from local URL to deployed website URL
+const WEBAPP_URL = 'https://8080-cacf7a03-5e11-4b90-94f2-e81659d32917.us-east1.cloudshell.dev';
 
 const CLIENT_ID = encodeURIComponent(keys.CLIENT_ID);
 const CLIENT_SECRET = encodeURIComponent(keys.CLIENT_SECRET);
@@ -29,7 +31,6 @@ const DISCOVERY_DOCS = [
 
 let loggedIn = false;
 let accessToken = '';
-let idToken = '';
 
 /**
  * Gets the script for Google APIs client library for browser-side
@@ -43,6 +44,7 @@ window.onload = function() {
   document.getElementById('generate-note-btn').onclick = generateNote;
   document.getElementById('logout-btn').onclick = logout;
   document.getElementById('login-btn').onclick = login;
+  document.getElementById('browser-btn').onclick = openBrowser;
   document.getElementById('doc-name-input').value = 'gNote ' + getDate();
 }
 
@@ -74,7 +76,6 @@ function login() {
     if(chrome.runtime.lastError) {
       return;
     } else {
-      // TODO: Make a POST request to user sign in servlet
       const response = redirectedTo.split('?code=', 2)[1];
       const code = response.split('&scope', 1)[0];
       const newUrl =
@@ -86,11 +87,8 @@ function login() {
           '&client_secret=' + CLIENT_SECRET;
       getTokenEndpoint(newUrl)
         .then(tokenInfo => {
-          idToken = tokenInfo.id_token;
           accessToken = tokenInfo.access_token;
-          gapi.auth.setToken({ access_token: accessToken });
-          loggedIn = true;
-          setAccountInfo();
+          registerUserOnWebapp(tokenInfo.id_token);
         })
     }
   })
@@ -103,6 +101,17 @@ function getTokenEndpoint(url) {
   }).then(response => response.json());
 }
 
+/** Sends request to webapp's user registration servlet. */
+function registerUserOnWebapp(idToken) {
+  fetch(WEBAPP_URL + '/user-registration?idToken=' + idToken, {
+    method: 'POST'
+  }).then(() => {
+    gapi.auth.setToken({ access_token: accessToken });
+    loggedIn = true;
+    setAccountInfo();
+  });
+}
+
 /** Returns formatted string of today's date. */
 function getDate() {
   const today = new Date();
@@ -110,16 +119,21 @@ function getDate() {
 }
 
 /**
+ * Controls display of loading icon. If show is true,
+ * loading icon will be displayed. Otherwise, hides it.
+ */
+function setLoadingIcon(show) {
+  const loadingIcon = document.getElementById('loading');
+  loadingIcon.style.display = show ? 'flex' : 'none';
+}
+
+/**
  * Generates a copy of the notes template and opens a new tab
  * with the newly created Google Doc.
  */
 function generateNote() {
-  let loadingIcon = document.getElementById('loading');
-  loadingIcon.style.display = 'flex';
-  let docName = document.getElementById('doc-name-input').value.trim();
-  if(docName === '') {
-    docName = 'gNote ' + getDate();
-  }
+  setLoadingIcon(true);
+  const [docName, school, course] = retrieveParams();
 
   gapi.client.request({
     path: COPY_FILE_URL,
@@ -129,28 +143,122 @@ function generateNote() {
       name: docName,
     }
   }).then(response => {
-    // TODO: Make POST request to upload notes servlet
-    const gNoteURL = GOOGLE_DOC_URL + response.result.id;
-    loadingIcon.style.display = 'none';
-    chrome.tabs.create({ url: gNoteURL });
+    const docId = response.result.id;
+    const gNoteUrl = GOOGLE_DOC_URL + docId;
+    compileNoteData(docName, docId, gNoteUrl, school, course);
   }).catch(error => {
-    loadingIcon.style.display = 'none';
+    setLoadingIcon(false);
     console.log('Error:', error);
-  })
+  });
+}
+
+/** Retrieves input values and sets them if they are blank */
+function retrieveParams() {
+  const docName = document.getElementById('doc-name-input').value.trim() ||
+      'gNote ' + getDate();
+  const school = document.getElementById('school-input').value.trim() ||
+      'Unaffiliated';
+  const course = document.getElementById('course-input').value.trim() ||
+      'Unaffiliated';
+  return [docName, school, course];
+}
+
+/** Puts together the URL search params for posting the note */
+async function compileNoteData(title, docId, docUrl, school, course) {
+  getPDFLink(docId)
+    .then(response => {
+      const pdfSource = response.result.exportLinks['application/pdf'];
+      const payload = {
+        title: title,
+        school: school,
+        course: course,
+        sourceUrl: docUrl,
+        pdfSource: pdfSource
+      };
+      const noteData = new URLSearchParams(payload);
+      postNoteToDatabase(noteData)
+        .then(updateGNoteTemplate(docId, docUrl));
+    });
+}
+
+/** Replaces [DATE] fields in template with the current date */
+function updateGNoteTemplate(docId, docUrl) {
+  var updateObject = {
+    documentId: docId,
+    resource: {
+      requests: [{
+        replaceAllText: {
+          replaceText: getDate(),
+          containsText: {
+            text: "[DATE]",
+            matchCase: true
+          }
+        },
+      }],
+    },
+  };
+  gapi.client.docs.documents.batchUpdate(updateObject)
+    .then(() => addGlobalPermissions(docId))
+    .then(() => {
+      chrome.tabs.create({ url: docUrl });
+    })
+    .finally(setLoadingIcon(false));
+}
+
+/** Add global permissions to Google Doc so anyone can view it */
+function addGlobalPermissions(docId) {
+  return gapi.client.request({
+    path: FILE_PERMISSIONS_URL,
+    method: 'POST',
+    params: { fileId: docId },
+    body: {
+      role: 'reader',
+      type: 'anyone'
+    }
+  });
+}
+
+/** Retrieves PDF export link of Google Doc */
+function getPDFLink(docId) {
+  return gapi.client.drive.files.get({
+    fileId: docId,
+    fields: 'exportLinks'
+  });
 }
 
 /**
- * Logs out the user by revoking their authentication token and resetting
- * gapi's auth token.
+ * Makes a request to the webapp's upload gnote servlet to add 
+ * the note to the database.
+ */
+function postNoteToDatabase(noteData) {
+  return fetch(WEBAPP_URL + '/upload-gnote', {
+    method: 'POST',
+    body: noteData
+  });
+}
+
+/**
+ * Logs out the user by revoking their authentication token and making a
+ * request to the webapp.
  */
 function logout() {
   fetch(REVOKE_TOKEN_URL + accessToken)
-    .then(() => {
-      accessToken = '';
-      gapi.auth.setToken({ access_token: accessToken });
-      loggedIn = false;
-      setAccountInfo();
-    })
+    .then(logoutUserOnWebapp);
+}
+
+/**
+ * Sends request to webapp's user logout servlet and resets the gapi
+ * auth token.
+ */
+function logoutUserOnWebapp() {
+  fetch(WEBAPP_URL + '/user-logout', {
+    method: 'POST'
+  }).then(() => {
+    accessToken = '';
+    gapi.auth.setToken({ access_token: accessToken });
+    loggedIn = false;
+    setAccountInfo();
+  });
 }
 
 /**
@@ -160,16 +268,15 @@ function logout() {
  */
 function setAccountInfo() {
   if(loggedIn) {
-    gapi.client.request({
-      path: USER_INFO_URL + accesToken
-    }).then(response => {
-      let userInfo = JSON.parse(response.body);
-      document.getElementById('logout-btn').style.display = 'inline';
-      document.getElementById('email').textContent = userInfo.email;
-      document.getElementById('user-info').style.display = 'block';
-      document.getElementById('login-btn').style.display = 'none';
-      document.getElementById('generate-note-btn').disabled = false;
-    });
+    fetch(WEBAPP_URL + '/user-registration')
+      .then(response => response.json())
+      .then(userInfo => {
+        document.getElementById('logout-btn').style.display = 'inline';
+        document.getElementById('email').textContent = userInfo.email;
+        document.getElementById('user-info').style.display = 'block';
+        document.getElementById('login-btn').style.display = 'none';
+        document.getElementById('generate-note-btn').disabled = false;
+      });
   } else {
     document.getElementById('logout-btn').style.display = 'none';
     document.getElementById('email').textContent = '';
@@ -177,4 +284,8 @@ function setAccountInfo() {
     document.getElementById('login-btn').style.display = 'inline';
     document.getElementById('generate-note-btn').disabled = true;
   }
+}
+
+function openBrowser() {
+  chrome.tabs.create({ url: WEBAPP_URL });
 }
