@@ -8,19 +8,33 @@
         <v-icon>{{ isGNote ? "mdi-google-drive" : "mdi-pdf-box" }}</v-icon>             
       </v-img>
 
-      <div class="metadata">
-        <div class="note-title">{{title}}</div>
+      <v-divider></v-divider>
 
-        <div class="info-row">
-          <p>{{school}} &bull; {{course}}</p>
+      <v-card-title>
+        <v-list-item-title class="d-block text-truncate">{{title}}</v-list-item-title>
+      </v-card-title>
 
-          {{dateCreated}}
-          <div class="rating-box">
-            {{numFavorites}}
-            <span class="star" @click.stop="toggleFavorite">&star;</span>          
-          </div>
-        </div>
-      </div>
+      <v-card-subtitle>
+        <v-list-item-subtitle>{{ course }} • {{ school }}</v-list-item-subtitle>
+      </v-card-subtitle>
+
+      <v-card-text>
+        <v-row no-gutters>
+          <v-col>
+            {{dateCreated}}
+          </v-col>
+          <v-col col="1">
+            <v-badge overlap class="ma-1">
+              <template v-slot:badge>{{numFavorites}}</template>
+              <v-icon :color="favorited && 'yellow'">mdi-star</v-icon>
+            </v-badge>
+            <v-badge overlap class="ma-1">
+              <template v-slot:badge>{{numDownloads}}</template>
+              <v-icon>mdi-download</v-icon>
+            </v-badge>
+          </v-col>
+        </v-row>
+      </v-card-text>
     </v-card>
   </v-col>
 </template>
