@@ -6,7 +6,15 @@
           {{title}}
         </v-card-title>
         <v-card-subtitle>
-          <em>{{authorInfo.displayName}}</em> - {{dateCreated}}
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <span v-bind="attrs" v-on="on">
+                <em>{{authorInfo.displayName}}</em>
+              </span>
+            </template>
+            <span>{{authorInfo.points}} points</span>
+          </v-tooltip> 
+          - {{dateCreated}}
         </v-card-subtitle>
 
         <a href="#" @click="toggleFavorite">
