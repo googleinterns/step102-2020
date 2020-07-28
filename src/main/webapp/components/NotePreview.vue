@@ -6,7 +6,15 @@
           {{title}}
         </v-card-title>
         <v-card-subtitle>
-          <em>{{author}}</em> - {{dateCreated}}
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <span v-bind="attrs" v-on="on">
+                <em>{{authorInfo.displayName}}</em>
+              </span>
+            </template>
+            <span>{{authorInfo.points}} points</span>
+          </v-tooltip> 
+          - {{dateCreated}}
         </v-card-subtitle>
 
         <a href="#" @click="toggleFavorite">
@@ -47,7 +55,7 @@
           return 'Invalid Note'
         }
       },
-      author: String,
+      authorId: String,
       dateCreated: String,
       numFavorites: Number,
       numDownloads: Number,
@@ -62,6 +70,10 @@
         showPreview: false,
         favorited: false,
         iconColor: 'undefined',
+        authorInfo: {
+          displayName: '',
+          points: ''
+        }
       }
     },
     mounted: function() {
@@ -106,6 +118,9 @@
       id: function(noteId) {
         if(noteId) {
           this.setFavorite();
+          fetch('/get-author-info?userId=' + this.authorId)
+            .then(response => response.json())
+            .then(userInfo => this.authorInfo = userInfo);
         }
       },
       favorited: function(favoriteStatus) {
