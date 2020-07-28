@@ -18,10 +18,20 @@ public class FavoriteNoteService {
 
   /** Enum to hold possible recency to get trending notes */
   public enum Recency {
-    TODAY, 
-    THIS_WEEK, 
-    THIS_MONTH, 
-    ALL_TIME;
+    TODAY("today"),
+    THIS_WEEK("this-week"),
+    THIS_MONTH("this-month"),
+    ALL_TIME("all-time");
+
+    private String recency;
+
+    Recency(String recency) {
+      this.recency = recency;
+    }
+
+    public String getRecency() {
+      return this.recency;
+    }
   }
 
   private String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
@@ -166,10 +176,10 @@ public class FavoriteNoteService {
     String stmt = 
         "SELECT * "
       + "FROM " + NOTES + " AS a "
-        + "LEFT JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
-                    + "FROM " + FAVORITE_NOTES + " "
-                    + "WHERE date >= ? " 
-                    + "GROUP BY note_id) AS b " 
+      + "LEFT JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
+                  + "FROM " + FAVORITE_NOTES + " "
+                  + "WHERE date >= ? " 
+                  + "GROUP BY note_id) AS b " 
       + "ON a.id=b.note_id ";
     if (schoolAndCourseFilter != null) stmt += schoolAndCourseFilter;
     stmt += "ORDER BY count DESC;";
