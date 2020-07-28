@@ -90,11 +90,11 @@ public class FavoriteNoteService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT  a.* "
-        + "FROM "
-          + NOTES + " AS a "
-          + "INNER JOIN (SELECT * "
-                      + "FROM " + FAVORITE_NOTES + " "
-                      + "WHERE user_id=?) "
+        + "FROM " 
+        + NOTES + " AS a "
+            + "INNER JOIN (SELECT * "
+                        + "FROM " + FAVORITE_NOTES + " "
+                        + "WHERE user_id=?) "
           + "as b ON a.id=b.note_id;";
       try (PreparedStatement favNotesStmt = conn.prepareStatement(stmt)) {
         favNotesStmt.setString(1, userId);
