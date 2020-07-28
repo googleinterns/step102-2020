@@ -3,9 +3,9 @@
     <h1 class="home-title">starfish</h1>
     <h3 class="subtitle">Share and find the best course notes. Completely free.</h3>
     <!-- TODO: Connect these searchresult events to the search page -->
-    <search-bar @searchresult="() => {}"></search-bar>
+    <search-bar></search-bar>
     <img id="laptop" src="assets/laptop-min.png">
-  </main>  
+  </main>
 </template>
 
 <script>
