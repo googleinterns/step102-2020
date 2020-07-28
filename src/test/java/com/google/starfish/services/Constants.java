@@ -14,11 +14,11 @@ public class Constants {
   public final String REFERENCE_SCHOOL = "the university of western ontario";
   public final String REFERENCE_COURSE = "se2203";
   public static final DataSource pool = createConnectionPool();
+  public static final String TEST_DB_NAME = "starfish_test";
 
   private static final String CLOUD_SQL_CONNECTION_NAME = "step102-2020:us-central1:step102-2020-mysql";
   private static final String TEST_DB_USER = "mastersf";
   private static final String TEST_DB_PASS = "starfish";
-  private static final String TEST_DB_NAME = "starfish_test";
     
   private static final int MILLISECONDS_IN_SECOND = 1000;
   private static final int SECONDS_IN_MINUTE = MILLISECONDS_IN_SECOND * 60;
