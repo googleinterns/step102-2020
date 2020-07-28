@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;  
-import javax.servlet.http.Cookie;  
 import com.google.starfish.services.LabelService;
 import com.google.starfish.services.MiscNoteLabelService;
+import com.google.starfish.services.ValidationService;
 import javax.sql.DataSource;
 import java.sql.Connection;  
 import java.sql.SQLException;  
@@ -32,13 +32,13 @@ import java.util.Calendar;
 public class HandleNotesServlet extends HttpServlet {
 
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-  private final String COOKIE_NAME = "SFCookie";
+  private ValidationService validationService = new ValidationService();
   private LabelService labelService = new LabelService();
   private MiscNoteLabelService miscNoteLabelService = new MiscNoteLabelService();
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    if(!validateUser(request)) {
+    if(!validationService.validateUser(request)) {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -160,31 +160,5 @@ public class HandleNotesServlet extends HttpServlet {
     }
 
     return blobKey.getKeyString();
-  }
-
-  /**
-   * Validates the user using the request's session and cookies. If there is a
-   * valid user logged in, returns true. Otherwise, returns false.
-   **/
-  private boolean validateUser(HttpServletRequest req) {
-    Cookie[] cookies = req.getCookies();
-    String sessionId = null;
-    for (Cookie cookie : cookies) {
-      if (COOKIE_NAME.equals(cookie.getName())) {
-        sessionId = cookie.getValue();
-        break;
-      }
-    }
-
-    // If there was no cookie passed, then auth has failed and user is not logged in
-    if(sessionId == null) {
-      return false;
-    }
-
-    HttpSession activeSession = req.getSession(false);
-    if (activeSession == null || activeSession.getAttribute("user_id") == null) {
-      return false;
-    }
-    return true;
   }
 }
