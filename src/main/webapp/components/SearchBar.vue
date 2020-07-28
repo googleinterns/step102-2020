@@ -71,8 +71,19 @@ module.exports = {
         .catch(error => {
           throw new Error(error);
         });
+    },
+  },
+  watch: {
+    // When $route changes, component is reused, so manually set new school and course and fetch results.
+    $route: function(to, from) {
+      this.school = to.query.school;
+      this.course = to.query.course;
+      this.fetchAndEmitResults();
     }
-  }
+  },
+  mounted: function() {
+    if (this.formIsValid) this.fetchAndEmitResults();
+  },
 }
 </script>
 
