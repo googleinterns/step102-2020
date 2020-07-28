@@ -4,9 +4,7 @@
     <h3 class="subtitle">Share and find the best course notes. Completely free.</h3>
     <!-- TODO: Connect these searchresult events to the search page -->
     <search-bar @searchresult="() => {}"></search-bar>
-    <router-link to="/search">
-      <img id="laptop" src="assets/laptop-min.png">
-    </router-link>
+    <img id="laptop" src="assets/laptop-min.png">
   </main>  
 </template>
 
