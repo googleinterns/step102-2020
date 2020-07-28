@@ -32,14 +32,17 @@ module.exports = {
       error: null,
     }
   },
+  computed: {
+    formIsValid: function() {
+      return this.school || this.course;
+    },
+  },
   methods: {
     onSubmit: function(event) {
-      if(!this.school && !this.course) {
-        this.error = "Please enter at least one search criterion.";
-      }
-      else /* Form validated */ {
-        this.error = "";
-        this.queryDatabase(this.school, this.course);
+      if(this.formIsValid) {
+        this.onValidForm();
+      } else {
+        this.onInvalidForm();
       }
     },
     queryDatabase: function(school, course) {
