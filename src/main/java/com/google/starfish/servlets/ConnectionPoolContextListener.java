@@ -63,7 +63,7 @@ public class ConnectionPoolContextListener implements ServletContextListener {
       String stmt =
           "CREATE TABLE IF NOT EXISTS labels ( "
               + "title VARCHAR(255) PRIMARY KEY,"
-              + "type ENUM('School', 'Course', 'Other') NOT NULL );";
+              + "type ENUM('School', 'Course', 'Misc') NOT NULL );";
       try (PreparedStatement createTableStatement = conn.prepareStatement(stmt)) {
         createTableStatement.execute();
       }
