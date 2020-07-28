@@ -1,5 +1,5 @@
 body {
-  font-family: 'Noto Sans JP';
+  font-family: 'Coming Soon';
   font-size: 1.25rem;
   margin: 0;
   position: relative;
@@ -29,6 +29,13 @@ nav span {
 nav img {
   height: 65%;
   margin: 0 0 5px 5px;
+  transition: transform .8s ease-in-out;
+  -webkit-transition: -webkit-transform .8s ease-in-out;
+}
+
+nav img:hover {
+  transform: rotate(360deg);
+  -webkit-transform: rotate(360deg);
 }
 
 section {
@@ -69,7 +76,7 @@ input {
   font-family: inherit;
   font-size: inherit;
   margin: 0 0 5px 0;
-  padding: 7px;
+  padding: 5px;
   width: 285px;
 }
 
@@ -121,7 +128,6 @@ input:focus {
   margin: 0 0 5px 0;
   outline: none;
   padding: 0 10px;
-  text-decoration: underline;
 }
 
 .link:hover {
