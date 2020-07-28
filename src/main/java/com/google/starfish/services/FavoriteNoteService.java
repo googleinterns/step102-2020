@@ -92,7 +92,7 @@ public class FavoriteNoteService {
           "SELECT  a.* "
         + "FROM " 
         + NOTES + " AS a "
-            + "INNER JOIN (SELECT * "
+            + "LEFT JOIN (SELECT * "
                         + "FROM " + FAVORITE_NOTES + " "
                         + "WHERE user_id=?) "
           + "as b ON a.id=b.note_id;";
