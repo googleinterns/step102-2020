@@ -24,6 +24,8 @@ public final class NoteServiceTest {
   private String NOTES = constants.NOTES;
   private NoteService noteService = new NoteService();
 
+  private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
+
   @Before
   public void prepare() throws Exception {
     Operation operation =
@@ -77,13 +79,17 @@ public final class NoteServiceTest {
   }
 
   @Test
-  public void testGettingUploadedNotesByUserId() throws SQLException {
+  public void testGettingUploadedNotesByUserId() throws SQLException, Exception {
+    if(!runTests) throw new Exception("Wrong Test Database Name");
+
     Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, constants.REFERENCE_USER_ID);
     assertEquals(uploadedNotes.length, 3);
   }
 
   @Test
-  public void testIncrementingDownloadsByNoteId() throws SQLException {
+  public void testIncrementingDownloadsByNoteId() throws SQLException, Exception {
+    if(!runTests) throw new Exception("Wrong Test Database Name");
+
     Note noteBeforeOperation = noteService.getNoteByNoteId(pool, 1);
     long numDownloadsBeforeOperation = noteBeforeOperation.getNumDownloads();
 
