@@ -70,7 +70,7 @@ public class UserServiceTest {
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
-    userService.increasePointsOnFavorite(pool, constants.REFERENCE_USER_ID);
+    userService.decreasePointsOnUnfavorite(pool, constants.REFERENCE_USER_ID);
 
     User userAfterOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsAfterOperation = userAfterOperation.getPoints();
