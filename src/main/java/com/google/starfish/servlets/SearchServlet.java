@@ -25,6 +25,7 @@ public class SearchServlet extends HttpServlet {
     String reqCourse = Utils.trimAndLowerCaseString(req.getParameter("course"));
     String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
     Recency recency = Utils.findRecencyByString(timespan);
+    // Default recency is all-time
     if (recency == null) recency = Recency.ALL_TIME;
     try {
       Object[][] trendingNotes = null;

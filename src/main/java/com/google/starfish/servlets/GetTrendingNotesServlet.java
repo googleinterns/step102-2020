@@ -23,8 +23,8 @@ public class GetTrendingNotesServlet extends HttpServlet {
 
     String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
     Recency recency = Utils.findRecencyByString(timespan);
+    // Default recency is all-time
     if (recency == null) recency = Recency.ALL_TIME;
-    // Default timespan is all-time
     try {
       Object[][] trendingNotes = null;
       switch(recency) {
