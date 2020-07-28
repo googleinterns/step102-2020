@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;  
 import com.google.starfish.services.LabelService;
 import com.google.starfish.services.MiscNoteLabelService;
-import com.google.starfish.services.ValidationService;
 import javax.sql.DataSource;
 import java.sql.Connection;  
 import java.sql.SQLException;  
@@ -32,13 +31,12 @@ import java.util.Calendar;
 public class HandleNotesServlet extends HttpServlet {
 
   private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-  private ValidationService validationService = new ValidationService();
   private LabelService labelService = new LabelService();
   private MiscNoteLabelService miscNoteLabelService = new MiscNoteLabelService();
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    if(!validationService.validateUser(request)) {
+    if(!Utils.validateUser(request)) {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }

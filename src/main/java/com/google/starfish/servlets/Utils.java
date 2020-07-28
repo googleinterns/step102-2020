@@ -1,19 +1,19 @@
-package com.google.starfish.services;
+package com.google.starfish.servlets;
 
 import javax.servlet.http.HttpSession;  
 import javax.servlet.http.Cookie;  
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;
 
-public class ValidationService {
+public class Utils {
 
-  private final String COOKIE_NAME = "SFCookie";
+  private static final String COOKIE_NAME = "SFCookie";
 
   /**
    * Validates the user using the request's session and cookies. If there is a
    * valid user logged in, returns true. Otherwise, returns false.
    **/
-  public boolean validateUser(HttpServletRequest req) {
+  public static boolean validateUser(HttpServletRequest req) {
     Cookie[] cookies = req.getCookies();
     String sessionId = null;
     for (Cookie cookie : cookies) {

@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;  
-import com.google.starfish.services.ValidationService;
 import com.google.starfish.services.LabelService;
 import com.google.starfish.services.MiscNoteLabelService;
 import javax.sql.DataSource;
@@ -27,12 +26,11 @@ import java.util.Calendar;
 @WebServlet("/upload-gnote")
 public class UploadGNoteServlet extends HttpServlet {
 
-  private ValidationService validationService = new ValidationService();
   private LabelService labelService = new LabelService();
   
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    if(!validationService.validateUser(request)) {
+    if(!Utils.validateUser(request)) {
       response.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }

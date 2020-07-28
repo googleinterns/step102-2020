@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
 import java.util.Date;
-import com.google.starfish.services.ValidationService;
 import com.google.starfish.services.FavoriteNoteService;
 import com.google.starfish.services.NoteService;
 import com.google.starfish.services.UserService;
@@ -29,12 +28,11 @@ public class FavoriteNoteServlet extends HttpServlet {
   private NoteService noteService = new NoteService();
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
   private UserService userService = new UserService();
-  private ValidationService validationService = new ValidationService();
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
     res.setContentType("application/json");
-    if(!validationService.validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.getWriter().println(false);
       return;
     }
@@ -65,7 +63,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    if(!validationService.validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -86,7 +84,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    if(!validationService.validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
