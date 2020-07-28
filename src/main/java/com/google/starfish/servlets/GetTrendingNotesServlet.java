@@ -21,9 +21,9 @@ public class GetTrendingNotesServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
 
-    String timespan = trimAndLowerCaseString(req.getParameter("timespan"));
-    if (timespan == null) timespan = "all-time";
-    Recency recency = Recency.valueOf(timespan);
+    String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
+    Recency recency = Utils.findRecencyByString(timespan);
+    if (recency == null) recency = Recency.ALL_TIME;
     // Default timespan is all-time
     try {
       Object[][] trendingNotes = null;
@@ -47,11 +47,5 @@ public class GetTrendingNotesServlet extends HttpServlet {
     } catch(SQLException ex) {
       System.err.print(ex);
     }
-  }
-
-  /** If a string is not null, trims whitespace and makes it all lower case */
-  private String trimAndLowerCaseString(String string) {
-    if (string == null || string.isEmpty()) return null;
-    return string.toLowerCase().trim();
   }
 }  

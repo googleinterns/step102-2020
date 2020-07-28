@@ -21,10 +21,11 @@ public class SearchServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
 
-    String reqSchool = trimAndLowerCaseString(req.getParameter("school"));
-    String reqCourse = trimAndLowerCaseString(req.getParameter("course"));
-    String timespan = trimAndLowerCaseString("timespan");
-    Recency recency = Recency.valueOf(timespan);
+    String reqSchool = Utils.trimAndLowerCaseString(req.getParameter("school"));
+    String reqCourse = Utils.trimAndLowerCaseString(req.getParameter("course"));
+    String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
+    Recency recency = Utils.findRecencyByString(timespan);
+    if (recency == null) recency = Recency.ALL_TIME;
     try {
       Object[][] trendingNotes = null;
       switch(recency) {
@@ -49,9 +50,4 @@ public class SearchServlet extends HttpServlet {
     }
   }
 
-  /** If a string is not null, trims whitespace and makes it all lower case */
-  private String trimAndLowerCaseString(String string) {
-    if (string == null || string.isEmpty()) return null;
-    return string.toLowerCase().trim();
-  }
 }  

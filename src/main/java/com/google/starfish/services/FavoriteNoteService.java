@@ -23,12 +23,14 @@ public class FavoriteNoteService {
     THIS_MONTH("this-month"),
     ALL_TIME("all-time");
 
-    private String timespan;
-    Recency(String timespan) {
-      this.timespan = timespan;
+    private String recency;
+
+    Recency(String recency) {
+      this.recency = recency;
     }
-    String getTimespan() {
-      return this.timespan;
+
+    public String getRecency() {
+      return this.recency;
     }
   }
 
