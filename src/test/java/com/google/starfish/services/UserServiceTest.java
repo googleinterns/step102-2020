@@ -26,6 +26,7 @@ public class UserServiceTest {
   /** Clear DB and insert reference data */
   @Before
   public void prepare() throws Exception {
+    if(!runTests) throw new Exception("Wrong Test Database Name");
     Operation operation =
         sequenceOf(
             CommonOperations.DELETE_ALL,
@@ -37,8 +38,6 @@ public class UserServiceTest {
   /** Test that a user's points can increase by the download points modifier */
   @Test
   public void testIncreasePointsOnDownload() throws SQLException, Exception {
-    if(!runTests) throw new Exception("Wrong Test Database Name");
-
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
@@ -53,8 +52,6 @@ public class UserServiceTest {
   /** Test that a user's points can increase by the favorite points modifier */
   @Test
   public void testIncreasePointsOnFavorite() throws SQLException, Exception {
-    if(!runTests) throw new Exception("Wrong Test Database Name");
-
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
@@ -69,8 +66,6 @@ public class UserServiceTest {
   /** Test that a user's points can decrease by the favorite points modifier */
   @Test
   public void testDecreasePointsOnUnfavorite() throws SQLException, Exception {
-    if(!runTests) throw new Exception("Wrong Test Database Name");
-
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
