@@ -18,10 +18,18 @@ public class FavoriteNoteService {
 
   /** Enum to hold possible recency to get trending notes */
   public enum Recency {
-    TODAY, 
-    THIS_WEEK, 
-    THIS_MONTH, 
-    ALL_TIME;
+    TODAY("today"),
+    THIS_WEEK("this-week"),
+    THIS_MONTH("this-month"),
+    ALL_TIME("all-time");
+
+    private String timespan;
+    Recency(String timespan) {
+      this.timespan = timespan;
+    }
+    String getTimespan() {
+      return this.timespan;
+    }
   }
 
   private String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
 import com.google.starfish.services.FavoriteNoteService;
+import com.google.starfish.services.FavoriteNoteService.Recency;
 
 /** Servlet that returns trending notes based on a given timespan as a query param */
 @WebServlet("/get-trending-notes")  
@@ -21,18 +22,19 @@ public class GetTrendingNotesServlet extends HttpServlet {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
 
     String timespan = trimAndLowerCaseString(req.getParameter("timespan"));
-    // Default timespan is all-time
     if (timespan == null) timespan = "all-time";
+    Recency recency = Recency.valueOf(timespan);
+    // Default timespan is all-time
     try {
       Object[][] trendingNotes = null;
-      switch(timespan) {
-        case "today":
+      switch(recency) {
+        case TODAY:
           trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.TODAY, null, null);
           break;
-        case "this-week":
+        case THIS_WEEK:
           trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_WEEK, null, null);
           break;
-        case "this-month":
+        case THIS_MONTH:
           trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_MONTH, null, null);
           break;
         default:
