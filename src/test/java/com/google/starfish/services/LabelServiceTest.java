@@ -85,7 +85,7 @@ public class LabelServiceTest {
     int numSchoolLabels = allSchoolAndCourseLabels.get("schools").length;
     int numCourseLabels = allSchoolAndCourseLabels.get("courses").length;
 
-    // There should be 3 schools, and 2 course labels
-    assertTrue(numSchoolLabels == 3 && numCourseLabels == 2);
+    // There should be 3 schools, and 3 course labels
+    assertTrue(numSchoolLabels == 3 && numCourseLabels == 3);
   }
 }
