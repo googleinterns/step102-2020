@@ -9,8 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
 import com.google.starfish.services.FavoriteNoteService;
-import com.google.starfish.models.Note;
-import com.google.gson.Gson;
 
 /** Servlet that returns trending notes based on a given timespan as a query param */
 @WebServlet("/get-trending-notes")  
@@ -41,7 +39,7 @@ public class GetTrendingNotesServlet extends HttpServlet {
           // Default to returning trending notes all-time
           trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.ALL_TIME, null, null);
       }
-      String json = convert2DArrayToJSON(trendingNotes);
+      String json = Utils.convert2DArrayToJSON(trendingNotes);
       res.setContentType("application/json");
       res.getWriter().println(json);
     } catch(SQLException ex) {
@@ -53,11 +51,5 @@ public class GetTrendingNotesServlet extends HttpServlet {
   private String trimAndLowerCaseString(String string) {
     if (string == null || string.isEmpty()) return null;
     return string.toLowerCase().trim();
-  }
-
-  /** Converts a notes array to JSON */
-  private String convert2DArrayToJSON(Object[][] arr) {
-    Gson gson = new Gson();
-    return gson.toJson(arr);
   }
 }  
