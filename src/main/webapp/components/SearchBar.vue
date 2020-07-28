@@ -27,9 +27,9 @@
 module.exports = {
   data: function() {
     return {
-      school: "",
-      course: "",
-      error: ""
+      school: this.$route.query.school,
+      course: this.$route.query.course,
+      error: null,
     }
   },
   methods: {
