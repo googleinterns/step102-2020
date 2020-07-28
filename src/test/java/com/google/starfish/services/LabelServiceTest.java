@@ -46,7 +46,7 @@ public class LabelServiceTest {
 
   /** Test that a school label can be inserted */
   @Test
-  public void testInsertSchoolLabel() throws SQLException, Exception {
+  public void testInsertSchoolLabel() throws SQLException {
     String testSchool = "mit";
     labelService.insertSchoolLabel(pool, testSchool);
     Label schoolLabel = labelService.getLabelByTitle(pool, testSchool);
@@ -55,7 +55,7 @@ public class LabelServiceTest {
 
   /** Test that a course label can be inserted */
   @Test
-  public void testInsertCourseLabel() throws SQLException, Exception {
+  public void testInsertCourseLabel() throws SQLException {
     String testCourse = "linalg1141";
     labelService.insertCourseLabel(pool, testCourse);
     Label courseLabel = labelService.getLabelByTitle(pool, testCourse);
@@ -64,7 +64,7 @@ public class LabelServiceTest {
 
   /** Test that a misc label can be inserted */
   @Test
-  public void testInsertMiscLabel() throws SQLException, Exception {
+  public void testInsertMiscLabel() throws SQLException {
     String testLabel = "phyiscs";
     labelService.insertMiscLabel(pool, testLabel);
     Label miscLabel = labelService.getLabelByTitle(pool, testLabel);
@@ -73,7 +73,7 @@ public class LabelServiceTest {
 
   /** Test that we can retrieve all school and course labels */
   @Test
-  public void testGetAllSchoolAndCourseLabels() throws Exception {
+  public void testGetAllSchoolAndCourseLabels() {
     HashMap<String, String[]> allSchoolAndCourseLabels = labelService.getAllSchoolAndCourseLabels(pool);
     int numSchoolLabels = allSchoolAndCourseLabels.get("schools").length;
     int numCourseLabels = allSchoolAndCourseLabels.get("courses").length;

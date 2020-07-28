@@ -37,7 +37,7 @@ public class UserServiceTest {
 
   /** Test that a user's points can increase by the download points modifier */
   @Test
-  public void testIncreasePointsOnDownload() throws SQLException, Exception {
+  public void testIncreasePointsOnDownload() throws SQLException {
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
@@ -51,7 +51,7 @@ public class UserServiceTest {
 
   /** Test that a user's points can increase by the favorite points modifier */
   @Test
-  public void testIncreasePointsOnFavorite() throws SQLException, Exception {
+  public void testIncreasePointsOnFavorite() throws SQLException {
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
@@ -65,7 +65,7 @@ public class UserServiceTest {
 
   /** Test that a user's points can decrease by the favorite points modifier */
   @Test
-  public void testDecreasePointsOnUnfavorite() throws SQLException, Exception {
+  public void testDecreasePointsOnUnfavorite() throws SQLException {
     User userBeforeOperation = userService.getUserById(pool, constants.REFERENCE_USER_ID);
     long numPointsBeforeOperation = userBeforeOperation.getPoints();
 
