@@ -50,6 +50,25 @@ public class LabelService extends TableService {
     insertLabel(pool, label, Type.MISC);
   }
 
+  /** Gets a label by title */
+  public String getLabelByTitle(DataSource pool, String title) throws SQLException {
+     try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "SELECT * "
+        + "FROM " + LABELS + " "
+        + "WHERE title=? "
+        + "LIMIT 1;";
+
+      try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
+        userStmt.setString(1, title);
+        ResultSet rs = userStmt.executeQuery();
+        rs.next();
+        String label = rs.getString("title");
+        return label;
+      }
+    }
+  }
+
   /** Returns a map of all school and course labels in the database */
   public HashMap<String, String[]> getAllSchoolAndCourseLabels(DataSource pool) {
     HashMap<String, String[]> organizedLabels = new HashMap<>();
