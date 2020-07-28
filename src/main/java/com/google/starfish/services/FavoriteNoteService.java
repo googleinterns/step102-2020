@@ -92,7 +92,7 @@ public class FavoriteNoteService {
           "SELECT  a.* "
         + "FROM " 
         + NOTES + " AS a "
-            + "LEFT JOIN (SELECT * "
+            + "INNER JOIN (SELECT * "
                         + "FROM " + FAVORITE_NOTES + " "
                         + "WHERE user_id=?) "
           + "as b ON a.id=b.note_id;";
@@ -226,7 +226,7 @@ public class FavoriteNoteService {
     String stmt = 
         "SELECT * "
       + "FROM " + NOTES + " AS a "
-        + "INNER JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
+        + "LEFT JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
                     + "FROM " + FAVORITE_NOTES + " "
                     + "WHERE date >= ? " 
                     + "GROUP BY note_id) AS b " 
