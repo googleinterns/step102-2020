@@ -23,24 +23,10 @@ public class GetTrendingNotesServlet extends HttpServlet {
 
     String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
     Recency recency = Utils.findRecencyByString(timespan);
+    // Default recency is all-time
     if (recency == null) recency = Recency.ALL_TIME;
-    // Default timespan is all-time
     try {
-      Object[][] trendingNotes = null;
-      switch(recency) {
-        case TODAY:
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.TODAY, null, null);
-          break;
-        case THIS_WEEK:
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_WEEK, null, null);
-          break;
-        case THIS_MONTH:
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_MONTH, null, null);
-          break;
-        default:
-          // Default to returning trending notes all-time
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.ALL_TIME, null, null);
-      }
+      Object[][] trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, recency, null, null);
       String json = Utils.convert2DArrayToJSON(trendingNotes);
       res.setContentType("application/json");
       res.getWriter().println(json);

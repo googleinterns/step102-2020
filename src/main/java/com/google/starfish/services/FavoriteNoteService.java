@@ -191,8 +191,6 @@ public class FavoriteNoteService {
     Date date;
     Calendar calendar = Calendar.getInstance();
     switch(recency) {
-      case TODAY:
-        break;
       case THIS_WEEK:
         calendar.add(Calendar.DAY_OF_MONTH, -7);
         break;

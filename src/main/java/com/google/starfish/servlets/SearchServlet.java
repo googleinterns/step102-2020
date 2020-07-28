@@ -25,29 +25,15 @@ public class SearchServlet extends HttpServlet {
     String reqCourse = Utils.trimAndLowerCaseString(req.getParameter("course"));
     String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
     Recency recency = Utils.findRecencyByString(timespan);
+    // Default recency is all-time
     if (recency == null) recency = Recency.ALL_TIME;
     try {
-      Object[][] trendingNotes = null;
-      switch(recency) {
-        case TODAY:
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.TODAY, reqSchool, reqCourse);
-          break;
-        case THIS_WEEK:
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_WEEK, reqSchool, reqCourse);
-          break;
-        case THIS_MONTH:
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_MONTH, reqSchool, reqCourse);
-          break;
-        default:
-          // Default to returning trending notes all-time
-          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.ALL_TIME, reqSchool, reqCourse);
-      }
+      Object[][] trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, recency, reqSchool, reqCourse);
       String json = Utils.convert2DArrayToJSON(trendingNotes);
       res.setContentType("application/json");
       res.getWriter().println(json);
     } catch(SQLException ex) {
-      ex.printStackTrace();
+      System.err.print(ex);
     }
   }
-
 }  
