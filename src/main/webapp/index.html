@@ -24,14 +24,5 @@
     components: {
       'search-page': httpVueLoader('/views/SearchPage.vue'),
     },
-    methods: {
-      updateSearchResult: function(result) {
-        this.searchResult = [];
-        result.forEach(pair => {
-          // TODO: Use the number of favorites in timespan that is included with each note as pair[1] in result to do something
-          this.searchResult.push(pair[0]);
-        });
-      },
-    }
   })
 </script>

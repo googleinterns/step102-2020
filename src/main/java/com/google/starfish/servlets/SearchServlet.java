@@ -28,17 +28,17 @@ public class SearchServlet extends HttpServlet {
       Object[][] trendingNotes = null;
       switch(timespan) {
         case "today":
-          trendingNotes = favoriteNoteService.getTrendingNotesTodayBySchoolOrCourse(pool, reqSchool, reqCourse);
+          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.TODAY, reqSchool, reqCourse);
           break;
         case "this-week":
-          trendingNotes = favoriteNoteService.getTrendingNotesThisWeekBySchoolOrCourse(pool, reqSchool, reqCourse);
+          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_WEEK, reqSchool, reqCourse);
           break;
         case "this-month":
-          trendingNotes = favoriteNoteService.getTrendingNotesThisMonthBySchoolOrCourse(pool, reqSchool, reqCourse);
+          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.THIS_MONTH, reqSchool, reqCourse);
           break;
         default:
           // Default to returning trending notes all-time
-          trendingNotes = favoriteNoteService.getTrendingNotesAllTimeBySchoolOrCourse(pool, reqSchool, reqCourse);
+          trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, FavoriteNoteService.Recency.ALL_TIME, reqSchool, reqCourse);
       }
       String json = convert2DArrayToJSON(trendingNotes);
       res.setContentType("application/json");
