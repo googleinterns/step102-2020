@@ -45,7 +45,20 @@ module.exports = {
         this.onInvalidForm();
       }
     },
-    queryDatabase: function(school, course) {
+    onValidForm: function () {
+      this.error = null;
+      this.$router.push({
+        path: 'search',
+        query: {
+          school: this.school,
+          course: this.course,
+        }
+      });
+    },
+    onInvalidForm: function () {
+      this.error = "Please enter at least one search criterion.";
+    },
+    fetchAndEmitResults: async function() {
       let url = new URL("/search", window.location.href);
       url.searchParams.set('school', school);
       url.searchParams.set('course', course);
