@@ -166,10 +166,10 @@ public class FavoriteNoteService {
     String stmt = 
         "SELECT * "
       + "FROM " + NOTES + " AS a "
-        + "LEFT JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
-                    + "FROM " + FAVORITE_NOTES + " "
-                    + "WHERE date >= ? " 
-                    + "GROUP BY note_id) AS b " 
+      + "LEFT JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
+                  + "FROM " + FAVORITE_NOTES + " "
+                  + "WHERE date >= ? " 
+                  + "GROUP BY note_id) AS b " 
       + "ON a.id=b.note_id ";
     if (schoolAndCourseFilter != null) stmt += schoolAndCourseFilter;
     stmt += "ORDER BY count DESC;";
