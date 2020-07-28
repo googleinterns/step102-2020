@@ -114,7 +114,7 @@ public class UserService extends TableService {
         rs.next();
         return constructUserFromSqlResult(pool, rs);
       }
-     }
+    }
   }
 
   private User constructUserFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
