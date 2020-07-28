@@ -9,14 +9,16 @@
                         :name="user.displayName"
                         :school="user.school">
         </profile-header>
-        <note-grid-collection :note-data="user.favoriteNotes"
-                              header="Favorited Notes"
-                              :compare-func="descFavorites">
-        </note-grid-collection>
-        <note-grid-collection :note-data="user.uploadedNotes"
-                              header="Uploaded Notes"
-                              :compare-func="descDate">
-        </note-grid-collection>
+        <note-grid>
+          <note-grid-collection :note-data="user.favoriteNotes"
+                                header="Favorited Notes"
+                                :compare-func="descFavorites">
+          </note-grid-collection>
+          <note-grid-collection :note-data="user.uploadedNotes"
+                                header="Uploaded Notes"
+                                :compare-func="descDate">
+          </note-grid-collection>
+        </note-grid>
      </div>
   </v-app>
 </template>
