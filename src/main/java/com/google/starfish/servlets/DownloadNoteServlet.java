@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
 import com.google.starfish.services.NoteService;
+import com.google.starfish.services.UserService;
 import com.google.starfish.models.Note;
 
 /** Servlet that increments the number of downloads on a note. */
@@ -19,6 +20,7 @@ import com.google.starfish.models.Note;
 public class DownloadNoteServlet extends HttpServlet {  
 
   private NoteService noteService = new NoteService();
+  private UserService userService = new UserService();
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -28,10 +30,10 @@ public class DownloadNoteServlet extends HttpServlet {
     try (Connection conn = pool.getConnection()) {
       noteService.incrementDownloadsByNoteId(pool, noteId);
       Note downloadedNote = noteService.getNoteByNoteId(pool, noteId);
-      String userId = downloadedNote.getAuthorId();
-      // TODO: After UserService is created, increment the prestige points of user who posted noteId
+      String authorId = downloadedNote.getAuthorId();
+      userService.increasePointsOnDownload(pool, authorId);
     } catch (SQLException ex) {
       System.err.print(ex);
     }
   }
-}
+} 

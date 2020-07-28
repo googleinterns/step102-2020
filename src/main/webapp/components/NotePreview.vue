@@ -27,11 +27,7 @@
                     :labels="miscLabels">
         </label-list>
 
-        <iframe :src="pdfSource"></iframe>
-        <a href="src" download @click="increment">
-          <v-icon>mdi-download</v-icon>
-          Download
-        </a>
+        <iframe :src="sourceUrl"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -66,12 +62,6 @@
         showPreview: false,
         favorited: false,
         iconColor: 'undefined',
-      }
-    },
-    computed: {
-      src: function() {
-        // TODO: Need to handle logic for if it is a pdf or Google Doc
-        return `/serve-notes?key=${this.pdfSource}`;
       }
     },
     mounted: function() {
