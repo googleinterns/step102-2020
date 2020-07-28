@@ -16,49 +16,49 @@
              v-if="!signedIn">
         Sign Up/Login
       </v-btn>
-    </div>
-    <div class="action-items" v-if="signedIn">
-      <upload-form id="post-note"></upload-form>
-      <!-- User dropdown menu -->
-      <v-menu v-model="showDropdown" :offset-y="true">
-        <template v-slot:activator="{ on, attrs }">
-          <button v-bind="attrs"
-                 v-on="on">
-            <v-avatar>
-              <v-img :src="user.displayPicture">
-            </v-avatar>
-          </button>
-        </template>
-        <v-card>
-          <v-list>
-            <v-list-item>
-              <v-list-item-avatar>
+      <div class="action-items" v-else>
+        <upload-form id="post-note"></upload-form>
+        <!-- User dropdown menu -->
+        <v-menu v-model="showDropdown" :offset-y="true">
+          <template v-slot:activator="{ on, attrs }">
+            <button v-bind="attrs"
+                    v-on="on">
+              <v-avatar>
                 <v-img :src="user.displayPicture">
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title>{{ user.displayName }}</v-list-item-title>
-                <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+              </v-avatar>
+            </button>
+          </template>
+          <v-card>
+            <v-list>
+              <v-list-item>
+                <v-list-item-avatar>
+                  <v-img :src="user.displayPicture">
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>{{ user.displayName }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
 
-            <v-divider></v-divider>
+              <v-divider></v-divider>
 
-          <v-list>
-            <v-list-item @click="goToProfile">
-              <v-list-item-title>My Profile</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="">
-              <v-list-item-title>Favorite Notes</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="signOut">
-              <v-list-item-title>Logout</v-list-item-title>
-            </v-list-item>            
-          </v-list>
-        </v-card>
-      </v-menu>
-    </div> 
-  </nav>
+            <v-list>
+              <v-list-item @click="goToProfile">
+                <v-list-item-title>My Profile</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="">
+                <v-list-item-title>Favorite Notes</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="signOut">
+                <v-list-item-title>Logout</v-list-item-title>
+              </v-list-item>            
+            </v-list>
+          </v-card>
+        </v-menu>
+      </div>
+    </v-app-bar> 
+  </div>
 </template>
 
 <script>
