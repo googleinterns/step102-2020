@@ -63,8 +63,10 @@ public class LabelService extends TableService {
       try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
         userStmt.setString(1, title);
         ResultSet rs = userStmt.executeQuery();
-        rs.next();
-        Label label = constructLabelFromSqlResult(rs);
+        Label label = null;
+        if (rs.next()) {
+          label = constructLabelFromSqlResult(rs);
+        }
         return label;
       }
     }
