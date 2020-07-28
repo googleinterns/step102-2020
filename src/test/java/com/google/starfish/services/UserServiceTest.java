@@ -23,6 +23,7 @@ public class UserServiceTest {
 
   private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
 
+  /** Clear DB and insert reference data */
   @Before
   public void prepare() throws Exception {
     Operation operation =
@@ -33,6 +34,7 @@ public class UserServiceTest {
     dbSetup.launch();
   }
 
+  /** Test that a user's points can increase by the download points modifier */
   @Test
   public void testIncreasePointsOnDownload() throws SQLException, Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
@@ -48,6 +50,7 @@ public class UserServiceTest {
     assertEquals(numPointsBeforeOperation + userService.DOWNLOAD_POINTS_MODIFIER, numPointsAfterOperation);
   }
 
+  /** Test that a user's points can increase by the favorite points modifier */
   @Test
   public void testIncreasePointsOnFavorite() throws SQLException, Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
@@ -63,6 +66,7 @@ public class UserServiceTest {
     assertEquals(numPointsBeforeOperation + userService.FAVORITE_POINTS_MODIFIER, numPointsAfterOperation);
   }
 
+  /** Test that a user's points can decrease by the favorite points modifier */
   @Test
   public void testDecreasePointsOnUnfavorite() throws SQLException, Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
