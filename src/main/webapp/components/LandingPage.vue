@@ -30,10 +30,10 @@
     <v-container fluid id="info-section">
       <v-row align="center" justify="space-around">
         <v-col sm="6">
-          <p class="heading-2">
+          <p class="heading-1">
             Quickly identify course notes relevant to you.
           </p>
-          <p class="subheading-2">
+          <p class="subheading-1">
             Do you hate taking notes? Wish you could find high quality notes for all your
             classes? Look no further - start by searching for your school and/or course, 
             then filter your results to find exactly what you're looking for. At no cost.
@@ -48,10 +48,10 @@
           <v-img src="/assets/share.svg"></v-img>
         </v-col>
         <v-col sm="6">
-          <p class="heading-2">
+          <p class="heading-1">
             Earn points for the notes you share.
           </p>
-          <p class="subheading-2">
+          <p class="subheading-1">
             Do you ever feel like your notes are going to waste once classes are finished?
             Wish you could easily share your notes with your peers? Now you can - just log in 
             with your Google account and upload PDFs of your notes! Even better, earn
@@ -62,10 +62,10 @@
       </v-row>
       <v-row align="center" justify="space-around">
         <v-col sm="6">
-          <p class="heading-2">
+          <p class="heading-1">
             Increase learning accessibility at universities everywhere!
           </p>
-          <p class="subheading-2">
+          <p class="subheading-1">
             Our goal is to make learning more <em>collaborative</em> by encouraging 
             students to share their course notes. That's why we also made a Chrome 
             extension that can quickly generate a 
@@ -94,14 +94,6 @@ module.exports = {
 <style>
 .no-pad {
   padding: 0;
-}
-
-.no-wrap-fix {
-  hyphens: auto;
-  overflow-wrap: anywhere;
-  text-align: center;
-  word-wrap: break-word;
-  word-break: normal;
 }
 
 .white-text {
@@ -140,28 +132,24 @@ module.exports = {
 }
 
 .wave:before {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 250px;
   background: url('/assets/wave.png');
-  background-size: cover;
   background-repeat: no-repeat;
+  background-size: cover;
+  bottom: 0;
+  content: '';
+  height: 250px;
+  left: 0;
+  position: absolute;
+  width: 100%;  
 }
 
-.heading-2 {
+.heading-1 {
   font-size: 1.7rem;
   font-weight: 500;
 }
 
-.subheading-2 {
+.subheading-1 {
   font-size: 1.2rem;
-}
-
-.v-card {
-  max-width: 425px;
 }
 
 #info-section {
@@ -195,10 +183,6 @@ module.exports = {
   .subheading-1 {
     font-size: 1.5rem;
     line-height: 1.5rem;
-  }
-
-  .v-card {
-    max-width: 500px!important;
   }
 }
 </style>
