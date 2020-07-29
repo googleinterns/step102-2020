@@ -29,17 +29,7 @@ public class LabelServiceTest {
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
-    Operation operation =
-        sequenceOf(
-            CommonOperations.DELETE_ALL,
-            CommonOperations.INSERT_REFERENCE_DATA,
-            insertInto(LABELS)
-                .columns("title", "type")
-                .values("cornell", "School")
-                .values("the university of florida", "School")
-                .values("se2205", "Course")
-                .values("bus1220", "Course")
-                .build());
+    Operation operation = getBeforeTestOperation();
     DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
     dbSetup.launch();
   }
@@ -84,5 +74,21 @@ public class LabelServiceTest {
     // There should be 3 schools, and 3 course labels
     assertTrue(numSchoolLabels == 3);
     assertTrue(numCourseLabels == 3);
+  }
+
+  /** Operation that should be run before every test */
+  private Operation getBeforeTestOperation() {
+    Operation operation =
+        sequenceOf(
+            CommonOperations.DELETE_ALL,
+            CommonOperations.INSERT_REFERENCE_DATA,
+            insertInto(LABELS)
+                .columns("title", "type")
+                .values("cornell", "School")
+                .values("the university of florida", "School")
+                .values("se2205", "Course")
+                .values("bus1220", "Course")
+                .build());
+    return operation;
   }
 }
