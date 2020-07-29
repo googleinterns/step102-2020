@@ -124,6 +124,10 @@ public class Note {
     this.miscLabels = miscLabels;
   }
 
+  public long getNumDownloads() {
+    return this.numDownloads;
+  }
+
   public String getAuthorId() {
     return this.authorId;
   }
