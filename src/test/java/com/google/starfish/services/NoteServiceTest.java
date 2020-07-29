@@ -30,6 +30,34 @@ public final class NoteServiceTest {
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
+    Operation operation = getBeforeTestOperation();
+    DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
+    dbSetup.launch();
+  }
+
+  /** Test that all 3 notes authered by the reference user are returned */
+  @Test
+  public void testGettingUploadedNotesByUserId() throws SQLException {
+    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, constants.REFERENCE_USER_ID);
+    assertEquals(uploadedNotes.length, 3);
+  }
+
+  /** Test that the number of downloads on a note can increase */
+  @Test
+  public void testIncrementingDownloadsByNoteId() throws SQLException {
+    Note noteBeforeOperation = noteService.getNoteByNoteId(pool, 1);
+    long numDownloadsBeforeOperation = noteBeforeOperation.getNumDownloads();
+
+    noteService.incrementDownloadsByNoteId(pool, 1);
+
+    Note noteAfterOperation = noteService.getNoteByNoteId(pool, 1);
+    long numDownloadsAfterOperation = noteAfterOperation.getNumDownloads();
+
+    assertEquals(numDownloadsBeforeOperation + 1, numDownloadsAfterOperation);
+  }
+
+  /** Operation that should be run before every test */
+  private Operation getBeforeTestOperation() {
     Operation operation =
         sequenceOf(
             CommonOperations.DELETE_ALL,
@@ -76,28 +104,6 @@ public final class NoteServiceTest {
                   new Date(Calendar.getInstance().getTimeInMillis()),
                   0)
                 .build());
-    DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
-    dbSetup.launch();
-  }
-
-  /** Test that all 3 notes authered by the reference user are returned */
-  @Test
-  public void testGettingUploadedNotesByUserId() throws SQLException {
-    Note[] uploadedNotes = noteService.getUploadedNotesByUserId(pool, constants.REFERENCE_USER_ID);
-    assertEquals(uploadedNotes.length, 3);
-  }
-
-  /** Test that the number of downloads on a note can increase */
-  @Test
-  public void testIncrementingDownloadsByNoteId() throws SQLException {
-    Note noteBeforeOperation = noteService.getNoteByNoteId(pool, 1);
-    long numDownloadsBeforeOperation = noteBeforeOperation.getNumDownloads();
-
-    noteService.incrementDownloadsByNoteId(pool, 1);
-
-    Note noteAfterOperation = noteService.getNoteByNoteId(pool, 1);
-    long numDownloadsAfterOperation = noteAfterOperation.getNumDownloads();
-
-    assertEquals(numDownloadsBeforeOperation + 1, numDownloadsAfterOperation);
+    return operation;
   }
 }
