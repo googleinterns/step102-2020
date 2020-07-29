@@ -43,8 +43,10 @@ module.exports = {
   },
   computed: {
     notes: function() {
-      // When the rendered notes change, move slide-group back to start.
+      // When the rendered notes change, move slide-group back to start
+      // By selecting first item, then unselecting it at the next tick.
       this.selected = 0;
+      this.nextTick(() => this.selected = null)
       // Filter by date, matching terms, and sort with compareFunc
       return this.noteData
         .filter(this.dateFilter)
@@ -77,6 +79,10 @@ module.exports = {
 
       // Pass if younger than maxAge.
       return Date.now() - note.date < this.maxAge;
+    },
+    nextTick: function(f) {
+      // Avoids race conditions with function f
+      setTimeout(f, 0);
     }
   },
 }
