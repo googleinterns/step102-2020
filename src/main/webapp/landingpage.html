@@ -4,75 +4,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
-<link rel="stylesheet" href="/styles/landingpage.css">
+<!-- <link rel="stylesheet" href="/styles/landingpage.css"> -->
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
 <div id="app">
   <v-app>
     <navbar></navbar>
-    <v-container fluid class="no-pad wave">
-      <v-row id="info">
-        <v-col class="text-center" cols="12">
-          <v-spacer class="lg-spacer"></v-spacer>
-          <h1 class="font-weight-bold display-4 white-text">
-            starfish
-            <!-- <v-img src="/assets/starfish.png"></v-img> -->
-          </h1>
-          <v-spacer></v-spacer>
-          <h4 class="display-1 white-text">
-            Share and find the best course notes. Completely free.
-          </h4>
-          <v-spacer class="md-spacer"></v-spacer>
-          <v-btn color="blue lighten-2"
-                 id="find-btn"
-                 rounded
-                 x-large
-                 dark>
-            Find your perfect <br> notes now.
-          </v-btn>
-          <v-spacer></v-spacer>
-        </v-col>
-      </v-row>
-      <v-row align="center" justify="center">
-        <v-img src="/assets/laptop-min.png"
-               id="laptop-img">
-        </v-img>
-      </v-row>
-    </v-container>
-    <v-container fluid class="no-pad">
-          <v-row align="center" justify="center">
-            <v-card
-              class="mx-auto"
-              max-width="344">
-              <v-card-title class="no-wrap-fix">
-                Quickly identify course notes relevant to you.
-              </v-card-title>
-              <v-card-text class="no-wrap-fix">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-              </v-card-text>
-            </v-card>
-            <v-card
-              class="mx-auto"
-              max-width="344">
-              <v-card-title class="no-wrap-fix">
-                Get recognized by your peers and earn points for the notes you share.
-              </v-card-title>
-              <v-card-text class="no-wrap-fix">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-              </v-card-text>
-            </v-card>
-            <v-card
-              class="mx-auto"
-              max-width="344">
-              <v-card-title class="no-wrap-fix">
-                Increase learning accessibility at universities everywhere!
-              </v-card-title>
-              <v-card-text class="no-wrap-fix">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
-              </v-card-text>
-            </v-card>
-          </v-row>
-    </v-container>
+    <landing></landing>
     <v-footer color="blue darken-4"
               absolute
               dark>
@@ -95,6 +33,7 @@
     // Example for how to load component <sample-component>
     components: {
       'navbar': httpVueLoader('/components/Navbar.vue'),
+      'landing': httpVueLoader('/components/LandingPage.vue')
     },
     vuetify: new Vuetify(),
   })
