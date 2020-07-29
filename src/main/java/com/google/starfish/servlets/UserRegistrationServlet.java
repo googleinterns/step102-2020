@@ -9,7 +9,6 @@ import com.google.starfish.models.User;
 import com.google.starfish.models.Note;
 import com.google.starfish.services.NoteService;
 import com.google.starfish.services.FavoriteNoteService;
-import com.google.gson.Gson;
 import java.io.IOException;  
 import java.sql.Connection;  
 import java.sql.SQLException;  
@@ -74,7 +73,7 @@ public class UserRegistrationServlet extends HttpServlet {
         ResultSet rs = userStmt.executeQuery();
         rs.next();
         User user = constructUserFromSqlResult(pool, rs);
-        String json = convertObjectToJSON(user);
+        String json = Utils.convertObjectToJSON(user);
         res.setContentType("application/json");
         res.getWriter().println(json);
       }
@@ -197,11 +196,5 @@ public class UserRegistrationServlet extends HttpServlet {
       userExistsResult.next();
       return userExistsResult.getBoolean(1);
     } 
-  }
-
-  /** Converts an object to JSON */
-  private String convertObjectToJSON(User user) {
-    Gson gson = new Gson();
-    return gson.toJson(user);
   }
 }
