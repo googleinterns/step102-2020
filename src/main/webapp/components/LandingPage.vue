@@ -27,40 +27,55 @@
         </v-img>
       </v-row>
     </v-container>
-    <v-container fluid class="no-pad">
-      <v-row align="center" justify="center">
-        <v-card class="mx-auto">
-          <v-card-title class="no-wrap-fix heading-2">
+    <v-container fluid id="info-section">
+      <v-row align="center" justify="space-around">
+        <v-col sm="6">
+          <p class="heading-2">
             Quickly identify course notes relevant to you.
-          </v-card-title>
-          <v-card-text class="no-wrap-fix subheading-2">
+          </p>
+          <p class="subheading-2">
             Do you hate taking notes? Wish you could find high quality notes for all your
             classes? Look no further - start by searching for your school and/or course, 
-            then filter your results to find exactly what you're looking for.
-          </v-card-text>
-        </v-card>
-        <v-card class="mx-auto">
-          <v-card-title class="no-wrap-fix heading-2">
+            then filter your results to find exactly what you're looking for. At no cost.
+          </p>
+        </v-col>
+        <v-col sm="4">
+          <v-img src="/assets/search.svg"></v-img>
+        </v-col>
+      </v-row>
+      <v-row align="center" justify="space-around">
+        <v-col cols="4">
+          <v-img src="/assets/share.svg"></v-img>
+        </v-col>
+        <v-col sm="6">
+          <p class="heading-2">
             Earn points for the notes you share.
-          </v-card-title>
-          <v-card-text class="no-wrap-fix subheading-2">
-            Do you feel like your notes are going to waste once classes are finished?
+          </p>
+          <p class="subheading-2">
+            Do you ever feel like your notes are going to waste once classes are finished?
             Wish you could easily share your notes with your peers? Now you can - just log in 
             with your Google account and upload PDFs of your notes! Even better, earn
-            points as you get more downloads and favorites on your uploaded notes.
-          </v-card-text>
-        </v-card>
-        <v-card class="mx-auto">
-          <v-card-title class="no-wrap-fix heading-2">
+            points as you get more downloads and favorites on your uploaded notes. <br><br>
+            <em>Coming soon: Redeem your points for awesome rewards!</em>
+          </p>
+        </v-col>
+      </v-row>
+      <v-row align="center" justify="space-around">
+        <v-col sm="6">
+          <p class="heading-2">
             Increase learning accessibility at universities everywhere!
-          </v-card-title>
-          <v-card-text class="no-wrap-fix subheading-2">
+          </p>
+          <p class="subheading-2">
             Our goal is to make learning more <em>collaborative</em> by encouraging 
             students to share their course notes. That's why we also made a Chrome 
-            extension that can quickly generate a notes template in Google Docs - 
-            perfect for taking notes with your friends.
-          </v-card-text>
-        </v-card>
+            extension that can quickly generate a 
+            <a href="https://docs.google.com/document/d/1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc/edit" target="_blank">notes template</a>
+            in Google Docs - perfect for taking notes with your friends.
+          </p>
+        </v-col>
+        <v-col sm="4">
+          <v-img src="/assets/collaborate.svg"></v-img>
+        </v-col>
       </v-row>
     </v-container>
   </div>
@@ -145,6 +160,11 @@ module.exports = {
 
 .v-card {
   max-width: 425px;
+}
+
+#info-section {
+  margin: 50px auto;
+  max-width: 1200px;
 }
 
 @media only screen and (min-height: 850px) {
