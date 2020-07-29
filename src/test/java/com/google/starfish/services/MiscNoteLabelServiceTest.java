@@ -35,6 +35,38 @@ public class MiscNoteLabelServiceTest {
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
+    Operation operation = getBeforeTestOperation();
+    DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
+    dbSetup.launch();
+  }
+
+  /** Test that most used labels are retrieved in order */
+  @Test
+  public void testGettingMostUsedMiscLabels() throws SQLException, Exception {
+    String[] mostUsedLabels = miscNoteLabelService.getMostUsedMiscLabels(pool);
+    if (mostUsedLabels.length != 3) throw new Exception("Didn't retrieve correct number of misc labels.");
+    String mostUsedLabel = mostUsedLabels[0];
+    String secondMostUsedLabel = mostUsedLabels[1];
+    String thiredMostUsedLabel = mostUsedLabels[2];
+    assertTrue(mostUsedLabel.equals(miscLabelOne) && 
+               secondMostUsedLabel.equals(miscLabelTwo) && 
+               thiredMostUsedLabel.equals(miscLabelThree));
+  }
+
+  /** Test that all misc labels associated with a specific note can be retrieved */
+  @Test
+  public void testGettingMiscLabelsByNoteId() throws SQLException, Exception {
+    String[] miscLabels = miscNoteLabelService.getMiscLabelsByNoteId(pool, 2);
+    if (miscLabels.length != 2) throw new Exception("Didn't retrieve correct number of misc labels.");
+    // Sort the array alphabetically so we know what to expect
+    Arrays.sort(miscLabels);
+    String firstMiscLabel = miscLabels[0];
+    String secondMiscLabel = miscLabels[1];
+    assertTrue(firstMiscLabel.equals(miscLabelOne) && secondMiscLabel.equals(miscLabelTwo));
+  }
+
+  /** Assembles and returns the pre-test operations for this test class */
+  private Operation getBeforeTestOperation() {
     Operation operation =
         sequenceOf(
             CommonOperations.DELETE_ALL,
@@ -96,32 +128,6 @@ public class MiscNoteLabelServiceTest {
                 .values(2, miscLabelTwo)
                 .values(3, miscLabelOne)
                 .build());
-    DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
-    dbSetup.launch();
-  }
-
-  /** Test that most used labels are retrieved in order */
-  @Test
-  public void testGettingMostUsedMiscLabels() throws SQLException, Exception {
-    String[] mostUsedLabels = miscNoteLabelService.getMostUsedMiscLabels(pool);
-    if (mostUsedLabels.length != 3) throw new Exception("Didn't retrieve correct number of misc labels.");
-    String mostUsedLabel = mostUsedLabels[0];
-    String secondMostUsedLabel = mostUsedLabels[1];
-    String thiredMostUsedLabel = mostUsedLabels[2];
-    assertTrue(mostUsedLabel.equals(miscLabelOne) && 
-               secondMostUsedLabel.equals(miscLabelTwo) && 
-               thiredMostUsedLabel.equals(miscLabelThree));
-  }
-
-  /** Test that all misc labels associated with a specific note can be retrieved */
-  @Test
-  public void testGettingMiscLabelsByNoteId() throws SQLException, Exception {
-    String[] miscLabels = miscNoteLabelService.getMiscLabelsByNoteId(pool, 2);
-    if (miscLabels.length != 2) throw new Exception("Didn't retrieve correct number of misc labels.");
-    // Sort the array alphabetically so we know what to expect
-    Arrays.sort(miscLabels);
-    String firstMiscLabel = miscLabels[0];
-    String secondMiscLabel = miscLabels[1];
-    assertTrue(firstMiscLabel.equals(miscLabelOne) && secondMiscLabel.equals(miscLabelTwo));
+    return operation;
   }
 }
