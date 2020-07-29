@@ -11,9 +11,9 @@ import javax.sql.DataSource;
 import com.google.starfish.services.FavoriteNoteService;
 import com.google.starfish.services.FavoriteNoteService.Recency;
 
-/** Servlet that returns search results for notes based on school and course */
-@WebServlet("/search")  
-public class SearchServlet extends HttpServlet {  
+/** Servlet that returns trending notes based on a given timespan as a query param */
+@WebServlet("/get-trending-notes")  
+public class GetTrendingNotesServlet extends HttpServlet {  
 
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
 
@@ -21,14 +21,12 @@ public class SearchServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
 
-    String reqSchool = Utils.trimAndLowerCaseString(req.getParameter("school"));
-    String reqCourse = Utils.trimAndLowerCaseString(req.getParameter("course"));
     String timespan = Utils.trimAndLowerCaseString(req.getParameter("timespan"));
     Recency recency = Utils.findRecencyByString(timespan);
     // Default recency is all-time
     if (recency == null) recency = Recency.ALL_TIME;
     try {
-      Object[][] trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, recency, reqSchool, reqCourse);
+      Object[][] trendingNotes = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, recency, null, null);
       String json = Utils.convert2DArrayToJSON(trendingNotes);
       res.setContentType("application/json");
       res.getWriter().println(json);
