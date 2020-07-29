@@ -40,6 +40,7 @@ public class FavoriteNoteServiceTest {
 
   private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
 
+  /** Clear DB and insert reference data */
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");

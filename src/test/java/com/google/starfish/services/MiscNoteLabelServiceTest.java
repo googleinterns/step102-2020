@@ -31,7 +31,7 @@ public class MiscNoteLabelServiceTest {
 
   private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
 
-  /** Clear DB, insert reference data, and insert 4 additional labels */
+  /** Clear DB and insert reference data */
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
