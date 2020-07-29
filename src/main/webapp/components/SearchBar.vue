@@ -60,8 +60,8 @@ module.exports = {
     },
     fetchAndEmitResults: async function() {
       let url = new URL("/search", window.location.href);
-      url.searchParams.set('school', this.school);
-      url.searchParams.set('course', this.course);
+      this.school && url.searchParams.set('school', this.school);
+      this.course && url.searchParams.set('course', this.course);
 
       return fetch(url)
         .then(response => response.json())
