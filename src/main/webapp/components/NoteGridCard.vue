@@ -2,6 +2,7 @@
   <v-col>
     <v-card class="note-grid-card" @click="$emit('click')"
             width="208px">
+            :color="cardColor">
       <v-img :src="thumbnailSrc"
              height="180px"
              position="top">
@@ -52,6 +53,7 @@
       numDownloads: Number,
       numFavorites: Number,
       isFavorited: Boolean,
+      isActive: Boolean,
     },
     data: function() {
       return {
@@ -66,6 +68,9 @@
       },
       isGNote: function() {
         return true; // TODO: Check note data to determine if note is a GNote
+      },
+      cardColor: function() {
+        if (this.isActive) return "blue lighten-4"
       },
       favColor: function() {
         if (this.favorited) return "yellow"

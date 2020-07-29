@@ -9,10 +9,11 @@
                    center-active>
       <v-slide-item v-for="(note, index) in notes"
                         :key="index"
-                        v-slot="{ toggle }">
+                        v-slot="{ active, toggle }">
         <div> <!-- This div supresses "multiple nodes" warning -->
           <note-grid-card v-bind="note"
                           @click="onClick(toggle, note)">
+                          :is-active="active"
           </note-grid-card>
         </div>
       </v-slide-item>
