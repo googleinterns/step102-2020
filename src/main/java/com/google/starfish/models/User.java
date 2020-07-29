@@ -106,4 +106,12 @@ public class User {
     this.favoriteNotes = favoriteNotes;
     this.uploadedNotes = uploadedNotes;
   }
+
+  public String getDisplayName() {
+    return this.displayName;
+  }
+
+  public long getPoints() {
+    return this.points;
+  }
 }

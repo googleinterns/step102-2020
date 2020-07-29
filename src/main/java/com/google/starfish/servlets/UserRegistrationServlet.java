@@ -42,21 +42,12 @@ public class UserRegistrationServlet extends HttpServlet {
 
   @Override 
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    Cookie[] cookies = req.getCookies();
-    String sessionId = null;
-    for (Cookie cookie : cookies) {
-      if (COOKIE_NAME.equals(cookie.getName())) {
-        sessionId = cookie.getValue();
-        break;
-      }
-    }
-    HttpSession activeSession = req.getSession(false);
-    if (activeSession == null) {
-      LOGGER.log(Level.WARNING, "No user is logged in.");
-      // Set an error code of 403 if the user is not logged in
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
+    
+    HttpSession activeSession = req.getSession(false);
     String userId = (String) activeSession.getAttribute("user_id");
 
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
