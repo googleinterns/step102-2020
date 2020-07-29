@@ -149,6 +149,7 @@ module.exports = {
 }
 
 .subheading-1 {
+  color: #575757;
   font-size: 1.2rem;
 }
 
@@ -182,7 +183,6 @@ module.exports = {
 
   .subheading-1 {
     font-size: 1.5rem;
-    line-height: 1.5rem;
   }
 }
 </style>
