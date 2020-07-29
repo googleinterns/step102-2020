@@ -60,7 +60,8 @@ public class FavoriteNoteServiceTest {
   public void testGettingNumFavoritesByNoteId() throws SQLException {
     long numFavoritesOfNoteOne = favoriteNoteService.getNumFavoritesByNoteId(pool, 1);
     long numFavoritesOfNoteTwo = favoriteNoteService.getNumFavoritesByNoteId(pool, 2);
-    assertTrue(numFavoritesOfNoteOne == 1 && numFavoritesOfNoteTwo == 2);
+    assertTrue(numFavoritesOfNoteOne == 1);
+    assertTrue(numFavoritesOfNoteTwo == 2);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes today */
@@ -75,11 +76,11 @@ public class FavoriteNoteServiceTest {
     Note leastTrendingNote = (Note) trendingNotesToday[numTrendingNotes - 1][0];
     long numFavoritesLeastTrendingNote = (long) trendingNotesToday[numTrendingNotes - 1][1];
     long numFavoritesFirstNoteWithNoFavorite = (long) trendingNotesToday[numTrendingNotes][1];
-    assertTrue(mostTrendingNote.getId() == 2 &&
-               numFavoritesMostTrendingNote == 2 &&
-               leastTrendingNote.getId() == 1 &&
-               numFavoritesLeastTrendingNote == 1 &&
-               numFavoritesFirstNoteWithNoFavorite == 0);
+    assertTrue(mostTrendingNote.getId() == 2);
+    assertTrue(numFavoritesMostTrendingNote == 2);
+    assertTrue(leastTrendingNote.getId() == 1);
+    assertTrue(numFavoritesLeastTrendingNote == 1);
+    assertTrue(numFavoritesFirstNoteWithNoFavorite == 0);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this week */
@@ -94,11 +95,11 @@ public class FavoriteNoteServiceTest {
     Note leastTrendingNote = (Note) trendingNotesThisWeek[numTrendingNotes - 1][0];
     long numFavoritesLeastTrendingNote = (long) trendingNotesThisWeek[numTrendingNotes - 1][1];
     long numFavoritesFirstNoteWithNoFavorite = (long) trendingNotesThisWeek[numTrendingNotes][1];
-    assertTrue(mostTrendingNote.getId() == 4 || mostTrendingNote.getId() == 2 &&
-               numFavoritesMostTrendingNote == 2 &&
-               leastTrendingNote.getId() == 3 || leastTrendingNote.getId() == 1 &&
-               numFavoritesLeastTrendingNote == 1 &&
-               numFavoritesFirstNoteWithNoFavorite == 0);
+    assertTrue(mostTrendingNote.getId() == 4 || mostTrendingNote.getId() == 2);
+    assertTrue(numFavoritesMostTrendingNote == 2);
+    assertTrue(leastTrendingNote.getId() == 3 || leastTrendingNote.getId() == 1);
+    assertTrue(numFavoritesLeastTrendingNote == 1);
+    assertTrue(numFavoritesFirstNoteWithNoFavorite == 0);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this month */
@@ -113,11 +114,11 @@ public class FavoriteNoteServiceTest {
     Note leastTrendingNote = (Note) trendingNotesThisMonth[numTrendingNotes - 1][0];
     long numFavoritesLeastTrendingNote = (long) trendingNotesThisMonth[numTrendingNotes - 1][1];
     long numFavoritesFirstNoteWithNoFavorite = (long) trendingNotesThisMonth[numTrendingNotes][1];
-    assertTrue(mostTrendingNote.getId() == 6 ||  mostTrendingNote.getId() == 4 || mostTrendingNote.getId() == 2 &&
-               numFavoritesMostTrendingNote == 2 &&
-               leastTrendingNote.getId() == 5 || leastTrendingNote.getId() == 3 || leastTrendingNote.getId() == 1 &&
-               numFavoritesLeastTrendingNote == 1 &&
-               numFavoritesFirstNoteWithNoFavorite == 0);
+    assertTrue(mostTrendingNote.getId() == 6 ||  mostTrendingNote.getId() == 4 || mostTrendingNote.getId() == 2);
+    assertTrue(numFavoritesMostTrendingNote == 2);
+    assertTrue(leastTrendingNote.getId() == 5 || leastTrendingNote.getId() == 3 || leastTrendingNote.getId() == 1);
+    assertTrue(numFavoritesLeastTrendingNote == 1);
+    assertTrue(numFavoritesFirstNoteWithNoFavorite == 0);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time */
@@ -133,32 +134,32 @@ public class FavoriteNoteServiceTest {
     long numFavoritesLeastTrendingNote = (long) trendingNotesAllTime[numTrendingNotes - 1][1];
     // There is no note with 0 favorites all time, so we don't check for the first note with no favorite
     assertTrue(mostTrendingNote.getId() == 6 ||  
-                  mostTrendingNote.getId() == 4 || 
-                  mostTrendingNote.getId() == 2 &&
-               numFavoritesMostTrendingNote == 2 &&
-               leastTrendingNote.getId() == 7 || 
-                 leastTrendingNote.getId() == 5 || 
-                 leastTrendingNote.getId() == 3 || 
-                 leastTrendingNote.getId() == 1 &&
-               numFavoritesLeastTrendingNote == 1);
+               mostTrendingNote.getId() == 4 || 
+               mostTrendingNote.getId() == 2);
+    assertTrue(numFavoritesMostTrendingNote == 2);
+    assertTrue(leastTrendingNote.getId() == 7 || 
+               leastTrendingNote.getId() == 5 || 
+               leastTrendingNote.getId() == 3 || 
+               leastTrendingNote.getId() == 1);
+    assertTrue(numFavoritesLeastTrendingNote == 1);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time filtered by school and course */
   @Test
   public void testGettingTrendingNotesAllTimeFilteredBySchoolAndCourse() throws SQLException, Exception {
     Object[][] trendingNotesAllTime = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, 
-                                                                                             Recency.ALL_TIME, 
-                                                                                             newSchool, 
-                                                                                             newCourse);
+                                                                                           Recency.ALL_TIME, 
+                                                                                           newSchool, 
+                                                                                           newCourse);
     if (trendingNotesAllTime.length != 4) throw new Exception("Retrieved wrong number of notes: " + trendingNotesAllTime.length);
     Note mostTrendingNote = (Note) trendingNotesAllTime[0][0];
     long numFavoritesMostTrendingNote = (long) trendingNotesAllTime[0][1];
     Note leastTrendingNote = (Note) trendingNotesAllTime[3][0];
     long numFavoritesLeastTrendingNote = (long) trendingNotesAllTime[3][1];
-    assertTrue(mostTrendingNote.getId() == 6 ||  mostTrendingNote.getId() == 4 &&
-               numFavoritesMostTrendingNote == 2 &&
-               leastTrendingNote.getId() == 7 || leastTrendingNote.getId() == 5 &&
-               numFavoritesLeastTrendingNote == 1);
+    assertTrue(mostTrendingNote.getId() == 6 ||  mostTrendingNote.getId() == 4);
+    assertTrue(numFavoritesMostTrendingNote == 2);
+    assertTrue(leastTrendingNote.getId() == 7 || leastTrendingNote.getId() == 5);
+    assertTrue(numFavoritesLeastTrendingNote == 1);
   }
 
   /** Operation that should be run before every test */

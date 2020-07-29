@@ -47,10 +47,10 @@ public class MiscNoteLabelServiceTest {
     if (mostUsedLabels.length != 3) throw new Exception("Didn't retrieve correct number of misc labels.");
     String mostUsedLabel = mostUsedLabels[0];
     String secondMostUsedLabel = mostUsedLabels[1];
-    String thiredMostUsedLabel = mostUsedLabels[2];
-    assertTrue(mostUsedLabel.equals(miscLabelOne) && 
-               secondMostUsedLabel.equals(miscLabelTwo) && 
-               thiredMostUsedLabel.equals(miscLabelThree));
+    String thirdMostUsedLabel = mostUsedLabels[2];
+    assertTrue(mostUsedLabel.equals(miscLabelOne)); 
+    assertTrue(secondMostUsedLabel.equals(miscLabelTwo));
+    assertTrue(thirdMostUsedLabel.equals(miscLabelThree));
   }
 
   /** Test that all misc labels associated with a specific note can be retrieved */
@@ -62,7 +62,8 @@ public class MiscNoteLabelServiceTest {
     Arrays.sort(miscLabels);
     String firstMiscLabel = miscLabels[0];
     String secondMiscLabel = miscLabels[1];
-    assertTrue(firstMiscLabel.equals(miscLabelOne) && secondMiscLabel.equals(miscLabelTwo));
+    assertTrue(firstMiscLabel.equals(miscLabelOne));
+    assertTrue(secondMiscLabel.equals(miscLabelTwo));
   }
 
   /** Assembles and returns the pre-test operations for this test class */
