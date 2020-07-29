@@ -98,6 +98,7 @@ module.exports = {
 
 #search-form {
   align-self: center;
+  max-width: 550px;
   min-width: 375px;
   width: 30%;
 }
