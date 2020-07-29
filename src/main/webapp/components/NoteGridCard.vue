@@ -26,7 +26,7 @@
           <v-col col="1">
             <v-badge overlap class="ma-1">
               <template v-slot:badge>{{numFavorites}}</template>
-              <v-icon :color="favorited && 'yellow'">mdi-star</v-icon>
+              <v-icon :color="favColor">mdi-star</v-icon>
             </v-badge>
             <v-badge overlap class="ma-1">
               <template v-slot:badge>{{numDownloads}}</template>
@@ -56,7 +56,6 @@
     data: function() {
       return {
         favorited: this.isFavorited,
-        isGNote: true,
       }
     },
     computed: {
@@ -65,18 +64,17 @@
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
       },
+      isGNote: function() {
+        return true; // TODO: Check note data to determine if note is a GNote
+      },
+      favColor: function() {
+        if (this.favorited) return "yellow"
+      }
     },
     methods: {
       onClick: function() {
         this.$emit('click');
       },
-      toggleFavorite: function() {
-        let method = this.favorited ? 'DELETE' : 'POST';
-        this.favorited = !this.favorited;
-        fetch('/favorite-note?note_id=' + this.id, {
-          method: method
-        })
-      }
     }
   }
 </script>
