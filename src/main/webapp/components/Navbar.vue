@@ -22,19 +22,19 @@
         <!-- User dropdown menu -->
         <v-menu v-model="showDropdown" :offset-y="true">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs"
+            <button v-bind="attrs"
                    v-on="on">
               <v-avatar>
-                <v-icon>mdi-account-circle</v-icon>
+                <v-img :src="user.displayPicture">
               </v-avatar>
-            </v-btn>
+            </button>
           </template>
 
           <v-card>
             <v-list>
               <v-list-item>
                 <v-list-item-avatar>
-                  <v-icon>mdi-account-circle</v-icon>
+                  <v-img :src="user.displayPicture">
                 </v-list-item-avatar>
 
               <v-list-item-content>
@@ -50,9 +50,9 @@
               <v-list-item @click="">
                 <v-list-item-title>My Profile</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="">
+<!--              <v-list-item @click="">
                 <v-list-item-title>Favorite Notes</v-list-item-title>
-              </v-list-item>
+              </v-list-item> -->
               <v-list-item @click="signOut">
                 <v-list-item-title>Logout</v-list-item-title>
               </v-list-item>            
