@@ -1,27 +1,24 @@
 <template>
   <div>
     <v-container fluid class="no-pad wave">
-      <v-row id="info">
+      <v-row>
         <v-col class="text-center" cols="12">
           <v-spacer class="lg-spacer"></v-spacer>
-          <h1 class="font-weight-bold display-4 white-text">
+          <h1 class="font-weight-bold display-4 white-text"
+              id="starfish-title">
             starfish
             <img src="/assets/starfish.png"
                  id="starfish-logo">
           </h1>
           <v-spacer></v-spacer>
-          <h4 class="display-1 white-text">
+          <h1 class="display-1 white-text"
+              id="starfish-subtitle">
             Share and find the best course notes. Completely free.
-          </h4>
+          </h1>
           <v-spacer class="md-spacer"></v-spacer>
-          <v-btn color="blue lighten-2"
-                 id="find-btn"
-                 rounded
-                 x-large
-                 dark>
-            Find your perfect <br> notes now.
-          </v-btn>
-          <v-spacer></v-spacer>
+          <v-row align="center" justify="center">
+            <search-bar :is-dark="true" :show-search-button="false"></search-bar>
+          </v-row>
         </v-col>
       </v-row>
       <v-row align="center" justify="center">
@@ -33,29 +30,37 @@
     <v-container fluid class="no-pad">
       <v-row align="center" justify="center">
         <v-card class="mx-auto">
-          <v-card-title class="no-wrap-fix heading-1">
+          <v-card-title class="no-wrap-fix heading-2">
             Quickly identify course notes relevant to you.
           </v-card-title>
-          <v-card-text class="no-wrap-fix subheading-1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+          <v-card-text class="no-wrap-fix subheading-2">
+            Do you hate taking notes? Wish you could find high quality notes for all your
+            classes? Look no further - start by 
+            <a href="#" @click.stop="searchDialog=true">searching</a>
+            for your school and/or course, then filter your results to find exactly what you're
+            looking for.
           </v-card-text>
         </v-card>
-        <v-card class="mx-auto"
-                max-width="400">
-          <v-card-title class="no-wrap-fix heading-1">
-            Get recognized by your peers and earn points for the notes you share.
+        <v-card class="mx-auto">
+          <v-card-title class="no-wrap-fix heading-2">
+            Earn points for the notes you share.
           </v-card-title>
-          <v-card-text class="no-wrap-fix subheading-1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+          <v-card-text class="no-wrap-fix subheading-2">
+            Do you feel like your notes are going to waste once classes are finished?
+            Wish you could easily share your notes with your peers? Now you can - just log in 
+            with your Google account and upload PDFs of your notes! Even better, earn
+            points as you get more downloads and favorites on your uploaded notes.
           </v-card-text>
         </v-card>
-        <v-card class="mx-auto"
-                max-width="400">
-          <v-card-title class="no-wrap-fix heading-1">
+        <v-card class="mx-auto">
+          <v-card-title class="no-wrap-fix heading-2">
             Increase learning accessibility at universities everywhere!
           </v-card-title>
-          <v-card-text class="no-wrap-fix subheading-1">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. 
+          <v-card-text class="no-wrap-fix subheading-2">
+            Our goal is to make learning more <em>collaborative</em> by encouraging 
+            students to share their course notes. That's why we also made a Chrome 
+            extension that can quickly generate a notes template in Google Docs - 
+            perfect for taking notes with your friends.
           </v-card-text>
         </v-card>
       </v-row>
@@ -63,7 +68,15 @@
   </div>
 </template>
 
-<style scoped>
+<script>
+module.exports = {
+  components: {
+    'search-bar': httpVueLoader('/components/SearchBar.vue')
+  }
+}
+</script>
+
+<style>
 .no-pad {
   padding: 0;
 }
@@ -88,15 +101,17 @@
   margin: 10px;
 }
 
+#starfish-title {
+  font-family: 'Caveat Brush'!important;
+}
+
+#starfish-subtitle {
+  font-family: 'Coming Soon'!important;
+}
+
 #starfish-logo {
   height: 1em;
   margin-bottom: -0.1em;
-}
-
-#find-btn {
-  font-size: 1.25rem;
-  height: auto;
-  padding: 8px 23px;
 }
 
 #laptop-img {
@@ -104,7 +119,8 @@
 }
 
 .wave {
-  background-color: #1565C0;
+  background: rgb(3,0,57);
+  background: linear-gradient(20deg, rgba(3,0,57,1) 0%, rgba(21,101,192,1) 53%, rgba(115,180,255,1) 100%);
   position: relative;
 }
 
@@ -120,17 +136,17 @@
   background-repeat: no-repeat;
 }
 
-.heading-1 {
+.heading-2 {
   font-size: 1.7rem;
   font-weight: 500;
 }
 
-.subheading-1 {
+.subheading-2 {
   font-size: 1.2rem;
 }
 
 .v-card {
-  max-width: 400px;
+  max-width: 425px;
 }
 
 @media only screen and (min-height: 850px) {
