@@ -35,10 +35,8 @@
           </v-card-title>
           <v-card-text class="no-wrap-fix subheading-2">
             Do you hate taking notes? Wish you could find high quality notes for all your
-            classes? Look no further - start by 
-            <a href="#" @click.stop="searchDialog=true">searching</a>
-            for your school and/or course, then filter your results to find exactly what you're
-            looking for.
+            classes? Look no further - start by searching for your school and/or course, 
+            then filter your results to find exactly what you're looking for.
           </v-card-text>
         </v-card>
         <v-card class="mx-auto">
