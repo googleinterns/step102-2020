@@ -27,27 +27,43 @@
 module.exports = {
   data: function() {
     return {
-      school: "",
-      course: "",
-      error: ""
+      school: this.$route.query.school,
+      course: this.$route.query.course,
+      error: null,
     }
+  },
+  computed: {
+    formIsValid: function() {
+      return this.school || this.course;
+    },
   },
   methods: {
     onSubmit: function(event) {
-      if(!this.school && !this.course) {
-        this.error = "Please enter at least one search criterion.";
-      }
-      else /* Form validated */ {
-        this.error = "";
-        this.queryDatabase(this.school, this.course);
+      if(this.formIsValid) {
+        this.onValidForm();
+      } else {
+        this.onInvalidForm();
       }
     },
-    queryDatabase: function(school, course) {
+    onValidForm: function () {
+      this.error = null;
+      this.$router.push({
+        path: 'search',
+        query: {
+          school: this.school,
+          course: this.course,
+        }
+      });
+    },
+    onInvalidForm: function () {
+      this.error = "Please enter at least one search criterion.";
+    },
+    fetchAndEmitResults: async function() {
       let url = new URL("/search", window.location.href);
-      url.searchParams.set('school', school);
-      url.searchParams.set('course', course);
+      url.searchParams.set('school', this.school);
+      url.searchParams.set('course', this.course);
 
-      fetch(url)
+      return fetch(url)
         .then(response => response.json())
         .then(result => {
           this.$emit('searchresult', result);
@@ -55,8 +71,19 @@ module.exports = {
         .catch(error => {
           throw new Error(error);
         });
+    },
+  },
+  watch: {
+    // When $route changes, component is reused, so manually set new school and course and fetch results.
+    $route: function(to, from) {
+      this.school = to.query.school;
+      this.course = to.query.course;
+      this.fetchAndEmitResults();
     }
-  }
+  },
+  mounted: function() {
+    if (this.formIsValid) this.fetchAndEmitResults();
+  },
 }
 </script>
 
