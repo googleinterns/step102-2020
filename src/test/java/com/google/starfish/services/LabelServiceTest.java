@@ -50,7 +50,8 @@ public class LabelServiceTest {
     String testSchool = "mit";
     labelService.insertSchoolLabel(pool, testSchool);
     Label schoolLabel = labelService.getLabelByTitle(pool, testSchool);
-    assertTrue(schoolLabel.getTitle().equals(testSchool) && schoolLabel.getType().equals("School"));
+    assertTrue(schoolLabel.getTitle().equals(testSchool));
+    assertTrue(schoolLabel.getType().equals("School"));
   }
 
   /** Test that a course label can be inserted */
@@ -59,7 +60,8 @@ public class LabelServiceTest {
     String testCourse = "linalg1141";
     labelService.insertCourseLabel(pool, testCourse);
     Label courseLabel = labelService.getLabelByTitle(pool, testCourse);
-    assertTrue(courseLabel.getTitle().equals(testCourse) && courseLabel.getType().equals("Course"));
+    assertTrue(courseLabel.getTitle().equals(testCourse));
+    assertTrue(courseLabel.getType().equals("Course"));
   }
 
   /** Test that a misc label can be inserted */
@@ -68,7 +70,8 @@ public class LabelServiceTest {
     String testLabel = "phyiscs";
     labelService.insertMiscLabel(pool, testLabel);
     Label miscLabel = labelService.getLabelByTitle(pool, testLabel);
-    assertTrue(miscLabel.getTitle().equals(testLabel) && miscLabel.getType().equals("Misc"));
+    assertTrue(miscLabel.getTitle().equals(testLabel));
+    assertTrue(miscLabel.getType().equals("Misc"));
   }
 
   /** Test that we can retrieve all school and course labels */
@@ -79,6 +82,7 @@ public class LabelServiceTest {
     int numCourseLabels = allSchoolAndCourseLabels.get("courses").length;
 
     // There should be 3 schools, and 3 course labels
-    assertTrue(numSchoolLabels == 3 && numCourseLabels == 3);
+    assertTrue(numSchoolLabels == 3);
+    assertTrue(numCourseLabels == 3);
   }
 }
