@@ -1,7 +1,7 @@
 <template>
   <v-col>
-    <v-card class="note-grid-card" @click="$emit('click')"
-            width="208px">
+    <v-card @click="onClick"
+            width="208px"
             :color="cardColor">
       <v-img :src="thumbnailSrc"
              height="180px"
@@ -78,7 +78,7 @@
     },
     methods: {
       onClick: function() {
-        this.$emit('click');
+        this.isActive ? this.$emit('open-preview') : this.$emit('activate');
       },
     }
   }

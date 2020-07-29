@@ -12,8 +12,9 @@
                         v-slot="{ active, toggle }">
         <div> <!-- This div supresses "multiple nodes" warning -->
           <note-grid-card v-bind="note"
-                          @click="onClick(toggle, note)">
                           :is-active="active"
+                          @activate="toggle"
+                          @open-preview="onOpenPreview(note)">
           </note-grid-card>
         </div>
       </v-slide-item>
@@ -55,8 +56,7 @@ module.exports = {
     },
   },
   methods: {
-    onClick: function(toggleFunc, note) {
-      toggleFunc();
+    onOpenPreview: function(note) {
       this.$parent.$emit('open-preview', note);
     },
     noteFilter: function(note) {
