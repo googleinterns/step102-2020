@@ -13,19 +13,12 @@
                             :filters="filters"
                             :compare-func="descDate">
       </note-grid-collection>
-      <!-- 
-        The following note-grid-collection sample is a rudimentary way of displaying notes 
-        that have gained the most score recently (1 week). In practice, the backend will need 
-        a way of counting the # of favorites and downloads a share has had in the past X days.
-      -->
-      <!--
+      <!-- TODO: change trending timespan with a drop-down -->
       <note-grid-collection :note-data="searchResult"
                             header="Trending Notes"
                             :filters="filters"
-                            :compare-func="descFavorites"
-                            :max-age="7 * 24 * 60 * 60 * 1000">
+                            :compare-func="descTrending">
       </note-grid-collection>
-      -->
     </note-grid>
   </v-app>
 </template>
@@ -48,7 +41,11 @@ module.exports = {
       },
       descDate: function(noteA, noteB) {
         return Date.parse(noteB.dateCreated) - Date.parse(noteA.dateCreated);
-      }
+      },
+      descTrending: function(noteA, noteB) {
+        let trendingIndex = 1;
+        return noteB[trendingIndex] - noteA[trendingIndex];
+      },
     }
   },
   methods: {

@@ -62,6 +62,7 @@ module.exports = {
       let url = new URL("/search", window.location.href);
       this.school && url.searchParams.set('school', this.school);
       this.course && url.searchParams.set('course', this.course);
+      url.searchParams.set('timespan', "this-week")
 
       return fetch(url)
         .then(response => response.json())
