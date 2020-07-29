@@ -69,7 +69,9 @@
             Our goal is to make learning more <em>collaborative</em> by encouraging 
             students to share their course notes. That's why we also made a Chrome 
             extension that can quickly generate a 
-            <a href="https://docs.google.com/document/d/1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc/edit" target="_blank">notes template</a>
+            <a href="https://docs.google.com/document/d/1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc/edit" target="_blank">
+              notes template
+            </a>
             in Google Docs - perfect for taking notes with your friends.
           </p>
         </v-col>

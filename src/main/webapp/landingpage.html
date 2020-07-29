@@ -10,29 +10,20 @@
   <v-app>
     <navbar></navbar>
     <landing></landing>
-    <v-footer color="blue darken-3"
-              absolute
-              dark>
-      <v-spacer></v-spacer>
-      <div>Starfish &copy; {{ new Date().getFullYear() }}</div>
-    </v-footer>
+    <page-footer></page-footer>
   </v-app>
 </div>
 
-<!-- Vue -->
 <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> <!-- TODO: This is dev Version, switch to prod for deployment -->
-<!-- HTTP Vue Loader -->
 <script src="https://unpkg.com/http-vue-loader"></script>
-<!-- Vuetify -->
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-<!-- Declares the Vue instance-->
 <script>
   new Vue({
     el: '#app',
-    // Example for how to load component <sample-component>
     components: {
       'navbar': httpVueLoader('/components/Navbar.vue'),
-      'landing': httpVueLoader('/components/LandingPage.vue')
+      'landing': httpVueLoader('/components/LandingPage.vue'),
+      'page-footer': httpVueLoader('/components/Footer.vue')
     },
     vuetify: new Vuetify(),
   })
