@@ -50,9 +50,6 @@
               <v-list-item @click="">
                 <v-list-item-title>My Profile</v-list-item-title>
               </v-list-item>
-<!--              <v-list-item @click="">
-                <v-list-item-title>Favorite Notes</v-list-item-title>
-              </v-list-item> -->
               <v-list-item @click="signOut">
                 <v-list-item-title>Logout</v-list-item-title>
               </v-list-item>            
