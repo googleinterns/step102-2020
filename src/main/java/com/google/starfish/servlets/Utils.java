@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
 import com.google.starfish.services.FavoriteNoteService.Recency;
+import com.google.starfish.models.User;
+import java.util.HashMap;
 
 public class Utils {
 
@@ -41,6 +43,24 @@ public class Utils {
   public static String convert2DArrayToJSON(Object[][] arr) {
     Gson gson = new Gson();
     return gson.toJson(arr);
+  }
+
+  /** Converts a String array to JSON */
+  public static String convertArrayToJSON(String[] array) {
+    Gson gson = new Gson();
+    return gson.toJson(array);
+  }
+
+  /** Converts a hash map to JSON */
+  public static String convertHashMapToJSON(HashMap<String, String[]> hashMap) {
+    Gson gson = new Gson();
+    return gson.toJson(hashMap);
+  }
+
+  /** Converts an object to JSON */
+  public static String convertObjectToJSON(User user) {
+    Gson gson = new Gson();
+    return gson.toJson(user);
   }
 
   /** Finds key of Recency enum by string value */

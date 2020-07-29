@@ -21,14 +21,8 @@ public class GetSchoolAndCourseLabelsServlet extends HttpServlet {
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
     HashMap<String, String[]> allSchoolAndCourseLabels = labelService.getAllSchoolAndCourseLabels(pool);
-    String json = convertHashMapToJSON(allSchoolAndCourseLabels);
+    String json = Utils.convertHashMapToJSON(allSchoolAndCourseLabels);
     res.setContentType("application/json");
     res.getWriter().println(json);
-  }
-
-  /** Converts a hash map to JSON */
-  private String convertHashMapToJSON(HashMap<String, String[]> hashMap) {
-    Gson gson = new Gson();
-    return gson.toJson(hashMap);
   }
 }  
