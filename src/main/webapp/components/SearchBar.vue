@@ -4,27 +4,56 @@
       <v-col class="left">
         <v-text-field label="School"
                       v-model.trim="school"
-                      placeholder="Cambridge University">
+                      placeholder="Cambridge University"
+                      :dark="isDark">
         </v-text-field>
 
         <v-text-field label="Course"
                       v-model.trim="course"
-                      placeholder="CS4410">
+                      placeholder="CS4410"
+                      :dark="isDark">
         </v-text-field>
       </v-col>
 
-      <v-col class="right">
+      <v-col class="right" v-if="showSearchButton">
         <v-btn type="submit">Search</v-btn>
       </v-col>
     </v-row>
+
     <v-row id="error-container" v-if="error">
       <p>{{ error }}</p>
     </v-row>
+
+    <v-row align="center" justify="center" v-if="!showSearchButton">
+      <v-btn color="blue lighten-2"
+             dark
+             id="find-btn"
+             rounded
+             type="submit"
+             x-large>
+        Find your perfect <br> notes now.
+      </v-btn>
+    </v-row>
+
   </v-form>
 </template>
 
 <script>
 module.exports = {
+  props: {
+    isDark: {
+      type: Boolean,
+      default: function () {
+        return false;
+      }
+    },
+    showSearchButton: {
+      type: Boolean,
+      default: function () {
+        return true;
+      }
+    }
+  },
   data: function() {
     return {
       school: "",
