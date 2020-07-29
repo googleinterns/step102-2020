@@ -128,6 +128,10 @@ public class Note {
     return this.numDownloads;
   }
 
+  public long getId() {
+    return this.id;
+  }
+
   public String getAuthorId() {
     return this.authorId;
   }
