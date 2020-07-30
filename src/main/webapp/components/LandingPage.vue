@@ -34,9 +34,12 @@
             Quickly identify course notes relevant to you.
           </p>
           <p class="subheading-1">
-            Do you hate taking notes? Wish you could find high quality notes for all your
-            classes? Look no further - start by searching for your school and/or course, 
-            then filter your results to find exactly what you're looking for. At no cost.
+            Wish you could find high quality notes for all your classes? Look no further - 
+            start by searching for your school and/or course and  
+            then filter your results to find exactly what you're looking for. 
+            We rank your search results based on what's trending among other users so you 
+            only see the notes most relevant to you. 
+            Oh, and did we mention that it's 100% free?
           </p>
         </v-col>
         <v-col sm="4">
@@ -52,9 +55,9 @@
             Earn points for the notes you share.
           </p>
           <p class="subheading-1">
-            Do you ever feel like your notes are going to waste once classes are finished?
+            Do you ever feel like your notes go to waste once classes are finished?
             Wish you could easily share your notes with your peers? Now you can - just log in 
-            with your Google account and upload PDFs of your notes! Even better, earn
+            with your Google account to get started! Even better, earn
             points as you get more downloads and favorites on your uploaded notes. <br><br>
             <em>Coming soon: Redeem your points for awesome rewards!</em>
           </p>
@@ -63,16 +66,16 @@
       <v-row align="center" justify="space-around">
         <v-col sm="6">
           <p class="heading-1">
-            Increase learning accessibility at universities everywhere!
+            Increase the accessibility of learning at universities everywhere!
           </p>
           <p class="subheading-1">
             Our goal is to make learning more <em>collaborative</em> by encouraging 
             students to share their course notes. That's why we also made a Chrome 
-            extension that can quickly generate a 
+            extension. With the power of Google, you can quickly generate a 
             <a href="https://docs.google.com/document/d/1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc/edit" target="_blank">
-              notes template
+              <strong>notes template</strong>
             </a>
-            in Google Docs - perfect for taking notes with your friends.
+            in Google Docs that's perfect for taking notes with your friends!
           </p>
         </v-col>
         <v-col sm="4">
@@ -92,6 +95,15 @@ module.exports = {
 </script>
 
 <style>
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  color: blue;
+}
+
 .no-pad {
   padding: 0;
 }
