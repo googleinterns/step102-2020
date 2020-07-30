@@ -160,7 +160,8 @@ button:focus {
 }
 
 #title {
-  font-size: 3em;
+  font-family: 'Caveat Brush';
+  font-size: 3.5em;
   color: white;
   margin: 0 0 0 10px;
   text-decoration: none;
