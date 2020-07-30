@@ -22,7 +22,7 @@
       <v-card-text>
         <v-row no-gutters>
           <v-col>
-            {{dateCreated}}
+            {{dateString}}
           </v-col>
           <v-col col="1">
             <v-badge overlap class="ma-1">
