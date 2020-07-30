@@ -3,7 +3,7 @@ body {
   font-size: 1rem;
   margin: 0;
   position: relative;
-  width: 325px;
+  width: 300px;
 }
 
 .bold {
@@ -27,6 +27,7 @@ nav span {
 
 nav img {
   height: 65%;
+  margin: 0 0 5px 5px;
 }
 
 section {
@@ -61,6 +62,7 @@ button:hover {
 
 input {
   font-size: inherit;
+  margin: 5px 0;
 }
 
 #user-info {

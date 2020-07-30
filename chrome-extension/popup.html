@@ -14,13 +14,17 @@
         <span class="bold heading">User</span>
         <div class="card">
           <span id="email"></span>
-        </card>
+        </div>
       </section>
       <section id="gnote-form">
         <span class="bold heading">gNote</span>
         <div class="card" id="gnote-card">
-          <span>Title: <input type="text" id="doc-name-input"></span>
-          <span><input type="checkbox"> Share Publicly</span>
+          <span>Title:</span>
+          <input type="text" id="doc-name-input">
+          <span>School:</span>
+          <input type="text" id="school-input">
+          <span>Course:</span>
+          <input type="text" id="course-input">
           <button id="generate-note-btn" disabled>Generate</button>
           <div id="loading">
             <img src="images/loading.gif">
@@ -28,7 +32,7 @@
         </div>
       </section>
       <section id="footer">
-        <button class="bold link">Open Browser</button>
+        <button class="bold link" id="browser-btn">Open Browser</button>
         <button class="bold link" id="login-btn">Login</button>
         <button class="bold link" id="logout-btn">Logout</button>
       </section>

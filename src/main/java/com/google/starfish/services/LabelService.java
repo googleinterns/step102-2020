@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import com.google.starfish.models.Label;
 
 /** Enum that holds label types */
 enum Type {
@@ -48,6 +49,27 @@ public class LabelService extends TableService {
   /** Inserts new misc label */
   public void insertMiscLabel(DataSource pool, String label) {
     insertLabel(pool, label, Type.MISC);
+  }
+
+  /** Gets a label by title */
+  public Label getLabelByTitle(DataSource pool, String title) throws SQLException {
+     try (Connection conn = pool.getConnection()) {
+      String stmt =
+          "SELECT * "
+        + "FROM " + LABELS + " "
+        + "WHERE title=? "
+        + "LIMIT 1;";
+
+      try (PreparedStatement userStmt = conn.prepareStatement(stmt)) {
+        userStmt.setString(1, title);
+        ResultSet rs = userStmt.executeQuery();
+        Label label = null;
+        if (rs.next()) {
+          label = constructLabelFromSqlResult(rs);
+        }
+        return label;
+      }
+    }
   }
 
   /** Returns a map of all school and course labels in the database */
@@ -133,5 +155,13 @@ public class LabelService extends TableService {
     } catch (SQLException ex) {
       System.err.print(ex);
     }
+  }
+
+  /** Constructs a label from sql result */
+  private Label constructLabelFromSqlResult(ResultSet rs) throws SQLException {
+    String title = rs.getString("title");
+    String type = rs.getString("type");
+    Label label = new Label(title, type);
+    return label;
   }
 }

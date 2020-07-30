@@ -9,22 +9,25 @@
           <em>{{author}}</em> - {{dateCreated}}
         </v-card-subtitle>
 
-        <v-badge :content="numFavorites"
-                  class="ma-2">
-          <v-icon>mdi-star</v-icon>
-        </v-badge>
-        <v-badge :content="numDownloads"
-                  class="ma-2">
-          <v-icon>mdi-download</v-icon>
-        </v-badge>
+        <a href="#" @click="toggleFavorite">
+          <v-badge class="ma-2">
+            <template v-slot:badge>{{numFavorites}}</template>
+            <v-icon :color="iconColor" class="action-icon">mdi-star</v-icon>
+          </v-badge>
+        </a>
+        <a :href="pdfSource" :download="title" @click="increment">
+          <v-badge class="ma-2">
+            <template v-slot:badge>{{numDownloads}}</template>
+            <v-icon class="action-icon">mdi-download</v-icon>
+          </v-badge>
+        </a>
 
         <label-list :school="school"
                     :course="course"
-                    :labels="miscLabels"
-                    :can-modify="isFavorited">
+                    :labels="miscLabels">
         </label-list>
 
-        <iframe :src="pdfSource"></iframe>
+        <iframe :src="sourceUrl"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -37,10 +40,11 @@
       'label-list': httpVueLoader('/components/LabelList.vue')
     },
     props: {
+      id: Number,
       title: {
         type: String,
         default: function() {
-          return "Invalid Note"
+          return 'Invalid Note'
         }
       },
       author: String,
@@ -50,18 +54,63 @@
       school: String,
       course: String,
       miscLabels: Array,
-      isFavorited: Boolean,
       pdfSource: String,
+      sourceUrl: String
     },
     data: function() {
       return {
         showPreview: false,
+        favorited: false,
+        iconColor: 'undefined',
       }
     },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
+        if(this.id) {
+          this.setFavorite();
+        }
         this.showPreview = true;
       });
+    },
+    methods: {
+      increment: function() {
+        fetch('/download-note?note_id=' + this.id, {
+          method: 'POST'
+        })
+      },
+      toggleFavorite: function() {
+        this.getFavorited()
+          .then(isFavorited => {
+            this.favorited = isFavorited;
+            const method = this.favorited ? 'DELETE' : 'POST';
+            fetch('/favorite-note?note_id=' + this.id, {
+              method: method
+            }).then(response => {
+              if(response.status === 403) alert('Please sign in to favorite this note.');
+              else this.favorited = !this.favorited;
+            })
+          })
+      },
+      getFavorited: function() {
+        return fetch('/favorite-note?note_id=' + this.id)
+          .then(response => response.json());
+      },
+      setFavorite: function() {
+        this.getFavorited()
+          .then(isFavorited => {
+            this.favorited = isFavorited;
+          });
+      }
+    },
+    watch: {
+      id: function(noteId) {
+        if(noteId) {
+          this.setFavorite();
+        }
+      },
+      favorited: function(favoriteStatus) {
+        this.iconColor = this.favorited ? 'yellow' : 'undefined';
+      }
     }
   }
 </script>
@@ -77,5 +126,9 @@
     background-color: rgb(240, 140, 140);
     color: white;
     float: right;
+  }
+
+  .action-icon:hover {
+    color: black;
   }
 </style>

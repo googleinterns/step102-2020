@@ -4,10 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;  
 import java.sql.ResultSet;  
+import java.sql.Date;
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Calendar;
 import com.google.starfish.models.Note;
 
 /**
@@ -15,15 +16,34 @@ import com.google.starfish.models.Note;
  */
 public class FavoriteNoteService {
 
+  /** Enum to hold possible recency to get trending notes */
+  public enum Recency {
+    TODAY("today"),
+    THIS_WEEK("this-week"),
+    THIS_MONTH("this-month"),
+    ALL_TIME("all-time");
+
+    private String recency;
+
+    Recency(String recency) {
+      this.recency = recency;
+    }
+
+    public String getRecency() {
+      return this.recency;
+    }
+  }
+
   private String FAVORITE_NOTES = Table.FAVORITE_NOTES.getSqlTable();
   private String NOTES = Table.NOTES.getSqlTable();
+  private String NUM_FAVORITES_IN_TIMESPAN_ID = "count";
   private MiscNoteLabelService miscNoteLabelService = new MiscNoteLabelService(); 
 
   /** Deletes a favorite note by the compound id */
   public boolean deleteRowByCompoundId(DataSource pool, long noteId, String userId) throws SQLException {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
-          "DELETE * "
+          "DELETE "
         + "FROM " + FAVORITE_NOTES + " "
         + "WHERE `note_id`= ? AND "
         + "`user_id` = ? "
@@ -46,13 +66,16 @@ public class FavoriteNoteService {
         String stmt =
             "INSERT INTO " + FAVORITE_NOTES + " ( "
                 + "note_id,"
-                + "user_id ) "
+                + "user_id,"
+                + "date ) "
           + "VALUES ( "
+                + "?,"
                 + "?,"
                 + "? ); ";
         try (PreparedStatement insertStmt = conn.prepareStatement(stmt)) {
           insertStmt.setLong(1, noteId);
           insertStmt.setString(2, userId);
+          insertStmt.setDate(3, new Date(Calendar.getInstance().getTimeInMillis()));
           insertStmt.execute();
           conn.commit();
         }
@@ -77,11 +100,11 @@ public class FavoriteNoteService {
     try (Connection conn = pool.getConnection()) {
       String stmt = 
           "SELECT  a.* "
-        + "FROM "
-          + NOTES + " AS a "
-          + "INNER JOIN (SELECT * "
-                      + "FROM " + FAVORITE_NOTES + " "
-                      + "WHERE user_id=?) "
+        + "FROM " 
+        + NOTES + " AS a "
+            + "INNER JOIN (SELECT * "
+                        + "FROM " + FAVORITE_NOTES + " "
+                        + "WHERE user_id=?) "
           + "as b ON a.id=b.note_id;";
       try (PreparedStatement favNotesStmt = conn.prepareStatement(stmt)) {
         favNotesStmt.setString(1, userId);
@@ -113,6 +136,75 @@ public class FavoriteNoteService {
         return numFavorites;
       }
     }
+  }
+
+  /** Gets trending notes based on number of favorites in a given timespan, filtered by school and/or course */
+  public Object[][] getTrendingNotesBySchoolOrCourse(DataSource pool, Recency recency, String school, String course) throws SQLException {
+    String filterStmt = getStatementToFilterBySchoolOrCourse(school, course);
+    Date date = getDateBasedOnRecency(recency);
+    List<Object> notes = new ArrayList<>();
+    try (Connection conn = pool.getConnection()) {
+      String stmt = getTrendingNotesStatement(filterStmt);
+      try (PreparedStatement selectStmt = conn.prepareStatement(stmt)) {
+        selectStmt.setDate(1, date);
+        ResultSet rs = selectStmt.executeQuery();
+        while (rs.next()) {
+          Note thisNote = constructNoteFromSqlResult(pool, rs);
+          Long numFavoritesInTimespan = rs.getLong(NUM_FAVORITES_IN_TIMESPAN_ID);
+          notes.add(new Object[] {thisNote, numFavoritesInTimespan});
+        }
+        rs.close();
+        return notes.toArray(new Object[0][0]);
+      }
+    }
+  }
+
+  /** Gets a sql where clause that filters by school or course if school or course is not null */
+  private String getStatementToFilterBySchoolOrCourse(String school, String course) {
+    String filterStmt = "WHERE 1=1 ";
+    if (school != null && !school.isEmpty()) {
+      filterStmt += "AND `school`= '" + school + "' ";
+    }
+    if (course != null && !course.isEmpty()) {
+      filterStmt += "AND `course`= '" + course + "' ";
+    }
+    return filterStmt;
+  }
+
+  /** Gets the sql query to return trending notes possibly filtered by school and/or course */
+  private String getTrendingNotesStatement(String schoolAndCourseFilter) {
+    String stmt = 
+        "SELECT * "
+      + "FROM " + NOTES + " AS a "
+      + "LEFT JOIN (SELECT note_id, COUNT(*) AS " + NUM_FAVORITES_IN_TIMESPAN_ID + " "
+                  + "FROM " + FAVORITE_NOTES + " "
+                  + "WHERE date >= ? " 
+                  + "GROUP BY note_id) AS b " 
+      + "ON a.id=b.note_id ";
+    if (schoolAndCourseFilter != null) stmt += schoolAndCourseFilter;
+    stmt += "ORDER BY count DESC;";
+    return stmt;
+  }
+
+  /** Gets the date based on recency */
+  private Date getDateBasedOnRecency(Recency recency) {
+    Date date;
+    Calendar calendar = Calendar.getInstance();
+    switch(recency) {
+      case THIS_WEEK:
+        calendar.add(Calendar.DAY_OF_MONTH, -7);
+        break;
+      case THIS_MONTH:
+        calendar.add(Calendar.DAY_OF_MONTH, -30);
+        break;
+      case ALL_TIME:
+        // No note should ever be favorited more than 100 years ago (for now...)
+        calendar.add(Calendar.YEAR, -100);
+        break;
+      default:
+    }
+    date = new Date(calendar.getTimeInMillis());
+    return date;
   }
 
   private Note constructNoteFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
