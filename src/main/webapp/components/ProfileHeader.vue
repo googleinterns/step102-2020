@@ -23,7 +23,6 @@ module.exports = {
   props: {
     points: Number,
     name: String,
-    displayPicture: String,
   }
 }
 </script>
