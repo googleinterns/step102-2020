@@ -2,7 +2,8 @@
   <v-card class="mx-auto"
           height="30vh"
           min-height="250px"
-          outline>
+          outline
+          tile>
     <v-img height="30vh"
            min-height="250px"
            src="/assets/profile_bg.jpg">

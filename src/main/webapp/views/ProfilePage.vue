@@ -40,7 +40,7 @@ module.exports = {
     return {
       user: {
         points: 0,
-        displayName: "Default Username"
+        displayName: "Default Username",
       },
       signedIn: false,
       descFavorites: function(noteA, noteB) {
