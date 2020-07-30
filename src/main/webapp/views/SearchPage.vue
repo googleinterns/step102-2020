@@ -1,7 +1,6 @@
 <template>
   <v-app> <!-- TODO: find a different, more semantically correct root element -->
     <search-bar @searchresult="updateSearchResult"></search-bar>
-    <mock-search @searchresult="updateSearchResult"></mock-search>
     <note-grid v-slot="{ filters }">
       <note-grid-collection :note-data="searchResult"
                             header="Most Favorited"
