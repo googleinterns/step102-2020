@@ -16,6 +16,7 @@
              v-if="!signedIn">
         Sign Up/Login
       </v-btn>
+
       <div v-if="signedIn">
         <upload-form id="post-note"></upload-form>
         <!-- User dropdown menu -->
@@ -35,6 +36,7 @@
                 <v-list-item-avatar>
                   <v-icon>mdi-account-circle</v-icon>
                 </v-list-item-avatar>
+
               <v-list-item-content>
                 <v-list-item-title>{{ user.displayName }}</v-list-item-title>
                 <v-list-item-subtitle>{{ user.points }} points</v-list-item-subtitle>
@@ -43,6 +45,7 @@
           </v-list>
 
             <v-divider></v-divider>
+
             <v-list>
               <v-list-item @click="">
                 <v-list-item-title>My Profile</v-list-item-title>
@@ -107,9 +110,6 @@ module.exports = {
           this.user = userInfo;
           this.signedIn = true;
         })
-    },
-    goToProfile() {
-      window.location.href = "/my-profile.html";
     },
     signIn() {
       this.googleAuth.signIn().then(() => {
