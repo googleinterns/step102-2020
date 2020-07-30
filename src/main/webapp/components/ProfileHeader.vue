@@ -1,11 +1,21 @@
 <template>
-  <div id="header">
-    <div id="title">
-      <p id="name">{{ name }}</p>
-      <p id="points">{{ points }} points</p>
-      <p id="school">{{ school }}</p>
-    </div>
-  </div>
+  <v-card class="mx-auto"
+          max-height="250px"
+          outline>
+    <v-img max-height="250px"
+           src="/assets/profile_bg.jpg">
+      <v-row align="end" class="fill-height">
+        <v-col class="py-0">
+          <v-list-item color="rgba(0, 0, 0, .4)" dark>
+            <v-list-item-content>
+              <v-list-item-title id="name">{{ name }}</v-list-item-title>
+              <v-list-item-subtitle id="points">{{ points }} points</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-col>
+      </v-row>
+    </v-img>
+  </v-card>
 </template>
 
 <script>
@@ -14,38 +24,18 @@ module.exports = {
     points: Number,
     name: String,
     displayPicture: String,
-    school: String
   }
 }
 </script>
 
 <style scoped>
-#header {
-  background-color: rgb(209, 228, 255);
-  display: flex;
-  padding: 50px;
-}
-
 #name {
   font: bold 3.5rem 'Roboto';
   margin: 0;
 }
 
 #points {
-  color: steelblue;
   font: bold 2rem 'Roboto';
   margin-bottom: 1rem;
-}
-
-#school {
-  font: italic 1.75rem 'Roboto';
-}
-
-#title {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 80%;
-  padding: 0 0 0 20px;
 }
 </style>
