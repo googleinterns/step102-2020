@@ -1,28 +1,50 @@
 <template>
-  <div class="note-grid-card" @click="$emit('click')">
-    <div class="thumbnail" :style="thumbnail"></div>
+  <v-col>
+    <v-card @click="onClick"
+            width="208px"
+            :color="cardColor">
+      <v-img :src="thumbnailSrc"
+             height="180px"
+             position="top">
+        <v-icon>{{ isGNote ? "mdi-google-drive" : "mdi-pdf-box" }}</v-icon>             
+      </v-img>
 
-    <div class="metadata">
-      <div class="note-title">{{title}}</div>
+      <v-divider></v-divider>
 
-      <div class="info-row">
-        <p>{{school}} &bull; {{course}}</p>
+      <v-card-title>
+        <v-list-item-title class="d-block text-truncate">{{title}}</v-list-item-title>
+      </v-card-title>
 
-        <img src="assets/gdrive.webp">
-        {{dateString}}
-        <div class="rating-box">
-          {{numFavorites}}
-          <span class="star">&star;</span>          
-        </div>
-      </div>
-    </div>
-  </div>
+      <v-card-subtitle>
+        <v-list-item-subtitle>{{ course }} • {{ school }}</v-list-item-subtitle>
+      </v-card-subtitle>
+
+      <v-card-text>
+        <v-row no-gutters>
+          <v-col>
+            {{dateCreated}}
+          </v-col>
+          <v-col col="1">
+            <v-badge overlap class="ma-1">
+              <template v-slot:badge>{{numFavorites}}</template>
+              <v-icon :color="favColor">mdi-star</v-icon>
+            </v-badge>
+            <v-badge overlap class="ma-1">
+              <template v-slot:badge>{{numDownloads}}</template>
+              <v-icon>mdi-download</v-icon>
+            </v-badge>
+          </v-col>
+        </v-row>
+      </v-card-text>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
   module.exports = {
     props: {
       thumbnailSrc: String,
+      id: Number,
       title: String,
       date: Date,
       school: String,
@@ -30,7 +52,13 @@
       labels: Array,
       numDownloads: Number,
       numFavorites: Number,
-      isFavorited: Boolean
+      isFavorited: Boolean,
+      isActive: Boolean,
+    },
+    data: function() {
+      return {
+        favorited: this.isFavorited,
+      }
     },
     computed: {
       thumbnail: function() {
@@ -41,78 +69,20 @@
       dateString: function() {
         return this.date.toDateString();
       },
+      isGNote: function() {
+        return true; // TODO: Check note data to determine if note is a GNote
+      },
+      cardColor: function() {
+        if (this.isActive) return "blue lighten-4"
+      },
+      favColor: function() {
+        if (this.favorited) return "yellow"
+      },
     },
     methods: {
       onClick: function() {
-        this.$emit('click');
-      }
+        this.isActive ? this.$emit('open-preview') : this.$emit('activate');
+      },
     }
   }
 </script>
-
-<style scoped>
-  .note-grid-card {
-    border: 1px solid #dfe1e5;
-    border-radius: 3px;
-    width: 208px;
-    margin-right: 20px;
-    margin-bottom: 20px;
-    display: inline-block;
-  }
-
-  .note-grid-card:hover {
-    border: 2px solid #afdbdf;
-  }
-
-  .thumbnail {
-    position: relative;
-    background-size: 208px;
-    height: 180px;
-  }
-
-  .metadata {
-    position: relative;
-    border-top: 1px solid #dfe1e5;
-  }
-
-  .note-title {
-    text-align: center;
-    font-weight: bold;
-    margin: 2px;
-  }
-
-  .info-row {
-    text-align: center;
-  }
-
-  .info-row p {
-    margin: 3px 0;
-  }
-
-  .info-row img {
-    height: 18px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-top: 2px solid #dfe1e5;
-    border-right: 2px solid #dfe1e5;
-  }
-
-  .rating-box {
-    display: inline-flex;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    height: 18px;
-    border-radius: 4px;
-    border-top: 2px solid #dfe1e5;
-    border-left: 2px solid #dfe1e5;
-  }
-
-  .star {
-    background-color: #aaa;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    font-size: 9pt;
-  }
-</style>
