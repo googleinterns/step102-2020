@@ -1,5 +1,5 @@
 <template>
-  <v-app> <!-- TODO: find a different, more semantically correct root element -->
+  <v-container>
     <search-bar @searchresult="updateSearchResult"></search-bar>
     <note-grid v-slot="{ filters }">
       <note-grid-collection :note-data="searchResult"
@@ -14,17 +14,16 @@
       </note-grid-collection>
       <!-- TODO: change trending timespan with a drop-down -->
       <note-grid-collection :note-data="searchResult"
-                            header="Trending Notes"
+                            header="Trending Notes this Week"
                             :filters="filters"
                             :compare-func="descTrending">
       </note-grid-collection>
     </note-grid>
-  </v-app>
+  </v-container>
 </template>
 
 <script>
 module.exports = {
-  // Example for how to load component <sample-component>
   components: {
     'navbar': httpVueLoader('/components/Navbar.vue'),
     'search-bar': httpVueLoader('/components/SearchBar.vue'),
