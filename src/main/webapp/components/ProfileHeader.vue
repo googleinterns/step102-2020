@@ -1,8 +1,10 @@
 <template>
   <v-card class="mx-auto"
-          max-height="250px"
+          height="30vh"
+          min-height="250px"
           outline>
-    <v-img max-height="250px"
+    <v-img height="30vh"
+           min-height="250px"
            src="/assets/profile_bg.jpg">
       <v-row align="end" class="fill-height">
         <v-col class="py-0">

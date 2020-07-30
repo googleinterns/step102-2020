@@ -10,8 +10,7 @@
     </v-container>
     <div v-else> 
       <profile-header :points="user.points"
-                      :name="user.displayName"
-                      :display-picture="user.displayPicture">
+                      :name="user.displayName">
       </profile-header>
       <div class="notes-container">
         <note-grid>
@@ -41,8 +40,7 @@ module.exports = {
     return {
       user: {
         points: 0,
-        displayName: "Default Username",
-        displayPicture: "Default Picture"
+        displayName: "Default Username"
       },
       signedIn: false,
       descFavorites: function(noteA, noteB) {
