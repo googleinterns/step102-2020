@@ -7,7 +7,7 @@ const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
 const FILE_PERMISSIONS_URL ='https://www.googleapis.com/drive/v3/files/fileId/permissions';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
-const WEBAPP_URL = 'http://step102-2020.appspot.com';
+const WEBAPP_URL = 'https://step102-2020.appspot.com';
 
 const CLIENT_ID = encodeURIComponent(keys.CLIENT_ID);
 const CLIENT_SECRET = encodeURIComponent(keys.CLIENT_SECRET);
