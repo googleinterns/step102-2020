@@ -1,6 +1,6 @@
 import keys from './config.js';
 
-const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
+const NOTES_TEMPLATE_DOC_ID = '1N-AO7aQou62iIKyYcqTbiQE_5-srdTkuUi5f1rIbgRQ';
 
 const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
 const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
@@ -212,7 +212,8 @@ function addGlobalPermissions(docId) {
     params: { fileId: docId },
     body: {
       role: 'reader',
-      type: 'anyone'
+      type: 'domain',
+      domain: 'google.com'
     }
   });
 }
