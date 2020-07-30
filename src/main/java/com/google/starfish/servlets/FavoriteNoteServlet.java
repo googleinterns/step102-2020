@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;  
 import javax.servlet.http.HttpServlet;  
 import javax.servlet.http.HttpSession;  
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
@@ -29,12 +28,11 @@ public class FavoriteNoteServlet extends HttpServlet {
   private NoteService noteService = new NoteService();
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
   private UserService userService = new UserService();
-  private final String COOKIE_NAME = "SFCookie";
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
     res.setContentType("application/json");
-    if(!validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.getWriter().println(false);
       return;
     }
@@ -65,7 +63,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    if(!validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -86,7 +84,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    if(!validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -103,31 +101,5 @@ public class FavoriteNoteServlet extends HttpServlet {
     } catch (SQLException ex) {
       System.err.print(ex);
     }
-  }
-
-  /**
-   * Validates the user using the request's session and cookies. If there is a
-   * valid user logged in, returns true. Otherwise, returns false.
-   **/
-  private boolean validateUser(HttpServletRequest req) {
-    Cookie[] cookies = req.getCookies();
-    String sessionId = null;
-    for (Cookie cookie : cookies) {
-      if (COOKIE_NAME.equals(cookie.getName())) {
-        sessionId = cookie.getValue();
-        break;
-      }
-    }
-
-    // If there was no cookie passed, then auth has failed and user is not logged in
-    if(sessionId == null) {
-      return false;
-    }
-
-    HttpSession activeSession = req.getSession(false);
-    if (activeSession == null || activeSession.getAttribute("user_id") == null) {
-      return false;
-    }
-    return true;
   }
 }

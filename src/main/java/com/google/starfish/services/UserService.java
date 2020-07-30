@@ -23,8 +23,8 @@ public class UserService extends TableService {
   private String USERS = Table.USERS.getSqlTable();
 
   // Points modifiers for different events
-  private final long FAVORITE_POINTS_MODIFIER = 3;
-  private final long DOWNLOAD_POINTS_MODIFIER = 5;
+  protected final long FAVORITE_POINTS_MODIFIER = 3;
+  protected final long DOWNLOAD_POINTS_MODIFIER = 5;
 
   public UserService() {
     super(Table.USERS);
@@ -114,7 +114,7 @@ public class UserService extends TableService {
         rs.next();
         return constructUserFromSqlResult(pool, rs);
       }
-     }
+    }
   }
 
   private User constructUserFromSqlResult(DataSource pool, ResultSet rs) throws SQLException {
