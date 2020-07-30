@@ -23,7 +23,7 @@
         <v-menu v-model="showDropdown" :offset-y="true">
           <template v-slot:activator="{ on, attrs }">
             <button v-bind="attrs"
-                   v-on="on">
+                    v-on="on">
               <v-avatar>
                 <v-img :src="user.displayPicture">
               </v-avatar>
