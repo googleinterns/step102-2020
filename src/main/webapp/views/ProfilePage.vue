@@ -5,19 +5,19 @@
       <h1>Please sign in</h1>
     </div> 
     <div v-else> 
-        <profile-header :points="user.points"
-                        :name="user.displayName">
-        </profile-header>
-        <note-grid>
-          <note-grid-collection :note-data="user.favoriteNotes"
-                                header="Favorited Notes"
-                                :compare-func="descFavorites">
-          </note-grid-collection>
-          <note-grid-collection :note-data="user.uploadedNotes"
-                                header="Uploaded Notes"
-                                :compare-func="descDate">
-          </note-grid-collection>
-        </note-grid>
+      <profile-header :points="user.points"
+                      :name="user.displayName">
+      </profile-header>
+      <note-grid>
+        <note-grid-collection :note-data="user.favoriteNotes"
+                              header="Favorited Notes"
+                              :compare-func="descFavorites">
+        </note-grid-collection>
+        <note-grid-collection :note-data="user.uploadedNotes"
+                              header="Uploaded Notes"
+                              :compare-func="descDate">
+        </note-grid-collection>
+      </note-grid>
      </div>
   </v-app>
 </template>
