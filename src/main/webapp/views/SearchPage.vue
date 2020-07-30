@@ -40,11 +40,11 @@ module.exports = {
         return noteB.numFavorites - noteA.numFavorites;
       },
       descDate: function(noteA, noteB) {
-        return Date.parse(noteB.dateCreated) - Date.parse(noteA.dateCreated);
+        return noteB.date - noteA.date;
       },
       descTrending: function(noteA, noteB) {
         let trendingIndex = 1;
-        return noteB[trendingIndex] - noteA[trendingIndex];
+        return noteB.trendingScore - noteA.trendingScore;
       },
     }
   },

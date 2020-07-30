@@ -9,7 +9,7 @@
         <p>{{school}} &bull; {{course}}</p>
 
         <img src="assets/gdrive.webp">
-        {{dateCreated}}
+        {{dateString}}
         <div class="rating-box">
           {{numFavorites}}
           <span class="star">&star;</span>          
@@ -24,7 +24,7 @@
     props: {
       thumbnailSrc: String,
       title: String,
-      dateCreated: String,
+      date: Date,
       school: String,
       course: String,
       labels: Array,
@@ -37,6 +37,9 @@
         // TODO: Generate a thumbnail of the pdf
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
+      },
+      dateString: function() {
+        return this.date.toDateString();
       },
     },
     methods: {

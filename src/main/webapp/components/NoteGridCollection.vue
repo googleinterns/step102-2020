@@ -29,6 +29,7 @@ module.exports = {
     notes: function() {
       // Filter by date, matching terms, and sort with compareFunc
       return this.noteData
+        .map(this.parseData)
         .filter(this.dateFilter)
         .filter(this.noteFilter)
         .sort(this.compareFunc);
@@ -37,6 +38,20 @@ module.exports = {
   methods: {
     onClick: function(note) {
       this.$parent.$emit('open-preview', note)
+    },
+    parseData: function(note) {
+      note[0].date = new Date(note[0].dateCreated);
+      // Move trendingScore from tuple to note object.
+      let trendingIndex = 1;
+      note[0].trendingScore = note[trendingIndex];
+      return note[0];
+    },
+    dateFilter: function(note) {
+      // If no age restriction, immediately pass filter.
+      if (!this.maxAge) return true;
+
+      // Pass if younger than maxAge.
+      return Date.now() - note.date < this.maxAge;
     },
     noteFilter: function(note) {
       // If no filter or empty filter, immediately pass filter.
@@ -52,13 +67,6 @@ module.exports = {
         ;
       });
     },
-    dateFilter: function(note) {
-      // If no age restriction, immediately pass filter.
-      if (!this.maxAge) return true;
-
-      // Pass if younger than maxAge.
-      return Date.now() - note.date < this.maxAge;
-    }
   },
 }
 </script>
