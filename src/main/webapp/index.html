@@ -29,18 +29,15 @@
   const Search = httpVueLoader('/views/SearchPage.vue')
   const Profile = httpVueLoader('/views/ProfilePage.vue')
 
-  // 2. Define some routes
-  const routes = [
-    { path: '/', component: Home },
-    { path: '/search', component: Search }
-  ]
-
-  // 3. Create the router instance and pass the `routes` option
+  // 2. Create the router instance and pass the `routes` option
   const router = new VueRouter({
-    routes // short for `routes: routes`
+    routes: [
+      { path: '/', component: Home },
+      { path: '/search', component: Search },
+    ]
   })
 
-  // 4. Create and mount the root instance.
+  // 3. Create and mount the root instance.
   const app = new Vue({
     router: router,
     components: {
