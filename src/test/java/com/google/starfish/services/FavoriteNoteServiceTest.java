@@ -1,7 +1,14 @@
 package com.google.starfish.services;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ArrayList;
 import java.sql.SQLException;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,139 +35,222 @@ public class FavoriteNoteServiceTest {
   private DataSource pool = Constants.pool;
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
 
-  private final Date today = favoriteNoteService.getDateBasedOnRecency(Recency.TODAY);
-  private final Date thisWeek = favoriteNoteService.getDateBasedOnRecency(Recency.THIS_WEEK);
-  private final Date thisMonth = favoriteNoteService.getDateBasedOnRecency(Recency.THIS_MONTH);
-  private final Date allTime = favoriteNoteService.getDateBasedOnRecency(Recency.ALL_TIME);
+  // Comparator to sort Note arrays by id
+  private final Comparator<Note> COMPARE_NOTES_BY_ID = new Comparator<Note>() {
+    @Override
+    public int compare(Note n1, Note n2) {
+      return Long.compare(n1.getId(), n2.getId());
+    }
+  };
 
-  private final String newSchool = "cornell university";
-  private final String newCourse = "cs1300";
-  private final String firstNewUserId = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 1);
-  private final String secondNewUserId = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 2);
+  // Variables to hold the indicated dates
+  private Date TODAY;
+  private Date THIS_WEEK;
+  private Date THIS_MONTH;
+  private Date ALL_TIME;
+
+  // These variables represent the total number of rows that should be inserted 
+  // into the FAVORITE_NOTES table where the data is as indicated.
+  private final int NUM_TRENDING_NOTES_TODAY = 2;
+  private final int NUM_TRENDING_NOTES_THIS_WEEK = NUM_TRENDING_NOTES_TODAY + 2;
+  private final int NUM_TRENDING_NOTES_THIS_MONTH = NUM_TRENDING_NOTES_THIS_WEEK + 2;
+  private final int NUM_TRENDING_NOTES_ALL_TIME = NUM_TRENDING_NOTES_THIS_MONTH + 1;
+
+  private final String NEW_SCHOOL = "cornell university";
+  private final String NEW_COURSE = "cs1300";
+  private final String FIRST_NEW_USER_ID = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 1);
+  private final String SECOND_NEW_USER_ID = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 2);
+  private final int NUM_NOTES_WITH_NEW_SCHOOL_AND_COURSE = 3;
+
+  // These arrays hold all notes in the database but are ordered by what's trending in the given timespan
+  private Note[] notesOrderedByTrendingToday;
+  private Note[] notesOrderedByTrendingThisWeek;
+  private Note[] notesOrderedByTrendingThisMonth;
+  private Note[] notesOrderedByTrendingAllTime;
+  private Note[] notesOrderedByTrendingAllTimeFiltered;
 
   private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
 
-  /** Clear DB and insert reference data */
+  /** Set dates, Clear DB, insert reference data, and set notes */
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
+    setDates();
     Operation operation = getBeforeTestOperation();
     DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
     dbSetup.launch();
+    setAllTrendingNotes();
   }
 
   /** Test to see if we can get all notes favorited by a single user */
   @Test
-  public void testGettingFavoriteNotesByUserId() throws SQLException {
-    Note[] favoriteNotes = favoriteNoteService.getFavoriteNotesByUserId(pool, firstNewUserId);
-    assertEquals(favoriteNotes.length, 7);
+  public void testGettingFavoriteNotesByUserId() throws SQLException, Exception {
+    Note[] favoriteNotes = favoriteNoteService.getFavoriteNotesByUserId(pool, SECOND_NEW_USER_ID);
+    if (favoriteNotes.length != 3) {
+      throw new Exception("Expected 3 notes for user " + SECOND_NEW_USER_ID + ", got: " + favoriteNotes.length);
+    } 
+    Arrays.sort(favoriteNotes, COMPARE_NOTES_BY_ID);
+    assertTrue(favoriteNotes[0].getId() == 2);
+    assertTrue(favoriteNotes[1].getId() == 4);
+    assertTrue(favoriteNotes[2].getId() == 6);
   }
 
   /** Test to see if we can get the number of times a particular note has been favorited */
   @Test
   public void testGettingNumFavoritesByNoteId() throws SQLException {
-    long numFavoritesOfNoteOne = favoriteNoteService.getNumFavoritesByNoteId(pool, 1);
-    long numFavoritesOfNoteTwo = favoriteNoteService.getNumFavoritesByNoteId(pool, 2);
-    assertTrue(numFavoritesOfNoteOne == 1);
-    assertTrue(numFavoritesOfNoteTwo == 2);
+    long numFavorites = favoriteNoteService.getNumFavoritesByNoteId(pool, 1);
+    assertTrue(numFavorites == 1);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes today */
   @Test
   public void testGettingTrendingNotesToday() throws SQLException, Exception {
-    Object[][] trendingNotesToday = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.TODAY, null, null);
-    // We should be getting all 7 notes irrespective of whether they are trending or not
-    if (trendingNotesToday.length != 7) throw new Exception("Retrieved wrong number of notes: " + trendingNotesToday.length);
-    int numTrendingNotes = 2;
-    Note mostTrendingNote = (Note) trendingNotesToday[0][0];
-    long numFavoritesMostTrendingNote = (long) trendingNotesToday[0][1];
-    Note leastTrendingNote = (Note) trendingNotesToday[numTrendingNotes - 1][0];
-    long numFavoritesLeastTrendingNote = (long) trendingNotesToday[numTrendingNotes - 1][1];
-    long numFavoritesFirstNoteWithNoFavorite = (long) trendingNotesToday[numTrendingNotes][1];
-    assertTrue(mostTrendingNote.getId() == 2);
-    assertTrue(numFavoritesMostTrendingNote == 2);
-    assertTrue(leastTrendingNote.getId() == 1);
-    assertTrue(numFavoritesLeastTrendingNote == 1);
-    assertTrue(numFavoritesFirstNoteWithNoFavorite == 0);
+    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingToday,
+                                                                                         NUM_TRENDING_NOTES_TODAY);
+    Note[] trendingNotes = separatedNotes.get("trending");
+    Note[] notTrendingNotes = separatedNotes.get("notTrending");
+    if (trendingNotes.length != NUM_TRENDING_NOTES_TODAY) {
+      throw new Exception("Expected " + NUM_TRENDING_NOTES_TODAY + " trending notes today, got: " + trendingNotes.length);
+    }
+    // Verify that each element of both arrays is what we expect
+    assertEquals(trendingNotes[0].getId(), 2);
+    assertEquals(trendingNotes[1].getId(), 1);
+    assertEquals(notTrendingNotes[0].getId(), 3);
+    assertEquals(notTrendingNotes[1].getId(), 4);
+    assertEquals(notTrendingNotes[2].getId(), 5);
+    assertEquals(notTrendingNotes[3].getId(), 6);
+    assertEquals(notTrendingNotes[4].getId(), 7);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this week */
   @Test 
   public void testGettingTrendingNotesThisWeek() throws SQLException, Exception {
-    Object[][] trendingNotesThisWeek = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_WEEK, null, null);
-    // We should be getting all 7 notes irrespective of whether they are trending or not
-    if (trendingNotesThisWeek.length != 7) throw new Exception("Retrieved wrong number of notes: " + trendingNotesThisWeek.length);
-    int numTrendingNotes = 4;
-    Note mostTrendingNote = (Note) trendingNotesThisWeek[0][0];
-    long numFavoritesMostTrendingNote = (long) trendingNotesThisWeek[0][1];
-    Note leastTrendingNote = (Note) trendingNotesThisWeek[numTrendingNotes - 1][0];
-    long numFavoritesLeastTrendingNote = (long) trendingNotesThisWeek[numTrendingNotes - 1][1];
-    long numFavoritesFirstNoteWithNoFavorite = (long) trendingNotesThisWeek[numTrendingNotes][1];
-    assertTrue(mostTrendingNote.getId() == 4 || mostTrendingNote.getId() == 2);
-    assertTrue(numFavoritesMostTrendingNote == 2);
-    assertTrue(leastTrendingNote.getId() == 3 || leastTrendingNote.getId() == 1);
-    assertTrue(numFavoritesLeastTrendingNote == 1);
-    assertTrue(numFavoritesFirstNoteWithNoFavorite == 0);
+    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingThisWeek,
+                                                                                         NUM_TRENDING_NOTES_THIS_WEEK);
+    Note[] trendingNotes = separatedNotes.get("trending");
+    Note[] notTrendingNotes = separatedNotes.get("notTrending");
+    if (trendingNotes.length != NUM_TRENDING_NOTES_THIS_WEEK) {
+      throw new Exception("Expected " + NUM_TRENDING_NOTES_THIS_WEEK + " trending notes today, got: " + trendingNotes.length);
+    }
+    // Verify that the important elements of both arrays are what we expect
+    assertTrue(trendingNotes[0].getId() == 2 || trendingNotes[0].getId() ==  4);
+    assertEquals(notTrendingNotes[0].getId(), 5);
+    assertEquals(notTrendingNotes[1].getId(), 6);
+    assertEquals(notTrendingNotes[2].getId(), 7);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this month */
   @Test
   public void testGettingTrendingNotesThisMonth() throws SQLException, Exception {
-    Object[][] trendingNotesThisMonth = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_MONTH, null, null);
-    // We should be getting all 7 notes irrespective of whether they are trending or not
-    if (trendingNotesThisMonth.length != 7) throw new Exception("Retrieved wrong number of notes: " + trendingNotesThisMonth.length);
-    int numTrendingNotes = 6;
-    Note mostTrendingNote = (Note) trendingNotesThisMonth[0][0];
-    long numFavoritesMostTrendingNote = (long) trendingNotesThisMonth[0][1];
-    Note leastTrendingNote = (Note) trendingNotesThisMonth[numTrendingNotes - 1][0];
-    long numFavoritesLeastTrendingNote = (long) trendingNotesThisMonth[numTrendingNotes - 1][1];
-    long numFavoritesFirstNoteWithNoFavorite = (long) trendingNotesThisMonth[numTrendingNotes][1];
-    assertTrue(mostTrendingNote.getId() == 6 ||  mostTrendingNote.getId() == 4 || mostTrendingNote.getId() == 2);
-    assertTrue(numFavoritesMostTrendingNote == 2);
-    assertTrue(leastTrendingNote.getId() == 5 || leastTrendingNote.getId() == 3 || leastTrendingNote.getId() == 1);
-    assertTrue(numFavoritesLeastTrendingNote == 1);
-    assertTrue(numFavoritesFirstNoteWithNoFavorite == 0);
+    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingThisMonth,
+                                                                                         NUM_TRENDING_NOTES_THIS_MONTH);
+    Note[] trendingNotes = separatedNotes.get("trending");
+    Note[] notTrendingNotes = separatedNotes.get("notTrending");
+    if (trendingNotes.length != NUM_TRENDING_NOTES_THIS_MONTH) {
+      throw new Exception("Expected " + NUM_TRENDING_NOTES_THIS_MONTH + " trending notes today, got: " + trendingNotes.length);
+    }
+    // Verify that the important elements of both arrays are what we expect
+    assertTrue(trendingNotes[0].getId() == 2 || trendingNotes[0].getId() ==  4 || trendingNotes[0].getId() == 6);
+    assertEquals(notTrendingNotes[0].getId(), 7);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time */
   @Test
   public void testGettingTrendingNotesAllTime() throws SQLException, Exception {
-    Object[][] trendingNotesAllTime = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, null, null);
-    // We should be getting all 7 notes irrespective of whether they are trending or not
-    if (trendingNotesAllTime.length != 7) throw new Exception("Retrieved wrong number of notes: " + trendingNotesAllTime.length);
-    int numTrendingNotes = 7;
-    Note mostTrendingNote = (Note) trendingNotesAllTime[0][0];
-    long numFavoritesMostTrendingNote = (long) trendingNotesAllTime[0][1];
-    Note leastTrendingNote = (Note) trendingNotesAllTime[numTrendingNotes - 1][0];
-    long numFavoritesLeastTrendingNote = (long) trendingNotesAllTime[numTrendingNotes - 1][1];
-    // There is no note with 0 favorites all time, so we don't check for the first note with no favorite
-    assertTrue(mostTrendingNote.getId() == 6 ||  
-               mostTrendingNote.getId() == 4 || 
-               mostTrendingNote.getId() == 2);
-    assertTrue(numFavoritesMostTrendingNote == 2);
-    assertTrue(leastTrendingNote.getId() == 7 || 
-               leastTrendingNote.getId() == 5 || 
-               leastTrendingNote.getId() == 3 || 
-               leastTrendingNote.getId() == 1);
-    assertTrue(numFavoritesLeastTrendingNote == 1);
+    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingAllTime,
+                                                                                         NUM_TRENDING_NOTES_ALL_TIME);
+    Note[] trendingNotes = separatedNotes.get("trending");
+    Note[] notTrendingNotes = separatedNotes.get("notTrending");
+    if (trendingNotes.length != NUM_TRENDING_NOTES_ALL_TIME) {
+      throw new Exception("Expected " + NUM_TRENDING_NOTES_ALL_TIME + " trending notes today, got: " + trendingNotes.length);
+    }
+    // Verify that the important elements of both arrays are what we expect
+    assertTrue(trendingNotes[0].getId() == 2 || trendingNotes[0].getId() ==  4 || trendingNotes[0].getId() == 6);
+    assertEquals(notTrendingNotes.length, 0);
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time filtered by school and course */
   @Test
   public void testGettingTrendingNotesAllTimeFilteredBySchoolAndCourse() throws SQLException, Exception {
-    Object[][] trendingNotesAllTime = favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, 
-                                                                                           Recency.ALL_TIME, 
-                                                                                           newSchool, 
-                                                                                           newCourse);
-    if (trendingNotesAllTime.length != 4) throw new Exception("Retrieved wrong number of notes: " + trendingNotesAllTime.length);
-    Note mostTrendingNote = (Note) trendingNotesAllTime[0][0];
-    long numFavoritesMostTrendingNote = (long) trendingNotesAllTime[0][1];
-    Note leastTrendingNote = (Note) trendingNotesAllTime[3][0];
-    long numFavoritesLeastTrendingNote = (long) trendingNotesAllTime[3][1];
-    assertTrue(mostTrendingNote.getId() == 6 ||  mostTrendingNote.getId() == 4);
-    assertTrue(numFavoritesMostTrendingNote == 2);
-    assertTrue(leastTrendingNote.getId() == 7 || leastTrendingNote.getId() == 5);
-    assertTrue(numFavoritesLeastTrendingNote == 1);
+    int numFilteredNotes = NUM_TRENDING_NOTES_ALL_TIME - NUM_NOTES_WITH_NEW_SCHOOL_AND_COURSE;
+    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingAllTimeFiltered,
+                                                                                         numFilteredNotes);
+    Note[] trendingNotes = separatedNotes.get("trending");
+    Note[] notTrendingNotes = separatedNotes.get("notTrending");
+    if (trendingNotes.length != numFilteredNotes) {
+      throw new Exception("Expected " + numFilteredNotes + " trending notes today, got: " + trendingNotes.length);
+    }
+    // Verify that the important elements of both arrays are what we expect
+    assertTrue(trendingNotes[0].getId() ==  4 || trendingNotes[0].getId() == 6);
+    assertEquals(notTrendingNotes.length, 0);
+  }
+
+  /** Gets and sets trending notes for various cases of Recency */
+  private void setAllTrendingNotes() throws SQLException, Exception {
+    notesOrderedByTrendingToday = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.TODAY, null, null));
+    notesOrderedByTrendingThisWeek = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_WEEK, null, null));
+    notesOrderedByTrendingThisMonth = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_MONTH, null, null));
+    notesOrderedByTrendingAllTime = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, null, null));
+    notesOrderedByTrendingAllTimeFiltered = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, NEW_SCHOOL, NEW_COURSE));
+
+    if (notesOrderedByTrendingToday.length != 7) {
+      throw new Exception("Expected 7 notes today, got: " + notesOrderedByTrendingToday.length);
+    }
+    if (notesOrderedByTrendingThisWeek.length != 7) {
+      throw new Exception("Expected 7 notes this week, got: " + notesOrderedByTrendingThisWeek.length);
+    }
+    if (notesOrderedByTrendingThisMonth.length != 7) {
+      throw new Exception("Expected 7 notes this month, got: " + notesOrderedByTrendingThisMonth.length);
+    } 
+    if (notesOrderedByTrendingAllTime.length != 7) {
+      throw new Exception("Expected 7 notes all time, got: " + notesOrderedByTrendingAllTime.length);
+    } 
+    if (notesOrderedByTrendingAllTimeFiltered.length != 4) {
+      throw new Exception("Expected 4 filtered notes all time, got: " + notesOrderedByTrendingAllTimeFiltered.length);
+    } 
+  }
+
+  /** Separates the notes that are trending (i.e. have more than 0 favorites) from those that are not trending */
+  private HashMap<String, Note[]> separateTrendingNotesAndSortNotTrendingById(Note[] notes, int numTrending) {
+    HashMap<String, Note[]> separatedNotes = new HashMap<>();
+    Note[] trendingNotes = Arrays.copyOfRange(notes, 0, numTrending);
+    separatedNotes.put("trending", trendingNotes);
+    if (numTrending < notes.length) {
+      Note[] notTrendingNotes = Arrays.copyOfRange(notes, numTrending, notes.length);
+      Arrays.sort(notTrendingNotes, COMPARE_NOTES_BY_ID);
+      separatedNotes.put("notTrending", notTrendingNotes);
+    } else {
+      separatedNotes.put("notTrending", new Note[0]);
+    }
+    return separatedNotes;
+  }
+
+  /** Extracts note objects from 2D object array which in each element, holds a 2-element array where the
+   *  first index is a note object and the second index is the number of favorites in a given timespan
+   */
+  private Note[] extractNotesFrom2DArray(Object[][] notesAndFavoritesInTimespan) {
+    List<Note> notes = new ArrayList<>();
+    for (Object[] noteAndFavorites : notesAndFavoritesInTimespan) {
+      notes.add((Note) noteAndFavorites[0]);
+    }
+    return notes.toArray(new Note[0]);
+  }
+
+  /** Dynamically sets the dates as indicated */
+  private void setDates() {
+    Calendar cal = Calendar.getInstance();
+    TODAY = new Date(cal.getTimeInMillis());
+    cal.add(Calendar.DAY_OF_MONTH, -7);
+    THIS_WEEK = new Date(cal.getTimeInMillis());
+    cal.add(Calendar.DAY_OF_MONTH, -23);
+    THIS_MONTH = new Date(cal.getTimeInMillis());
+    cal.add(Calendar.YEAR, -100);
+    ALL_TIME = new Date(cal.getTimeInMillis());
   }
 
   /** Operation that should be run before every test */
@@ -179,7 +269,7 @@ public class FavoriteNoteServiceTest {
                   "points",
                   "school")
                 .values(
-                  firstNewUserId,
+                  FIRST_NEW_USER_ID,
                   "test.url",
                   "Aradhya",
                   new Date(Calendar.getInstance().getTimeInMillis()),
@@ -187,7 +277,7 @@ public class FavoriteNoteServiceTest {
                   0,
                   constants.REFERENCE_SCHOOL)
                 .values(
-                  secondNewUserId,
+                  SECOND_NEW_USER_ID,
                   "test.url",
                   "Aradhya",
                   new Date(Calendar.getInstance().getTimeInMillis()),
@@ -197,8 +287,8 @@ public class FavoriteNoteServiceTest {
                 .build(),
             insertInto(LABELS)
                 .columns("title", "type")
-                .values(newSchool, "School")
-                .values(newCourse, "Course")
+                .values(NEW_SCHOOL, "School")
+                .values(NEW_COURSE, "Course")
                 .build(),
             insertInto(NOTES)
                 .columns(
@@ -219,7 +309,7 @@ public class FavoriteNoteServiceTest {
                   "The Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  today,
+                  TODAY,
                   0)
                 .values(
                   2,
@@ -229,7 +319,7 @@ public class FavoriteNoteServiceTest {
                   "The Second Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  today,
+                  TODAY,
                   0)
                 .values(
                   3,
@@ -239,61 +329,61 @@ public class FavoriteNoteServiceTest {
                   "The Third Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  thisWeek,
+                  THIS_WEEK,
                   0)
                 .values(
                   4,
                   constants.REFERENCE_USER_ID,
-                  newSchool,
-                  newCourse,
+                  NEW_SCHOOL,
+                  NEW_COURSE,
                   "The Fourth Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  thisWeek,
+                  THIS_WEEK,
                   0)
                 .values(
                   5,
                   constants.REFERENCE_USER_ID,
-                  newSchool,
-                  newCourse,
+                  NEW_SCHOOL,
+                  NEW_COURSE,
                   "The Fifth Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  thisMonth,
+                  THIS_MONTH,
                   0)
                 .values(
                   6,
                   constants.REFERENCE_USER_ID,
-                  newSchool,
-                  newCourse,
+                  NEW_SCHOOL,
+                  NEW_COURSE,
                   "The Sixth Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  thisMonth,
+                  THIS_MONTH,
                   0)
                 .values(
                   7,
                   constants.REFERENCE_USER_ID,
-                  newSchool,
-                  newCourse,
+                  NEW_SCHOOL,
+                  NEW_COURSE,
                   "The Seventh Best Notes Ever",
                   "test.url",
                   "pdftest.url",
-                  allTime,
+                  ALL_TIME,
                   0)
                 .build(),
             insertInto(FAVORITE_NOTES)
                 .columns("user_id", "note_id", "date")
-                .values(firstNewUserId, 1, today)
-                .values(firstNewUserId, 2, today)
-                .values(firstNewUserId, 3, thisWeek)
-                .values(firstNewUserId, 4, thisWeek)
-                .values(firstNewUserId, 5, thisMonth)
-                .values(firstNewUserId, 6, thisMonth)
-                .values(firstNewUserId, 7, allTime)
-                .values(secondNewUserId, 2, today)
-                .values(secondNewUserId, 4, thisWeek)
-                .values(secondNewUserId, 6, thisMonth)
+                .values(FIRST_NEW_USER_ID, 1, TODAY)
+                .values(FIRST_NEW_USER_ID, 2, TODAY)
+                .values(FIRST_NEW_USER_ID, 3, THIS_WEEK)
+                .values(FIRST_NEW_USER_ID, 4, THIS_WEEK)
+                .values(FIRST_NEW_USER_ID, 5, THIS_MONTH)
+                .values(FIRST_NEW_USER_ID, 6, THIS_MONTH)
+                .values(FIRST_NEW_USER_ID, 7, ALL_TIME)
+                .values(SECOND_NEW_USER_ID, 2, TODAY)
+                .values(SECOND_NEW_USER_ID, 4, THIS_WEEK)
+                .values(SECOND_NEW_USER_ID, 6, THIS_MONTH)
                 .build());
     return operation;
   }
