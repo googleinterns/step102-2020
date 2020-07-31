@@ -1,6 +1,5 @@
 <template>
   <v-footer color="blue darken-3"
-            absolute
             dark>
     <v-col class="text-center" cols="12">
       <span>Made with &hearts; at 
