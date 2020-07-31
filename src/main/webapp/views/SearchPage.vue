@@ -1,7 +1,6 @@
 <template>
-  <v-app> <!-- TODO: find a different, more semantically correct root element -->
+  <v-container>
     <search-bar @searchresult="updateSearchResult"></search-bar>
-    <mock-search @searchresult="updateSearchResult"></mock-search>
     <note-grid v-slot="{ filters }">
       <note-grid-collection :note-data="searchResult"
                             header="Most Favorited"
@@ -13,26 +12,18 @@
                             :filters="filters"
                             :compare-func="descDate">
       </note-grid-collection>
-      <!-- 
-        The following note-grid-collection sample is a rudimentary way of displaying notes 
-        that have gained the most score recently (1 week). In practice, the backend will need 
-        a way of counting the # of favorites and downloads a share has had in the past X days.
-      -->
-      <!--
+      <!-- TODO: change trending timespan with a drop-down -->
       <note-grid-collection :note-data="searchResult"
-                            header="Trending Notes"
+                            header="Trending Notes this Week"
                             :filters="filters"
-                            :compare-func="descFavorites"
-                            :max-age="7 * 24 * 60 * 60 * 1000">
+                            :compare-func="descTrending">
       </note-grid-collection>
-      -->
     </note-grid>
-  </v-app>
+  </v-container>
 </template>
 
 <script>
 module.exports = {
-  // Example for how to load component <sample-component>
   components: {
     'navbar': httpVueLoader('/components/Navbar.vue'),
     'search-bar': httpVueLoader('/components/SearchBar.vue'),
@@ -47,8 +38,12 @@ module.exports = {
         return noteB.numFavorites - noteA.numFavorites;
       },
       descDate: function(noteA, noteB) {
-        return Date.parse(noteB.dateCreated) - Date.parse(noteA.dateCreated);
-      }
+        return noteB.date - noteA.date;
+      },
+      descTrending: function(noteA, noteB) {
+        let trendingIndex = 1;
+        return noteB.trendingScore - noteA.trendingScore;
+      },
     }
   },
   methods: {

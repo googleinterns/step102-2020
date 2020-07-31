@@ -22,7 +22,7 @@
       <v-card-text>
         <v-row no-gutters>
           <v-col>
-            {{dateCreated}}
+            {{dateString}}
           </v-col>
           <v-col col="1">
             <v-badge overlap class="ma-1">
@@ -46,7 +46,7 @@
       thumbnailSrc: String,
       id: Number,
       title: String,
-      dateCreated: String,
+      date: Date,
       school: String,
       course: String,
       labels: Array,
@@ -66,6 +66,9 @@
         let source = 'assets/notes.png';
         return {backgroundImage:`url(${source})`};
       },
+      dateString: function() {
+        return this.date.toDateString();
+      },
       isGNote: function() {
         return true; // TODO: Check note data to determine if note is a GNote
       },
@@ -74,7 +77,7 @@
       },
       favColor: function() {
         if (this.favorited) return "yellow"
-      }
+      },
     },
     methods: {
       onClick: function() {

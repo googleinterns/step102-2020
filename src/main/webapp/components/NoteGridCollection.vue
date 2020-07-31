@@ -50,14 +50,39 @@ module.exports = {
       this.nextTick(() => this.selected = null)
       // Filter by date, matching terms, and sort with compareFunc
       return this.noteData
+        .map(this.parseData)
         .filter(this.dateFilter)
         .filter(this.noteFilter)
         .sort(this.compareFunc);
+    },
+    hasTrendingData: function() {
+      // If some entry of noteData (arbitrarily the first) is a nested array, the noteData contains trendingData.
+      return Array.isArray(this.noteData[0]);
     },
   },
   methods: {
     onOpenPreview: function(note) {
       this.$parent.$emit('open-preview', note);
+    },
+    parseData: function(note) {
+      // If note does not have trending data, it is not a tuple and should be parsed differently.
+      if (!this.hasTrendingData) {
+        note.date = new Date(note.dateCreated);
+        return note;
+      } else {
+        note[0].date = new Date(note[0].dateCreated);
+        // Move trendingScore from tuple to note object.
+        let trendingIndex = 1;
+        note[0].trendingScore = note[trendingIndex];
+        return note[0];
+      }
+    },
+    dateFilter: function(note) {
+      // If no age restriction, immediately pass filter.
+      if (!this.maxAge) return true;
+
+      // Pass if younger than maxAge.
+      return Date.now() - note.date < this.maxAge;
     },
     noteFilter: function(note) {
       // If no filter or empty filter, immediately pass filter.
@@ -72,13 +97,6 @@ module.exports = {
           || note.course.toLowerCase().includes(filter)
         ;
       });
-    },
-    dateFilter: function(note) {
-      // If no age restriction, immediately pass filter.
-      if (!this.maxAge) return true;
-
-      // Pass if younger than maxAge.
-      return Date.now() - note.date < this.maxAge;
     },
     nextTick: function(f) {
       // Avoids race conditions with function f
