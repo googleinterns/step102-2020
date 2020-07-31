@@ -187,7 +187,7 @@ public class FavoriteNoteService {
   }
 
   /** Gets the date based on recency */
-  protected Date getDateBasedOnRecency(Recency recency) {
+  private Date getDateBasedOnRecency(Recency recency) {
     Date date;
     Calendar calendar = Calendar.getInstance();
     switch(recency) {
