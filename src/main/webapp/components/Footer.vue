@@ -17,21 +17,21 @@
 <style scoped>
 
 span {
-  padding: 3px;
   display: inline-block;
+  padding: 3px;
 }
 
 img {
-  height: 20px;
-  width: auto;
   display: inline-block;
+  height: 20px;
   vertical-align: middle;
+  width: auto;
 }
 
 a {
   color: inherit;
-  text-decoration: none;
   cursor: pointer;
+  text-decoration: none;
 }
 
 a:hover {
