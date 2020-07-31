@@ -12,6 +12,7 @@
     <!-- route outlet -->
     <!-- component matched by the route will render here -->
     <router-view></router-view>
+    <page-footer></page-footer>
   </v-app>
 </div>
 
@@ -43,6 +44,7 @@
     router: router,
     components: {
       'navbar': httpVueLoader('/components/Navbar.vue'),
+      'page-footer': httpVueLoader('/components/Footer.vue')
     },
     vuetify: new Vuetify(),
   }).$mount('#app')
