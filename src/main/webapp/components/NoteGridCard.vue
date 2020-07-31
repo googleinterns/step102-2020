@@ -52,6 +52,7 @@
       labels: Array,
       numDownloads: Number,
       numFavorites: Number,
+      pdfSource: String,
       isFavorited: Boolean,
       isActive: Boolean,
     },
@@ -70,7 +71,7 @@
         return this.date.toDateString();
       },
       isGNote: function() {
-        return true; // TODO: Check note data to determine if note is a GNote
+        return this.pdfSource.includes('google');
       },
       cardColor: function() {
         if (this.isActive) return "blue lighten-4"
