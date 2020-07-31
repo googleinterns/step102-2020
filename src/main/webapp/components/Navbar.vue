@@ -47,7 +47,7 @@
             <v-divider></v-divider>
 
             <v-list>
-              <v-list-item @click="">
+              <v-list-item @click="goToProfilePage">
                 <v-list-item-title>My Profile</v-list-item-title>
               </v-list-item>
               <v-list-item @click="signOut">
@@ -86,6 +86,9 @@ module.exports = {
         this.googleAuth = gapi.auth2.getAuthInstance();
         if(this.googleAuth.isSignedIn.get()) this.registerUser();
       })
+    },
+    goToProfilePage() {
+      window.location.href = "my-profile.html";
     },
     registerUser() {
       const authRes = this.googleAuth.currentUser.get().getAuthResponse();
@@ -137,6 +140,9 @@ module.exports = {
   watch: {
     user: function(userVal) {
       this.$emit('setuser', userVal);
+    },
+    signedIn: function(signedInVal) {
+      this.$emit('signedin', signedInVal);
     }
   }
 }
