@@ -19,13 +19,13 @@
 
         <a href="#" @click="toggleFavorite">
           <v-badge class="ma-2">
-            <template v-slot:badge>{{numFavorites}}</template>
+            <template v-slot:badge>{{currNumFavorites}}</template>
             <v-icon :color="iconColor" class="action-icon">mdi-star</v-icon>
           </v-badge>
         </a>
         <a :href="pdfSource" :download="title" @click="increment">
           <v-badge class="ma-2">
-            <template v-slot:badge>{{numDownloads}}</template>
+            <template v-slot:badge>{{currNumDownloads}}</template>
             <v-icon class="action-icon">mdi-download</v-icon>
           </v-badge>
         </a>
@@ -73,13 +73,16 @@
         authorInfo: {
           displayName: '',
           points: ''
-        }
+        },
+        currNumFavorites: 0,
+        currNumDownloads: 0
       }
     },
     mounted: function() {
       this.$parent.$on('open-preview', note => {
-        if(this.id) {
-          this.setFavorite();
+        if(note.id) {
+          this.setFavorite(note.id);
+          this.setDownload(note.id);
         }
         this.showPreview = true;
       });
@@ -88,36 +91,45 @@
       increment: function() {
         fetch('/download-note?note_id=' + this.id, {
           method: 'POST'
-        })
+        }).then(() => this.currNumDownloads++)
       },
       toggleFavorite: function() {
-        this.getFavorited()
-          .then(isFavorited => {
-            this.favorited = isFavorited;
+        this.getFavorited(this.id)
+          .then(favoriteInfo => {
+            this.favorited = favoriteInfo.isFavorited == 1;
             const method = this.favorited ? 'DELETE' : 'POST';
             fetch('/favorite-note?note_id=' + this.id, {
               method: method
             }).then(response => {
               if(response.status === 403) alert('Please sign in to favorite this note.');
-              else this.favorited = !this.favorited;
+              else {
+                this.favorited = !this.favorited;
+                this.currNumFavorites += method === 'POST' ? 1 : -1;
+              }
             })
           })
       },
-      getFavorited: function() {
-        return fetch('/favorite-note?note_id=' + this.id)
-          .then(response => response.json());
+      getFavorited: function(noteId) {
+        return fetch('/favorite-note?note_id=' + noteId)
+          .then(response => {console.log(response); return response.json()});
       },
-      setFavorite: function() {
-        this.getFavorited()
-          .then(isFavorited => {
-            this.favorited = isFavorited;
+      setFavorite: function(noteId) {
+        this.getFavorited(noteId)
+          .then(favoriteInfo => {
+            this.favorited = favoriteInfo.isFavorited == 1;
+            this.currNumFavorites = favoriteInfo.numFavorites;
           });
+      },
+      setDownload: function(noteId) {
+        fetch('/download-note?note_id=' + noteId)
+          .then(response => response.json())
+          .then(downloadInfo => this.currNumDownloads = downloadInfo);
       }
     },
     watch: {
       id: function(noteId) {
         if(noteId) {
-          this.setFavorite();
+          this.setFavorite(noteId);
           fetch('/get-author-info?userId=' + this.authorId)
             .then(response => response.json())
             .then(userInfo => this.authorInfo = userInfo);

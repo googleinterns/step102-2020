@@ -20,6 +20,7 @@ import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 /** Servlet that either adds or removes a row from the favorite notes table */
 @WebServlet("/favorite-note")  
@@ -54,7 +55,11 @@ public class FavoriteNoteServlet extends HttpServlet {
         favStmt.setLong(2, noteId);
         ResultSet rs = favStmt.executeQuery();
         rs.next();
-        res.getWriter().println(rs.getBoolean(1));
+        HashMap<String, Long> favoriteInfo = new HashMap<>();
+        favoriteInfo.put("isFavorited", rs.getLong(1));
+        favoriteInfo.put("numFavorites", favoriteNoteService.getNumFavoritesByNoteId(pool, noteId));
+        String json = convertObjectToJSON(favoriteInfo);
+        res.getWriter().println(json);
       }
     } catch (SQLException ex) {
       System.err.print(ex);
@@ -101,5 +106,11 @@ public class FavoriteNoteServlet extends HttpServlet {
     } catch (SQLException ex) {
       System.err.print(ex);
     }
+  }
+
+  /** Converts an object to JSON */
+  private String convertObjectToJSON(HashMap<String, Long> favorites) {
+    Gson gson = new Gson();
+    return gson.toJson(favorites);
   }
 }
