@@ -57,7 +57,7 @@ public class HandleNotesServlet extends HttpServlet {
     String title = request.getParameter("title");
     String school = request.getParameter("school").toLowerCase();
     String course = request.getParameter("course").toLowerCase();
-    String[] miscLabels = request.getParameterValues("miscLabels");
+    String[] miscLabels = request.getParameter("miscLabels").split(",");
 
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 
