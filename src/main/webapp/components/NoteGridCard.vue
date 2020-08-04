@@ -3,7 +3,7 @@
     <v-card @click="onClick"
             width="208px"
             :color="cardColor">
-      <v-img :src="thumbnailSrc"
+      <v-img :src="thumbnail"
              height="180px"
              position="top">
         <v-icon>{{ isGNote ? "mdi-google-drive" : "mdi-pdf-box" }}</v-icon>             
@@ -64,8 +64,7 @@
     computed: {
       thumbnail: function() {
         // TODO: Generate a thumbnail of the pdf
-        let source = 'assets/notes.png';
-        return {backgroundImage:`url(${source})`};
+        return 'assets/starfish-2.png';
       },
       dateString: function() {
         return this.date.toDateString();
