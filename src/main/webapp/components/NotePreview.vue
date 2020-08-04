@@ -35,7 +35,7 @@
                     :labels="miscLabels">
         </label-list>
 
-        <iframe :src="sourceUrl"></iframe>
+        <iframe :src="modifiedSourceUrl"></iframe>
         <button class="report">Report</button>
       </v-card>
     </v-dialog>
@@ -91,7 +91,10 @@
       increment: function() {
         fetch('/download-note?note_id=' + this.id, {
           method: 'POST'
-        }).then(() => this.currNumDownloads++)
+        }).then(() => {
+          this.currNumDownloads++;
+          this.setAuthorInfo(this.authorId);
+        })
       },
       toggleFavorite: function() {
         this.getFavorited(this.id)
@@ -105,6 +108,7 @@
               else {
                 this.favorited = !this.favorited;
                 this.currNumFavorites += method === 'POST' ? 1 : -1;
+                this.setAuthorInfo(this.authorId);
               }
             })
           })
@@ -124,19 +128,31 @@
         fetch('/download-note?note_id=' + noteId)
           .then(response => response.json())
           .then(downloadInfo => this.currNumDownloads = downloadInfo);
+      },
+      setAuthorInfo: function(authorId) {
+        fetch('/get-author-info?userId=' + authorId)
+          .then(response => response.json())
+          .then(userInfo => this.authorInfo = userInfo);
       }
     },
     watch: {
       id: function(noteId) {
         if(noteId) {
           this.setFavorite(noteId);
-          fetch('/get-author-info?userId=' + this.authorId)
-            .then(response => response.json())
-            .then(userInfo => this.authorInfo = userInfo);
+          this.setDownload(noteId);
+          this.setAuthorInfo(this.authorId);
         }
       },
       favorited: function(favoriteStatus) {
         this.iconColor = this.favorited ? 'yellow' : 'undefined';
+      }
+    },
+    computed: {
+      modifiedSourceUrl: function() {
+        if(this.sourceUrl && this.sourceUrl.includes('google')) {
+          return this.sourceUrl + '/preview';
+        }
+        return this.sourceUrl;
       }
     }
   }
