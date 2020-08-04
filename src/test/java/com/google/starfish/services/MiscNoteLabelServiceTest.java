@@ -25,9 +25,9 @@ public class MiscNoteLabelServiceTest {
   private DataSource pool = Constants.pool;
   private MiscNoteLabelService miscNoteLabelService = new MiscNoteLabelService();
 
-  private final String miscLabelOne = "best";
-  private final String miscLabelTwo = "hard";
-  private final String miscLabelThree = "math";
+  private final String MISC_LABEL_ONE = "best";
+  private final String MISC_LABEL_TWO = "hard";
+  private final String MISC_LABEL_THREE = "math";
 
   private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
 
@@ -48,9 +48,9 @@ public class MiscNoteLabelServiceTest {
     String mostUsedLabel = mostUsedLabels[0];
     String secondMostUsedLabel = mostUsedLabels[1];
     String thirdMostUsedLabel = mostUsedLabels[2];
-    assertTrue(mostUsedLabel.equals(miscLabelOne)); 
-    assertTrue(secondMostUsedLabel.equals(miscLabelTwo));
-    assertTrue(thirdMostUsedLabel.equals(miscLabelThree));
+    assertTrue(mostUsedLabel.equals(MISC_LABEL_ONE)); 
+    assertTrue(secondMostUsedLabel.equals(MISC_LABEL_TWO));
+    assertTrue(thirdMostUsedLabel.equals(MISC_LABEL_THREE));
   }
 
   /** Test that all misc labels associated with a specific note can be retrieved */
@@ -62,8 +62,8 @@ public class MiscNoteLabelServiceTest {
     Arrays.sort(miscLabels);
     String firstMiscLabel = miscLabels[0];
     String secondMiscLabel = miscLabels[1];
-    assertTrue(firstMiscLabel.equals(miscLabelOne));
-    assertTrue(secondMiscLabel.equals(miscLabelTwo));
+    assertTrue(firstMiscLabel.equals(MISC_LABEL_ONE));
+    assertTrue(secondMiscLabel.equals(MISC_LABEL_TWO));
   }
 
   /** Assembles and returns the pre-test operations for this test class */
@@ -74,9 +74,9 @@ public class MiscNoteLabelServiceTest {
             CommonOperations.INSERT_REFERENCE_DATA,
             insertInto(LABELS)
                 .columns("title", "type")
-                .values(miscLabelOne, "Misc")
-                .values(miscLabelTwo, "Misc")
-                .values(miscLabelThree, "Misc")
+                .values(MISC_LABEL_ONE, "Misc")
+                .values(MISC_LABEL_TWO, "Misc")
+                .values(MISC_LABEL_THREE, "Misc")
                 .build(),
             insertInto(NOTES)
                 .columns(
@@ -122,12 +122,12 @@ public class MiscNoteLabelServiceTest {
                 .build(),
             insertInto(MISC_LABELS)
                 .columns("note_id", "label")
-                .values(1, miscLabelOne)
-                .values(1, miscLabelTwo)
-                .values(1, miscLabelThree)
-                .values(2, miscLabelOne)
-                .values(2, miscLabelTwo)
-                .values(3, miscLabelOne)
+                .values(1, MISC_LABEL_ONE)
+                .values(1, MISC_LABEL_TWO)
+                .values(1, MISC_LABEL_THREE)
+                .values(2, MISC_LABEL_ONE)
+                .values(2, MISC_LABEL_TWO)
+                .values(3, MISC_LABEL_ONE)
                 .build());
     return operation;
   }
