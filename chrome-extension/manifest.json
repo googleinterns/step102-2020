@@ -4,15 +4,10 @@
   "version": "1.0",
   "description": "Create and share course notes!!",
   "permissions": [
-    "activeTab",
-    "declarativeContent",
-    "storage",
     "identity",
     "identity.email",
-    "https://www.googleapis.com/*",
     "tabs",
-    "*://*.appspot.com/*",
-    "*://*.cloudshell.dev/*"
+    "https://step102-2020.appspot.com/*"
   ],
   "background": {
     "scripts": ["background.js"],
@@ -35,5 +30,5 @@
       "https://www.googleapis.com/auth/documents"
     ]
   },
-  "content_security_policy": "script-src 'self' https://apis.google.com/; object-src 'self'"
+  "content_security_policy": "script-src 'self' https://apis.google.com/ https://kit.fontawesome.com/; object-src 'self'"
 }

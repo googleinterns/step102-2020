@@ -2,7 +2,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="popup.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Coming+Soon&family=Caveat+Brush&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/906fde76e4.js"></script>
   </head>
   <body>
     <main>
@@ -25,14 +26,20 @@
           <input type="text" id="school-input">
           <span>Course:</span>
           <input type="text" id="course-input">
-          <button id="generate-note-btn" disabled>Generate</button>
+          <button id="generate-note-btn" disabled>
+            Generate
+            <i class="fas fa-edit"></i>
+          </button>
           <div id="loading">
             <img src="images/loading.gif">
           </div>
         </div>
       </section>
       <section id="footer">
-        <button class="bold link" id="browser-btn">Open Browser</button>
+        <button class="bold link" id="browser-btn">
+          Open in Browser
+          <i class="fas fa-external-link-alt"></i>
+        </button>
         <button class="bold link" id="login-btn">Login</button>
         <button class="bold link" id="logout-btn">Logout</button>
       </section>

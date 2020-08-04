@@ -1,14 +1,13 @@
 import keys from './config.js';
 
-const NOTES_TEMPLATE_DOC_ID = '1XlcAy-vrleXBxJl5Qy_SxGUyTqcwdUIhyJI2BygpNEc';
+const NOTES_TEMPLATE_DOC_ID = '1N-AO7aQou62iIKyYcqTbiQE_5-srdTkuUi5f1rIbgRQ';
 
 const GAPI_CLIENT_URL = 'https://apis.google.com/js/client.js?onload=initGAPI';
 const COPY_FILE_URL = 'https://www.googleapis.com/drive/v3/files/fileId/copy';
 const FILE_PERMISSIONS_URL ='https://www.googleapis.com/drive/v3/files/fileId/permissions';
 const GOOGLE_DOC_URL = 'https://docs.google.com/document/d/';
 const REVOKE_TOKEN_URL = 'https://accounts.google.com/o/oauth2/revoke?token=';
-// TODO: Change WEBAPP_URL from local URL to deployed website URL
-const WEBAPP_URL = 'https://8080-cacf7a03-5e11-4b90-94f2-e81659d32917.us-east1.cloudshell.dev';
+const WEBAPP_URL = 'https://step102-2020.appspot.com';
 
 const CLIENT_ID = encodeURIComponent(keys.CLIENT_ID);
 const CLIENT_SECRET = encodeURIComponent(keys.CLIENT_SECRET);
@@ -213,7 +212,8 @@ function addGlobalPermissions(docId) {
     params: { fileId: docId },
     body: {
       role: 'reader',
-      type: 'anyone'
+      type: 'domain',
+      domain: 'google.com'
     }
   });
 }
