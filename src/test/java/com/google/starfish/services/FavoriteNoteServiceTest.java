@@ -1,11 +1,8 @@
 package com.google.starfish.services;
 
 import java.util.Date;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
@@ -17,7 +14,6 @@ import org.junit.runners.JUnit4;
 import javax.sql.DataSource;
 import static com.ninja_squad.dbsetup.Operations.*;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 
 import com.google.starfish.services.FavoriteNoteService.Recency;
 import com.google.starfish.models.Note;
@@ -44,10 +40,10 @@ public class FavoriteNoteServiceTest {
   };
 
   // Variables to hold the indicated dates
-  private Date TODAY;
-  private Date THIS_WEEK;
-  private Date THIS_MONTH;
-  private Date ALL_TIME;
+  private Date TODAY = getToday();
+  private Date THIS_WEEK = getThisWeek();
+  private Date THIS_MONTH = getThisMonth();
+  private Date ALL_TIME = getAllTime();
 
   // These variables represent the total number of rows that should be inserted 
   // into the FAVORITE_NOTES table where the data is as indicated.
@@ -62,6 +58,14 @@ public class FavoriteNoteServiceTest {
   private final String SECOND_NEW_USER_ID = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 2);
   private final int NUM_NOTES_WITH_NEW_SCHOOL_AND_COURSE = 3;
 
+  private final Note[] NOTES_INSERTABLE = initializeInsertableNotes();
+  private final Note[] NOTES_EXPECTED_TODAY = initializeNotesToday(NOTES_INSERTABLE);
+  private final Note[] NOTES_EXPECTED_THIS_WEEK = initializeNotesThisWeek(NOTES_INSERTABLE);
+  private final Note[] NOTES_EXPECTED_THIS_MONTH = initializeNotesThisMonth(NOTES_INSERTABLE);
+  private final Note[] NOTES_EXPECTED_ALL_TIME = initializeNotesAllTime(NOTES_INSERTABLE);
+  private final Note[] NOTES_EXPECTED_ALL_TIME_FILTERED = initializeNotesAllTimeFiltered(NOTES_INSERTABLE);
+  private final Note[] NOTES_EXCPECTED_SECOND_USER = initializeNotesExpectedForSecondNewUser(NOTES_INSERTABLE);
+
   // These arrays hold all notes in the database but are ordered by what's trending in the given timespan
   private Note[] notesOrderedByTrendingToday;
   private Note[] notesOrderedByTrendingThisWeek;
@@ -75,7 +79,6 @@ public class FavoriteNoteServiceTest {
   @Before
   public void prepare() throws Exception {
     if(!runTests) throw new Exception("Wrong Test Database Name");
-    setDates();
     Operation operation = getBeforeTestOperation();
     DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
     dbSetup.launch();
@@ -90,9 +93,7 @@ public class FavoriteNoteServiceTest {
       throw new Exception("Expected 3 notes for user " + SECOND_NEW_USER_ID + ", got: " + favoriteNotes.length);
     } 
     Arrays.sort(favoriteNotes, COMPARE_NOTES_BY_ID);
-    assertTrue(favoriteNotes[0].getId() == 2);
-    assertTrue(favoriteNotes[1].getId() == 4);
-    assertTrue(favoriteNotes[2].getId() == 6);
+    assertTrue(Arrays.equals(favoriteNotes, NOTES_EXCPECTED_SECOND_USER));
   }
 
   /** Test to see if we can get the number of times a particular note has been favorited */
@@ -105,84 +106,31 @@ public class FavoriteNoteServiceTest {
   /** Test to see if we can correctly retrieve the most trending notes today */
   @Test
   public void testGettingTrendingNotesToday() throws SQLException, Exception {
-    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingToday,
-                                                                                         NUM_TRENDING_NOTES_TODAY);
-    Note[] trendingNotes = separatedNotes.get("trending");
-    Note[] notTrendingNotes = separatedNotes.get("notTrending");
-    if (trendingNotes.length != NUM_TRENDING_NOTES_TODAY) {
-      throw new Exception("Expected " + NUM_TRENDING_NOTES_TODAY + " trending notes today, got: " + trendingNotes.length);
-    }
-    // Verify that each element of both arrays is what we expect
-    assertEquals(trendingNotes[0].getId(), 2);
-    assertEquals(trendingNotes[1].getId(), 1);
-    assertEquals(notTrendingNotes[0].getId(), 3);
-    assertEquals(notTrendingNotes[1].getId(), 4);
-    assertEquals(notTrendingNotes[2].getId(), 5);
-    assertEquals(notTrendingNotes[3].getId(), 6);
-    assertEquals(notTrendingNotes[4].getId(), 7);
+    assertTrue(Arrays.equals(notesOrderedByTrendingToday, NOTES_EXPECTED_TODAY));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this week */
   @Test 
   public void testGettingTrendingNotesThisWeek() throws SQLException, Exception {
-    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingThisWeek,
-                                                                                         NUM_TRENDING_NOTES_THIS_WEEK);
-    Note[] trendingNotes = separatedNotes.get("trending");
-    Note[] notTrendingNotes = separatedNotes.get("notTrending");
-    if (trendingNotes.length != NUM_TRENDING_NOTES_THIS_WEEK) {
-      throw new Exception("Expected " + NUM_TRENDING_NOTES_THIS_WEEK + " trending notes today, got: " + trendingNotes.length);
-    }
-    // Verify that the important elements of both arrays are what we expect
-    assertTrue(trendingNotes[0].getId() == 2 || trendingNotes[0].getId() ==  4);
-    assertEquals(notTrendingNotes[0].getId(), 5);
-    assertEquals(notTrendingNotes[1].getId(), 6);
-    assertEquals(notTrendingNotes[2].getId(), 7);
+    assertTrue(Arrays.equals(notesOrderedByTrendingThisWeek, NOTES_EXPECTED_THIS_WEEK));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this month */
   @Test
   public void testGettingTrendingNotesThisMonth() throws SQLException, Exception {
-    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingThisMonth,
-                                                                                         NUM_TRENDING_NOTES_THIS_MONTH);
-    Note[] trendingNotes = separatedNotes.get("trending");
-    Note[] notTrendingNotes = separatedNotes.get("notTrending");
-    if (trendingNotes.length != NUM_TRENDING_NOTES_THIS_MONTH) {
-      throw new Exception("Expected " + NUM_TRENDING_NOTES_THIS_MONTH + " trending notes today, got: " + trendingNotes.length);
-    }
-    // Verify that the important elements of both arrays are what we expect
-    assertTrue(trendingNotes[0].getId() == 2 || trendingNotes[0].getId() ==  4 || trendingNotes[0].getId() == 6);
-    assertEquals(notTrendingNotes[0].getId(), 7);
+    assertTrue(Arrays.equals(notesOrderedByTrendingThisMonth, NOTES_EXPECTED_THIS_MONTH));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time */
   @Test
   public void testGettingTrendingNotesAllTime() throws SQLException, Exception {
-    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingAllTime,
-                                                                                         NUM_TRENDING_NOTES_ALL_TIME);
-    Note[] trendingNotes = separatedNotes.get("trending");
-    Note[] notTrendingNotes = separatedNotes.get("notTrending");
-    if (trendingNotes.length != NUM_TRENDING_NOTES_ALL_TIME) {
-      throw new Exception("Expected " + NUM_TRENDING_NOTES_ALL_TIME + " trending notes today, got: " + trendingNotes.length);
-    }
-    // Verify that the important elements of both arrays are what we expect
-    assertTrue(trendingNotes[0].getId() == 2 || trendingNotes[0].getId() ==  4 || trendingNotes[0].getId() == 6);
-    assertEquals(notTrendingNotes.length, 0);
+    assertTrue(Arrays.equals(notesOrderedByTrendingAllTime, NOTES_EXPECTED_ALL_TIME));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time filtered by school and course */
   @Test
   public void testGettingTrendingNotesAllTimeFilteredBySchoolAndCourse() throws SQLException, Exception {
-    int numFilteredNotes = NUM_TRENDING_NOTES_ALL_TIME - NUM_NOTES_WITH_NEW_SCHOOL_AND_COURSE;
-    HashMap<String, Note[]> separatedNotes = separateTrendingNotesAndSortNotTrendingById(notesOrderedByTrendingAllTimeFiltered,
-                                                                                         numFilteredNotes);
-    Note[] trendingNotes = separatedNotes.get("trending");
-    Note[] notTrendingNotes = separatedNotes.get("notTrending");
-    if (trendingNotes.length != numFilteredNotes) {
-      throw new Exception("Expected " + numFilteredNotes + " trending notes today, got: " + trendingNotes.length);
-    }
-    // Verify that the important elements of both arrays are what we expect
-    assertTrue(trendingNotes[0].getId() ==  4 || trendingNotes[0].getId() == 6);
-    assertEquals(notTrendingNotes.length, 0);
+    assertTrue(Arrays.equals(notesOrderedByTrendingAllTimeFiltered, NOTES_EXPECTED_ALL_TIME_FILTERED));
   }
 
   /** Gets and sets trending notes for various cases of Recency */
@@ -215,21 +163,6 @@ public class FavoriteNoteServiceTest {
     } 
   }
 
-  /** Separates the notes that are trending (i.e. have more than 0 favorites) from those that are not trending */
-  private HashMap<String, Note[]> separateTrendingNotesAndSortNotTrendingById(Note[] notes, int numTrending) {
-    HashMap<String, Note[]> separatedNotes = new HashMap<>();
-    Note[] trendingNotes = Arrays.copyOfRange(notes, 0, numTrending);
-    separatedNotes.put("trending", trendingNotes);
-    if (numTrending < notes.length) {
-      Note[] notTrendingNotes = Arrays.copyOfRange(notes, numTrending, notes.length);
-      Arrays.sort(notTrendingNotes, COMPARE_NOTES_BY_ID);
-      separatedNotes.put("notTrending", notTrendingNotes);
-    } else {
-      separatedNotes.put("notTrending", new Note[0]);
-    }
-    return separatedNotes;
-  }
-
   /** Extracts note objects from 2D object array which in each element, holds a 2-element array where the
    *  first index is a note object and the second index is the number of favorites in a given timespan
    */
@@ -241,16 +174,116 @@ public class FavoriteNoteServiceTest {
     return notes.toArray(new Note[0]);
   }
 
-  /** Dynamically sets the dates as indicated */
-  private void setDates() {
+  private Date getToday() {
     Calendar cal = Calendar.getInstance();
-    TODAY = new Date(cal.getTimeInMillis());
+    return new Date(cal.getTimeInMillis());
+  }
+
+  private Date getThisWeek() {
+    Calendar cal = Calendar.getInstance();
     cal.add(Calendar.DAY_OF_MONTH, -7);
-    THIS_WEEK = new Date(cal.getTimeInMillis());
-    cal.add(Calendar.DAY_OF_MONTH, -23);
-    THIS_MONTH = new Date(cal.getTimeInMillis());
+    return new Date(cal.getTimeInMillis());
+  }
+
+  private Date getThisMonth() {
+    Calendar cal = Calendar.getInstance();
+    cal.add(Calendar.DAY_OF_MONTH, -30);
+    return new Date(cal.getTimeInMillis());
+  }
+
+  private Date getAllTime() {
+    Calendar cal = Calendar.getInstance();
     cal.add(Calendar.YEAR, -100);
-    ALL_TIME = new Date(cal.getTimeInMillis());
+    return new Date(cal.getTimeInMillis());
+  }
+
+  /** Initializes the notes to be inserted into test DB */
+  private Note[] initializeInsertableNotes() {
+    List<Note> notesList = new ArrayList<>();
+    for (long i = 1; i <= NUM_TRENDING_NOTES_ALL_TIME; i++) {
+      String school = i >= 4 ? NEW_SCHOOL: constants.REFERENCE_SCHOOL;
+      String course = i >= 4 ? NEW_COURSE: constants.REFERENCE_COURSE;
+      long numFavorites = i % 2 == 0 ? 2: 1;
+      Note newNote = new Note.Builder()
+                         .setId(i)
+                         .setAuthorId(constants.REFERENCE_USER_ID)
+                         .setRequiredLabels(school, course)
+                         .setNoteTitle("default")
+                         .setSourceUrl("default")
+                         .setOptionalPdfSource("default")
+                         .setDateCreated(new java.sql.Date(TODAY.getTime()))
+                         .setNumDownloads(0)
+                         .setNumFavorites(numFavorites)
+                         .setMiscLabels(new String[0])
+                         .build();
+      notesList.add(newNote);
+    }
+    return notesList.toArray(new Note[0]);
+  }
+
+  /** Generate array of expected notes today based on insertable notes */
+  private Note[] initializeNotesToday(Note[] insertableNotes) {
+    Note[] notes = new Note[] {insertableNotes[1],
+                               insertableNotes[0],
+                               insertableNotes[2],
+                               insertableNotes[3],
+                               insertableNotes[4],
+                               insertableNotes[5],
+                               insertableNotes[6]};
+    return notes;
+  }
+
+  /** Generate array of expected notes this week based on insertable notes */
+  private Note[] initializeNotesThisWeek(Note[] insertableNotes) {
+    Note[] notes = new Note[] {insertableNotes[1],
+                               insertableNotes[3],
+                               insertableNotes[0],
+                               insertableNotes[2],
+                               insertableNotes[4],
+                               insertableNotes[5],
+                               insertableNotes[6]};
+    return notes;
+  }
+
+  /** Generate array of expected notes this month based on insertable notes */
+  private Note[] initializeNotesThisMonth(Note[] insertableNotes) {
+    Note[] notes = new Note[] {insertableNotes[1],
+                               insertableNotes[3],
+                               insertableNotes[5],
+                               insertableNotes[0],
+                               insertableNotes[2],
+                               insertableNotes[4],
+                               insertableNotes[6]};
+    return notes;
+  }
+
+  /** Generate array of expected notes all time based on insertable notes */
+  private Note[] initializeNotesAllTime(Note[] insertableNotes) {
+    Note[] notes = new Note[] {insertableNotes[1],
+                               insertableNotes[3],
+                               insertableNotes[5],
+                               insertableNotes[0],
+                               insertableNotes[2],
+                               insertableNotes[4],
+                               insertableNotes[6]};
+    return notes;
+  }
+
+  /** Generate array of expected filtered notes all time based on insertable notes */
+  private Note[] initializeNotesAllTimeFiltered(Note[] insertableNotes) {
+    Note[] notes = new Note[] {insertableNotes[3],
+                               insertableNotes[5],
+                               insertableNotes[4],
+                               insertableNotes[6]};
+    return notes;
+  }
+
+  /** Generate array of expected notes favorited by the second new user based on insertable notes */
+  private Note[] initializeNotesExpectedForSecondNewUser(Note[] insertableNotes) {
+    Note[] notes = new Note[] {insertableNotes[1],
+                               insertableNotes[3],
+                               insertableNotes[5]};
+    return notes;
   }
 
   /** Operation that should be run before every test */
@@ -302,75 +335,75 @@ public class FavoriteNoteServiceTest {
                   "date_created",
                   "num_downloads")
                 .values(
-                  1,
-                  constants.REFERENCE_USER_ID,
-                  constants.REFERENCE_SCHOOL,
-                  constants.REFERENCE_COURSE,
-                  "The Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  TODAY,
-                  0)
+                  NOTES_INSERTABLE[0].getId(),
+                  NOTES_INSERTABLE[0].getAuthorId(),
+                  NOTES_INSERTABLE[0].getSchool(),
+                  NOTES_INSERTABLE[0].getCourse(),
+                  NOTES_INSERTABLE[0].getTitle(),
+                  NOTES_INSERTABLE[0].getSourceUrl(),
+                  NOTES_INSERTABLE[0].getPdfSource(),
+                  NOTES_INSERTABLE[0].getDateCreated(),
+                  NOTES_INSERTABLE[0].getNumDownloads())
                 .values(
-                  2,
-                  constants.REFERENCE_USER_ID,
-                  constants.REFERENCE_SCHOOL,
-                  constants.REFERENCE_COURSE,
-                  "The Second Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  TODAY,
-                  0)
+                  NOTES_INSERTABLE[1].getId(),
+                  NOTES_INSERTABLE[1].getAuthorId(),
+                  NOTES_INSERTABLE[1].getSchool(),
+                  NOTES_INSERTABLE[1].getCourse(),
+                  NOTES_INSERTABLE[1].getTitle(),
+                  NOTES_INSERTABLE[1].getSourceUrl(),
+                  NOTES_INSERTABLE[1].getPdfSource(),
+                  NOTES_INSERTABLE[1].getDateCreated(),
+                  NOTES_INSERTABLE[1].getNumDownloads())
                 .values(
-                  3,
-                  constants.REFERENCE_USER_ID,
-                  constants.REFERENCE_SCHOOL,
-                  constants.REFERENCE_COURSE,
-                  "The Third Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  THIS_WEEK,
-                  0)
+                  NOTES_INSERTABLE[2].getId(),
+                  NOTES_INSERTABLE[2].getAuthorId(),
+                  NOTES_INSERTABLE[2].getSchool(),
+                  NOTES_INSERTABLE[2].getCourse(),
+                  NOTES_INSERTABLE[2].getTitle(),
+                  NOTES_INSERTABLE[2].getSourceUrl(),
+                  NOTES_INSERTABLE[2].getPdfSource(),
+                  NOTES_INSERTABLE[2].getDateCreated(),
+                  NOTES_INSERTABLE[2].getNumDownloads())
                 .values(
-                  4,
-                  constants.REFERENCE_USER_ID,
-                  NEW_SCHOOL,
-                  NEW_COURSE,
-                  "The Fourth Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  THIS_WEEK,
-                  0)
+                  NOTES_INSERTABLE[3].getId(),
+                  NOTES_INSERTABLE[3].getAuthorId(),
+                  NOTES_INSERTABLE[3].getSchool(),
+                  NOTES_INSERTABLE[3].getCourse(),
+                  NOTES_INSERTABLE[3].getTitle(),
+                  NOTES_INSERTABLE[3].getSourceUrl(),
+                  NOTES_INSERTABLE[3].getPdfSource(),
+                  NOTES_INSERTABLE[3].getDateCreated(),
+                  NOTES_INSERTABLE[3].getNumDownloads())
                 .values(
-                  5,
-                  constants.REFERENCE_USER_ID,
-                  NEW_SCHOOL,
-                  NEW_COURSE,
-                  "The Fifth Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  THIS_MONTH,
-                  0)
+                  NOTES_INSERTABLE[4].getId(),
+                  NOTES_INSERTABLE[4].getAuthorId(),
+                  NOTES_INSERTABLE[4].getSchool(),
+                  NOTES_INSERTABLE[4].getCourse(),
+                  NOTES_INSERTABLE[4].getTitle(),
+                  NOTES_INSERTABLE[4].getSourceUrl(),
+                  NOTES_INSERTABLE[4].getPdfSource(),
+                  NOTES_INSERTABLE[4].getDateCreated(),
+                  NOTES_INSERTABLE[4].getNumDownloads())
                 .values(
-                  6,
-                  constants.REFERENCE_USER_ID,
-                  NEW_SCHOOL,
-                  NEW_COURSE,
-                  "The Sixth Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  THIS_MONTH,
-                  0)
+                  NOTES_INSERTABLE[5].getId(),
+                  NOTES_INSERTABLE[5].getAuthorId(),
+                  NOTES_INSERTABLE[5].getSchool(),
+                  NOTES_INSERTABLE[5].getCourse(),
+                  NOTES_INSERTABLE[5].getTitle(),
+                  NOTES_INSERTABLE[5].getSourceUrl(),
+                  NOTES_INSERTABLE[5].getPdfSource(),
+                  NOTES_INSERTABLE[5].getDateCreated(),
+                  NOTES_INSERTABLE[5].getNumDownloads())
                 .values(
-                  7,
-                  constants.REFERENCE_USER_ID,
-                  NEW_SCHOOL,
-                  NEW_COURSE,
-                  "The Seventh Best Notes Ever",
-                  "test.url",
-                  "pdftest.url",
-                  ALL_TIME,
-                  0)
+                  NOTES_INSERTABLE[6].getId(),
+                  NOTES_INSERTABLE[6].getAuthorId(),
+                  NOTES_INSERTABLE[6].getSchool(),
+                  NOTES_INSERTABLE[6].getCourse(),
+                  NOTES_INSERTABLE[6].getTitle(),
+                  NOTES_INSERTABLE[6].getSourceUrl(),
+                  NOTES_INSERTABLE[6].getPdfSource(),
+                  NOTES_INSERTABLE[6].getDateCreated(),
+                  NOTES_INSERTABLE[6].getNumDownloads())
                 .build(),
             insertInto(FAVORITE_NOTES)
                 .columns("user_id", "note_id", "date")
