@@ -3,7 +3,7 @@
     <v-card @click="onClick"
             width="208px"
             :color="cardColor">
-      <v-img :src="thumbnailSrc"
+      <v-img :src="thumbnail"
              height="180px"
              position="top">
         <v-icon>{{ isGNote ? "mdi-google-drive" : "mdi-pdf-box" }}</v-icon>             
@@ -52,6 +52,7 @@
       labels: Array,
       numDownloads: Number,
       numFavorites: Number,
+      pdfSource: String,
       isFavorited: Boolean,
       isActive: Boolean,
     },
@@ -63,14 +64,13 @@
     computed: {
       thumbnail: function() {
         // TODO: Generate a thumbnail of the pdf
-        let source = 'assets/notes.png';
-        return {backgroundImage:`url(${source})`};
+        return 'assets/starfish-2.png';
       },
       dateString: function() {
         return this.date.toDateString();
       },
       isGNote: function() {
-        return true; // TODO: Check note data to determine if note is a GNote
+        return this.pdfSource.includes('google');
       },
       cardColor: function() {
         if (this.isActive) return "blue lighten-4"

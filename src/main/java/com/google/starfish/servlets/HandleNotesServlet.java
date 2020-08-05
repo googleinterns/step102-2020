@@ -57,7 +57,11 @@ public class HandleNotesServlet extends HttpServlet {
     String title = request.getParameter("title");
     String school = request.getParameter("school").toLowerCase();
     String course = request.getParameter("course").toLowerCase();
-    String[] miscLabels = request.getParameterValues("miscLabels");
+    String misc = request.getParameter("miscLabels");
+    String[] miscLabels;
+    // Prevent "null" from being inserted into the database as a label
+    if(misc != null && misc.equals("null")) miscLabels = new String[0];
+    else miscLabels = misc.split(",");
 
     DataSource pool = (DataSource) request.getServletContext().getAttribute("my-pool");
 

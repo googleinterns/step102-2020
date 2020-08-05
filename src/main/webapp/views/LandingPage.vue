@@ -94,7 +94,7 @@ module.exports = {
 }
 </script>
 
-<style>
+<style scoped>
 a {
   text-decoration: none;
   color: inherit;
@@ -110,10 +110,6 @@ a:hover {
 
 .white-text {
   color: white;
-}
-
-.container {
-  margin: 0 0 50px 0;
 }
 
 .spacer {

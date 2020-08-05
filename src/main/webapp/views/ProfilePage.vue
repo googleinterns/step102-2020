@@ -1,7 +1,6 @@
 <template>
   <v-app>
-    <navbar @setuser="onSetUser" @signedin="onSignIn"></navbar>
-    <div v-if="!signedIn">
+    <div v-if="!user">
       <h1>Please sign in</h1>
     </div> 
     <div v-else> 
@@ -25,18 +24,13 @@
 <script>
 module.exports = {
   components: {
-    'navbar': httpVueLoader('/components/Navbar.vue'),
     'note-grid': httpVueLoader('/components/NoteGrid.vue'),
     'note-grid-collection': httpVueLoader('/components/NoteGridCollection.vue'),
     'profile-header': httpVueLoader('/components/ProfileHeader.vue')
   },
   data: function() {
     return {
-      user: {
-        points: 0,
-        displayName: "Default Username",
-      },
-      signedIn: false,
+      user: null,
       descFavorites: function(noteA, noteB) {
         return noteB.numFavorites - noteA.numFavorites;
       },
@@ -45,13 +39,16 @@ module.exports = {
       }
     }
   },
-  methods: {
-    onSetUser: function(user) {
-      this.user = user;
-    },
-    onSignIn: function(signedIn) {
-      this.signedIn = signedIn;
-    },
+  mounted: function () {
+    fetch('/user-registration')
+      .then(response => {
+        if(response.status === 200) {
+          response.json()
+            .then(userObj => this.user = userObj);
+        } else {
+          this.user = null;
+        }
+      })
   }
 }
 </script>
