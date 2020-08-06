@@ -182,7 +182,7 @@ public class FavoriteNoteService {
                   + "GROUP BY note_id) AS b " 
       + "ON a.id=b.note_id ";
     if (schoolAndCourseFilter != null) stmt += schoolAndCourseFilter;
-    stmt += "ORDER BY count DESC;";
+    stmt += "ORDER BY count DESC, id;";
     return stmt;
   }
 
