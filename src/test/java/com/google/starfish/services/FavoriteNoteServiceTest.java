@@ -45,19 +45,12 @@ public class FavoriteNoteServiceTest {
   private Date THIS_MONTH = getThisMonth();
   private Date ALL_TIME = getAllTime();
 
-  // These variables represent the total number of rows that should be inserted 
-  // into the FAVORITE_NOTES table where the data is as indicated.
-  private final int NUM_TRENDING_NOTES_TODAY = 2;
-  private final int NUM_TRENDING_NOTES_THIS_WEEK = NUM_TRENDING_NOTES_TODAY + 2;
-  private final int NUM_TRENDING_NOTES_THIS_MONTH = NUM_TRENDING_NOTES_THIS_WEEK + 2;
-  private final int NUM_TRENDING_NOTES_ALL_TIME = NUM_TRENDING_NOTES_THIS_MONTH + 1;
-
   private final String NEW_SCHOOL = "cornell university";
   private final String NEW_COURSE = "cs1300";
   private final String FIRST_NEW_USER_ID = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 1);
   private final String SECOND_NEW_USER_ID = Integer.toString(Integer.parseInt(constants.REFERENCE_USER_ID) + 2);
-  private final int NUM_NOTES_WITH_NEW_SCHOOL_AND_COURSE = 3;
 
+  private final int NUM_NOTES_INSERTABLE = 7;
   private final Note[] NOTES_INSERTABLE = initializeInsertableNotes();
   private final Note[] NOTES_EXPECTED_TODAY = initializeNotesToday(NOTES_INSERTABLE);
   private final Note[] NOTES_EXPECTED_THIS_WEEK = initializeNotesThisWeek(NOTES_INSERTABLE);
@@ -65,13 +58,6 @@ public class FavoriteNoteServiceTest {
   private final Note[] NOTES_EXPECTED_ALL_TIME = initializeNotesAllTime(NOTES_INSERTABLE);
   private final Note[] NOTES_EXPECTED_ALL_TIME_FILTERED = initializeNotesAllTimeFiltered(NOTES_INSERTABLE);
   private final Note[] NOTES_EXCPECTED_SECOND_USER = initializeNotesExpectedForSecondNewUser(NOTES_INSERTABLE);
-
-  // These arrays hold all notes in the database but are ordered by what's trending in the given timespan
-  private Note[] notesOrderedByTrendingToday;
-  private Note[] notesOrderedByTrendingThisWeek;
-  private Note[] notesOrderedByTrendingThisMonth;
-  private Note[] notesOrderedByTrendingAllTime;
-  private Note[] notesOrderedByTrendingAllTimeFiltered;
 
   private static final boolean runTests = Constants.TEST_DB_NAME.equals("starfish_test");
 
@@ -82,7 +68,6 @@ public class FavoriteNoteServiceTest {
     Operation operation = getBeforeTestOperation();
     DbSetup dbSetup = new DbSetup(new DataSourceDestination(pool), operation);
     dbSetup.launch();
-    setAllTrendingNotes();
   }
 
   /** Test to see if we can get all notes favorited by a single user */
@@ -106,61 +91,56 @@ public class FavoriteNoteServiceTest {
   /** Test to see if we can correctly retrieve the most trending notes today */
   @Test
   public void testGettingTrendingNotesToday() throws SQLException, Exception {
+    Note[] notesOrderedByTrendingToday = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.TODAY, null, null));
+    if (notesOrderedByTrendingToday.length != NOTES_EXPECTED_TODAY.length) {
+      throw new Exception("Expected " + NOTES_EXPECTED_TODAY.length + " notes today, got: " + notesOrderedByTrendingToday.length);
+    }
     assertTrue(Arrays.equals(notesOrderedByTrendingToday, NOTES_EXPECTED_TODAY));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this week */
   @Test 
   public void testGettingTrendingNotesThisWeek() throws SQLException, Exception {
+    Note[] notesOrderedByTrendingThisWeek = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_WEEK, null, null));
+    if (notesOrderedByTrendingThisWeek.length != NOTES_EXPECTED_THIS_WEEK.length) {
+      throw new Exception("Expected " + NOTES_EXPECTED_THIS_WEEK.length + " notes this week, got: " + notesOrderedByTrendingThisWeek.length);
+    }
     assertTrue(Arrays.equals(notesOrderedByTrendingThisWeek, NOTES_EXPECTED_THIS_WEEK));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes this month */
   @Test
   public void testGettingTrendingNotesThisMonth() throws SQLException, Exception {
+    Note[] notesOrderedByTrendingThisMonth = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_MONTH, null, null));
+    if (notesOrderedByTrendingThisMonth.length != NOTES_EXPECTED_THIS_MONTH.length) {
+      throw new Exception("Expected " + NOTES_EXPECTED_THIS_MONTH.length + " notes this month, got: " + notesOrderedByTrendingThisMonth.length);
+    } 
     assertTrue(Arrays.equals(notesOrderedByTrendingThisMonth, NOTES_EXPECTED_THIS_MONTH));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time */
   @Test
   public void testGettingTrendingNotesAllTime() throws SQLException, Exception {
+    Note[] notesOrderedByTrendingAllTime = extractNotesFrom2DArray(
+        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, null, null));
+    if (notesOrderedByTrendingAllTime.length != NOTES_EXPECTED_ALL_TIME.length) {
+      throw new Exception("Expected " + NOTES_EXPECTED_ALL_TIME.length + " notes all time, got: " + notesOrderedByTrendingAllTime.length);
+    } 
     assertTrue(Arrays.equals(notesOrderedByTrendingAllTime, NOTES_EXPECTED_ALL_TIME));
   }
 
   /** Test to see if we can correctly retrieve the most trending notes all time filtered by school and course */
   @Test
   public void testGettingTrendingNotesAllTimeFilteredBySchoolAndCourse() throws SQLException, Exception {
-    assertTrue(Arrays.equals(notesOrderedByTrendingAllTimeFiltered, NOTES_EXPECTED_ALL_TIME_FILTERED));
-  }
-
-  /** Gets and sets trending notes for various cases of Recency */
-  private void setAllTrendingNotes() throws SQLException, Exception {
-    notesOrderedByTrendingToday = extractNotesFrom2DArray(
-        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.TODAY, null, null));
-    notesOrderedByTrendingThisWeek = extractNotesFrom2DArray(
-        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_WEEK, null, null));
-    notesOrderedByTrendingThisMonth = extractNotesFrom2DArray(
-        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.THIS_MONTH, null, null));
-    notesOrderedByTrendingAllTime = extractNotesFrom2DArray(
-        favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, null, null));
-    notesOrderedByTrendingAllTimeFiltered = extractNotesFrom2DArray(
+    Note[] notesOrderedByTrendingAllTimeFiltered = extractNotesFrom2DArray(
         favoriteNoteService.getTrendingNotesBySchoolOrCourse(pool, Recency.ALL_TIME, NEW_SCHOOL, NEW_COURSE));
-
-    if (notesOrderedByTrendingToday.length != 7) {
-      throw new Exception("Expected 7 notes today, got: " + notesOrderedByTrendingToday.length);
-    }
-    if (notesOrderedByTrendingThisWeek.length != 7) {
-      throw new Exception("Expected 7 notes this week, got: " + notesOrderedByTrendingThisWeek.length);
-    }
-    if (notesOrderedByTrendingThisMonth.length != 7) {
-      throw new Exception("Expected 7 notes this month, got: " + notesOrderedByTrendingThisMonth.length);
+    if (notesOrderedByTrendingAllTimeFiltered.length != NOTES_EXPECTED_ALL_TIME_FILTERED.length) {
+      throw new Exception("Expected " + NOTES_EXPECTED_ALL_TIME_FILTERED.length + " filtered notes all time, got: " + notesOrderedByTrendingAllTimeFiltered.length);
     } 
-    if (notesOrderedByTrendingAllTime.length != 7) {
-      throw new Exception("Expected 7 notes all time, got: " + notesOrderedByTrendingAllTime.length);
-    } 
-    if (notesOrderedByTrendingAllTimeFiltered.length != 4) {
-      throw new Exception("Expected 4 filtered notes all time, got: " + notesOrderedByTrendingAllTimeFiltered.length);
-    } 
+    assertTrue(Arrays.equals(notesOrderedByTrendingAllTimeFiltered, NOTES_EXPECTED_ALL_TIME_FILTERED));
   }
 
   /** Extracts note objects from 2D object array which in each element, holds a 2-element array where the
@@ -200,7 +180,7 @@ public class FavoriteNoteServiceTest {
   /** Initializes the notes to be inserted into test DB */
   private Note[] initializeInsertableNotes() {
     List<Note> notesList = new ArrayList<>();
-    for (long i = 1; i <= NUM_TRENDING_NOTES_ALL_TIME; i++) {
+    for (long i = 1; i <= NUM_NOTES_INSERTABLE; i++) {
       String school = i >= 4 ? NEW_SCHOOL: constants.REFERENCE_SCHOOL;
       String course = i >= 4 ? NEW_COURSE: constants.REFERENCE_COURSE;
       long numFavorites = i % 2 == 0 ? 2: 1;
