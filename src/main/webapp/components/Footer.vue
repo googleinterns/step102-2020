@@ -19,7 +19,6 @@ module.exports = {
   methods: {
     goToAbout() {
       this.$router.push('about');
-      window.scrollTo(0, 0);
     }
   }
 }

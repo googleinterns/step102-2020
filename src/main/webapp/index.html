@@ -42,7 +42,13 @@
       { path: '/search', component: Search },
       { path: '/profile', component: Profile},
       { path: '/about', component: About}
-    ]
+    ],
+    scrollBehavior(to, from, savedPosition) {
+      return {
+        x: 0,
+        y: 0
+      }
+    }
   })
 
   // 3. Create and mount the root instance.
