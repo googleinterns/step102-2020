@@ -23,6 +23,20 @@ public class DownloadNoteServlet extends HttpServlet {
   private UserService userService = new UserService();
 
   @Override
+  public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    Long noteId = Long.valueOf(req.getParameter("note_id"));
+    DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");
+    
+    try (Connection conn = pool.getConnection()) {
+      Note note = noteService.getNoteByNoteId(pool, noteId);
+      res.setContentType("application/json");
+      res.getWriter().println(note.getNumDownloads());
+    } catch(SQLException ex) {
+      System.err.print(ex);
+    }
+  }
+
+  @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
     Long noteId = Long.valueOf(req.getParameter("note_id"));
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  

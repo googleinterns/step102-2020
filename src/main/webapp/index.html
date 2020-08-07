@@ -1,27 +1,55 @@
 <!DOCTYPE html>
 <!-- Bunch of Stylesheets for Vuetify -->
 <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Coming+Soon&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
+<title>Starfish</title>
+<link rel="icon" type="image/png" href="/assets/starfish.png" />
+
 <div id="app">
-    <search-page></search-page>
+  <v-app>
+    <navbar></navbar>
+    <!-- route outlet -->
+    <!-- component matched by the route will render here -->
+    <router-view></router-view>
+    <page-footer></page-footer>
+  </v-app>
 </div>
 
-<!-- Vue -->
-<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script> <!-- TODO: This is dev Version, switch to prod for deployment -->
-<!-- HTTP Vue Loader -->
+<!-- Vue --> <!-- TODO: This is dev Version, switch to prod for deployment -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<!-- Vue Router --> <!-- TODO: This is dev Version, switch to prod for deployment -->
+<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+<!-- HTTP Vue Loader --> <!-- TODO: This is dev Version, switch to prod for deployment -->
 <script src="https://unpkg.com/http-vue-loader"></script>
 <!-- Vuetify -->
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <!-- Declares the Vue instance-->
 <script>
-  new Vue({
-    el: '#app',
-    vuetify: new Vuetify(),
-    components: {
-      'search-page': httpVueLoader('/views/SearchPage.vue'),
-    },
+  // 1. Define route components.
+  const Home = httpVueLoader('/views/LandingPage.vue')
+  const Search = httpVueLoader('/views/SearchPage.vue')
+  const Profile = httpVueLoader('/views/ProfilePage.vue')
+
+  // 2. Create the router instance and pass the `routes` option
+  const router = new VueRouter({
+    routes: [
+      { path: '/', component: Home },
+      { path: '/search', component: Search },
+      { path: '/profile', component: Profile}
+    ]
   })
+
+  // 3. Create and mount the root instance.
+  const app = new Vue({
+    router: router,
+    components: {
+      'navbar': httpVueLoader('/components/Navbar.vue'),
+      'page-footer': httpVueLoader('/components/Footer.vue')
+    },
+    vuetify: new Vuetify(),
+  }).$mount('#app')
 </script>

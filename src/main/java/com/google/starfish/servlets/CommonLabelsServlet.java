@@ -21,14 +21,8 @@ public class CommonLabelsServlet extends HttpServlet {
     DataSource pool = (DataSource) req.getServletContext().getAttribute("my-pool");  
     // TODO: Extract `school` and `course` params in query string
     String[] mostCommonLabels = miscNoteLabelService.getMostUsedMiscLabels(pool /* TODO: , school, course */);
-    String json = convertArrayToJSON(mostCommonLabels);
+    String json = Utils.convertArrayToJSON(mostCommonLabels);
     res.setContentType("application/json");
     res.getWriter().println(json);
-  }
-
-  /** Converts a hash map to JSON */
-  private String convertArrayToJSON(String[] array) {
-    Gson gson = new Gson();
-    return gson.toJson(array);
   }
 }  

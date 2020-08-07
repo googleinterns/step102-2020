@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS labels ( 
   title VARCHAR(255) PRIMARY KEY, 
-  type ENUM('School', 'Course', 'Other') NOT NULL 
+  type ENUM('School', 'Course', 'Misc') NOT NULL 
 ); 
 
 CREATE TABLE IF NOT EXISTS users ( 
@@ -22,8 +22,8 @@ CREATE TABLE IF NOT EXISTS notes (
   school VARCHAR(255) NOT NULL,
   course VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
-  source_url VARCHAR(255) NOT NULL,
-  pdf_source VARCHAR(255),
+  source_url VARCHAR(1000) NOT NULL,
+  pdf_source VARCHAR(1000),
   date_created DATE NOT NULL,
   num_downloads INT NOT NULL,
   FOREIGN KEY (`author_id`)
