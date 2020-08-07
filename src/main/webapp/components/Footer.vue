@@ -7,11 +7,22 @@
       <a target="#" href="https://github.com/Aradhya-B"><strong>Aradhya</strong></a>,
       <a target="#" href="https://github.com/andres-holguin"><strong>Andres</strong></a>,
       and <a target="#" href="https://github.com/keelywan"><strong>Keely</strong></a>.
-      Contribute to the project <a href="https://github.com/googleinterns/step102-2020"><strong>here</strong></a>! 
+      Contribute to the project <a href="https://github.com/googleinterns/step102-2020"><strong>here</strong></a>!
+      Learn more <strong @click="goToAbout">here</strong>!
       Starfish &copy; {{ new Date().getFullYear() }}</span>
     </v-col>
   </v-footer>
 </template>
+
+<script>
+module.exports = {
+  methods: {
+    goToAbout() {
+      this.$router.push('about');
+    }
+  }
+}
+</script>
 
 <style scoped>
 
@@ -37,4 +48,7 @@ a:hover {
   color: blue;
 }
 
+strong:hover {
+  cursor: pointer;
+}
 </style>
