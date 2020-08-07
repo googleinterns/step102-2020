@@ -139,6 +139,7 @@ When a user uploads a note, a POST request can be made to a Java Servlet which h
 
 ### Previewing and Rating Notes
 ![Note Preview](/docs/assets/note_preview.png)
+
 When a user clicks a note preview card on the main platform, it should open a modal window similar to above on which users can preview the note (whether its a PDF or Google Doc), 
 favorite the note so as to be able to view it in their own profile later, or download the note directly to their computer. 
 They can also report the note if they think there is any inappropriate content visible.
