@@ -15,7 +15,8 @@
         of 3 random interns they’ve never met before in person, working on a random open-source 
         project, onto their incredible team. This summer has exceeded our expectations 10 fold and 
         while there’ll be a lot of things we’ll want to forget after the pandemic, our Google 
-        internship with the Beach team is one thing we’ll cherish forever &hearts;. See below for a short poem that summarizes our feelings: <br>
+        internship with the Beach team is one thing we’ll cherish forever &hearts;. 
+        See below for a short poem that summarizes our feelings: <br>
         <v-row justify="center">
           <div class="poem">
             <ul>
@@ -41,72 +42,78 @@
       <h1 class="display-4 heading-1">Meet the Team</h1>
       <v-row justify="space-between">
         <v-col md="4">
-          <v-card>
+          <v-card height="540">
             <v-img src="/assets/aradhya.png"
                    max-height="150"
                    contain>
             </v-img>
             <h2 class="display-1 heading-1">Aradhya</h2>
-            <v-card-text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </v-card-text>
+            I’m passionate about entrepreneurship, technology, mythology, physical cosmology, 
+            philosophy, and love to play basketball. I also love reading comic books and have 
+            always dreamed of being like Iron Man. I’m a definite optimist at heart and believe 
+            that the world tomorrow will be a better place than it is today, and that it’s my 
+            responsibility to make it so.
           </v-card>
         </v-col>
         <v-col md="4">
-          <v-card>
+          <v-card height="540">
             <v-img src="/assets/andres.png"
                    max-height="150"
                    contain>
             </v-img>
             <h2 class="display-1 heading-1">Andres</h2>
-            <v-card-text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </v-card-text>
+            I like video games and trying new foods. Catch me playing Skyrim at midnight with a 
+            bowl of ramen. I hope to use the experience I gained from this internship to start 
+            leading projects that will improve the lives of my local community.
           </v-card>
         </v-col>
         <v-col md="4">
-          <v-card>
+          <v-card height="540">
             <v-img src="/assets/keely.png"
                    max-height="150"
                    contain>
             </v-img>
             <h2 class="display-1 heading-1">Keely</h2>
-            <v-card-text>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </v-card-text>
+            I'm a huge bookworm and avid hiker- you'll either find me lost between the pages of my 
+            current read (<em>Bridge to Terabithia</em>) or wandering among the mountains and woods 
+            and wildlife. I love to explore new places, and I've always dreamed of traveling the 
+            world. There's just so much to see and so little time so I better be on my way now!
           </v-card>
         </v-col>
       </v-row>
       <h1 class="display-4 heading-1">Shoutouts</h1>
       <v-row>
       <v-col md="4">
-          <v-card>
+          <v-card height="390">
             <v-img src="/assets/nicholas.png"
                    max-height="150"
                    contain>
             </v-img>
             <h2 class="display-1 heading-1">Nicholas</h2>            
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Thank you for challenging us with interesting problem-solving riddles and creating a 
+            friendly environment where we felt comfortable getting to know each other.
           </v-card>
         </v-col>
         <v-col md="4">
-          <v-card>
+          <v-card height="390">
             <v-img src="/assets/beach_team.png"
                    max-height="150"
                    contain>
             </v-img>
             <h2 class="display-1 heading-1">Stofe Beach Team</h2>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Thanks again to the Beach Team for an amazing summer experience! We felt supported by 
+            you 100% of the way.
           </v-card>
         </v-col>
         <v-col md="4">
-          <v-card>
+          <v-card height="390">
             <v-img src="/assets/colette.png"
                    max-height="150"
                    contain>
             </v-img>
             <h2 class="display-1 heading-1">Colette</h2>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+            Thank you for encouraging us to reach out to fellow Googlers and helping us meet other 
+            interns. 
           </v-card>
         </v-col>
       </v-row>
