@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;  
 import javax.servlet.http.HttpServlet;  
 import javax.servlet.http.HttpSession;  
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;  
 import javax.servlet.http.HttpServletResponse;  
 import javax.sql.DataSource;
@@ -21,6 +20,7 @@ import com.google.starfish.models.Note;
 import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 /** Servlet that either adds or removes a row from the favorite notes table */
 @WebServlet("/favorite-note")  
@@ -29,12 +29,11 @@ public class FavoriteNoteServlet extends HttpServlet {
   private NoteService noteService = new NoteService();
   private FavoriteNoteService favoriteNoteService = new FavoriteNoteService();
   private UserService userService = new UserService();
-  private final String COOKIE_NAME = "SFCookie";
 
   @Override
   public void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException{
     res.setContentType("application/json");
-    if(!validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.getWriter().println(false);
       return;
     }
@@ -56,7 +55,11 @@ public class FavoriteNoteServlet extends HttpServlet {
         favStmt.setLong(2, noteId);
         ResultSet rs = favStmt.executeQuery();
         rs.next();
-        res.getWriter().println(rs.getBoolean(1));
+        HashMap<String, Long> favoriteInfo = new HashMap<>();
+        favoriteInfo.put("isFavorited", rs.getLong(1));
+        favoriteInfo.put("numFavorites", favoriteNoteService.getNumFavoritesByNoteId(pool, noteId));
+        String json = convertObjectToJSON(favoriteInfo);
+        res.getWriter().println(json);
       }
     } catch (SQLException ex) {
       System.err.print(ex);
@@ -65,7 +68,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    if(!validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -86,7 +89,7 @@ public class FavoriteNoteServlet extends HttpServlet {
 
   @Override
   public void doDelete(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-    if(!validateUser(req)) {
+    if(!Utils.validateUser(req)) {
       res.setStatus(HttpServletResponse.SC_FORBIDDEN);
       return;
     }
@@ -105,29 +108,9 @@ public class FavoriteNoteServlet extends HttpServlet {
     }
   }
 
-  /**
-   * Validates the user using the request's session and cookies. If there is a
-   * valid user logged in, returns true. Otherwise, returns false.
-   **/
-  private boolean validateUser(HttpServletRequest req) {
-    Cookie[] cookies = req.getCookies();
-    String sessionId = null;
-    for (Cookie cookie : cookies) {
-      if (COOKIE_NAME.equals(cookie.getName())) {
-        sessionId = cookie.getValue();
-        break;
-      }
-    }
-
-    // If there was no cookie passed, then auth has failed and user is not logged in
-    if(sessionId == null) {
-      return false;
-    }
-
-    HttpSession activeSession = req.getSession(false);
-    if (activeSession == null || activeSession.getAttribute("user_id") == null) {
-      return false;
-    }
-    return true;
+  /** Converts an object to JSON */
+  private String convertObjectToJSON(HashMap<String, Long> favorites) {
+    Gson gson = new Gson();
+    return gson.toJson(favorites);
   }
 }

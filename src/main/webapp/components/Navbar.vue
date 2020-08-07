@@ -13,7 +13,9 @@
              dark
              @click.stop="signIn"
              id="signin-link"
-             v-if="!signedIn">
+             v-if="!signedIn"
+             :disabled="disableSignIn"
+             :loading="disableSignIn">
         Sign Up/Login
       </v-btn>
 
@@ -22,19 +24,19 @@
         <!-- User dropdown menu -->
         <v-menu v-model="showDropdown" :offset-y="true">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs"
-                   v-on="on">
+            <button v-bind="attrs"
+                    v-on="on">
               <v-avatar>
-                <v-icon>mdi-account-circle</v-icon>
+                <v-img :src="user.displayPicture">
               </v-avatar>
-            </v-btn>
+            </button>
           </template>
 
           <v-card>
             <v-list>
               <v-list-item>
                 <v-list-item-avatar>
-                  <v-icon>mdi-account-circle</v-icon>
+                  <v-img :src="user.displayPicture">
                 </v-list-item-avatar>
 
               <v-list-item-content>
@@ -47,11 +49,8 @@
             <v-divider></v-divider>
 
             <v-list>
-              <v-list-item @click="">
+              <v-list-item @click="goToProfile">
                 <v-list-item-title>My Profile</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="">
-                <v-list-item-title>Favorite Notes</v-list-item-title>
               </v-list-item>
               <v-list-item @click="signOut">
                 <v-list-item-title>Logout</v-list-item-title>
@@ -75,7 +74,8 @@ module.exports = {
       signedIn: false,
       clientId: "506538592562-rueidmib5vvra4cn2ihb48b3fhneb1ka.apps.googleusercontent.com",
       googleAuth: null,
-      user: null
+      user: null,
+      disableSignIn: true
     }
   },
   methods: {
@@ -86,6 +86,7 @@ module.exports = {
       gapi.auth2.init({
         client_id: this.clientId
       }).then(() => {
+        this.disableSignIn = false;
         this.googleAuth = gapi.auth2.getAuthInstance();
         if(this.googleAuth.isSignedIn.get()) this.registerUser();
       })
@@ -113,7 +114,7 @@ module.exports = {
     },
     signIn() {
       this.googleAuth.signIn().then(() => {
-        this.registerUser();
+        window.location.reload(true);
       }).catch(err => {
         console.log(err);
       });
@@ -124,11 +125,12 @@ module.exports = {
         fetch('/user-logout', {
           method: 'POST'
         }).then(response => {
-          this.signedIn = false;
-          this.showDropdown = false;
-          this.user = null;
+          window.location.reload(true);
         });
       })
+    },
+    goToProfile() {
+      this.$router.push('profile');
     }
   },
   mounted() {
@@ -136,11 +138,6 @@ module.exports = {
     gapiScript.onload = this.onGAPILoad;
     gapiScript.src = "https://apis.google.com/js/client.js";
     document.head.appendChild(gapiScript);
-  },
-  watch: {
-    user: function(userVal) {
-      this.$emit('setuser', userVal);
-    }
   }
 }
 </script>
@@ -163,7 +160,8 @@ button:focus {
 }
 
 #title {
-  font-size: 3em;
+  font-family: 'Caveat Brush';
+  font-size: 3.5em;
   color: white;
   margin: 0 0 0 10px;
   text-decoration: none;

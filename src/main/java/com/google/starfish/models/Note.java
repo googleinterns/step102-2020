@@ -2,6 +2,7 @@ package com.google.starfish.models;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Arrays;
 
 /** Represents a note */ 
 public class Note {
@@ -124,7 +125,67 @@ public class Note {
     this.miscLabels = miscLabels;
   }
 
+  @Override
+  public boolean equals(final Object obj) {
+    if (obj == null || obj == this || !(obj instanceof Note)) return false;
+    Note note = (Note) obj;
+
+    if (note.getId() != this.id) return false;
+    if (!note.getAuthorId().equals(this.authorId)) return false;
+    if (!note.getSchool().equals(this.school)) return false;
+    if (!note.getCourse().equals(this.course)) return false;
+    if (!note.getTitle().equals(this.title)) return false;
+    if (!note.getSourceUrl().equals(this.sourceUrl)) return false;
+    if (!note.getPdfSource().equals(this.pdfSource)) return false;
+    if (!note.getDateCreated().toString().equals(this.dateCreated.toString())) return false;
+    if (note.getNumDownloads() != this.numDownloads) return false;
+    if (note.getNumFavorites() != this.numFavorites) return false;
+    if (!Arrays.equals(note.getMiscLabels(), this.miscLabels)) return false;
+
+    return true;
+  }
+
+  public long getId() {
+    return this.id;
+  }
+
   public String getAuthorId() {
     return this.authorId;
+  }
+
+  public String getSchool() {
+    return this.school;
+  }
+
+  public String getCourse() {
+    return this.course;
+  }
+
+  public String getTitle() {
+    return this.title;
+  }
+
+  public String getSourceUrl() {
+    return this.sourceUrl;
+  }
+
+  public String getPdfSource() {
+    return this.pdfSource;
+  }
+
+  public Date getDateCreated() {
+    return this.dateCreated;
+  }
+
+  public long getNumDownloads() {
+    return this.numDownloads;
+  }
+
+  public long getNumFavorites() {
+    return this.numFavorites;
+  }
+
+  public String[] getMiscLabels() {
+    return this.miscLabels;
   }
 }
