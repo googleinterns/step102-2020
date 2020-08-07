@@ -81,7 +81,7 @@
       <v-row>
       <v-col md="4">
           <v-card>
-            <v-img src="/assets/nicholas.webp"
+            <v-img src="/assets/nicholas.png"
                    max-height="150"
                    contain>
             </v-img>
@@ -101,7 +101,7 @@
         </v-col>
         <v-col md="4">
           <v-card>
-            <v-img src="/assets/colette.webp"
+            <v-img src="/assets/colette.png"
                    max-height="150"
                    contain>
             </v-img>
