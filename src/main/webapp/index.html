@@ -33,13 +33,15 @@
   const Home = httpVueLoader('/views/LandingPage.vue')
   const Search = httpVueLoader('/views/SearchPage.vue')
   const Profile = httpVueLoader('/views/ProfilePage.vue')
+  const About = httpVueLoader('/views/AboutPage.vue')
 
   // 2. Create the router instance and pass the `routes` option
   const router = new VueRouter({
     routes: [
       { path: '/', component: Home },
       { path: '/search', component: Search },
-      { path: '/profile', component: Profile}
+      { path: '/profile', component: Profile},
+      { path: '/about', component: About}
     ]
   })
 
